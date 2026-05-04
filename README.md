@@ -20,15 +20,17 @@ And so much more.
 |`LANG`|`VL`|`SETT`|`UNOF`|
 |---|---|---|---|
 |English|X|X| |
-|German|X| | |
-|Spanish|X| | |
-|French|X| | |
-|Italian|X| | |
-|Japanese|X| | |
-|Polish|X| | |
-|Russian|X| | |
+|German|XX| | |
+|Spanish|XX| | |
+|French|XX| | |
+|Italian|XX| | |
+|Japanese|XX| | |
+|Polish|XX| | |
+|Russian|XX| | |
 |Swedish| |X|X|
 |Turkish| |X|X|
+
+**XX** - [Available via secondary addon](https://github.com/MokaAkashiya85/gmod-codhud-collection-languagepack)
 
 **LANG** - Language / **VL** - Has Voicelines / **SETT** - Has translated settings / **UNOF** - Unofficial translation
 
