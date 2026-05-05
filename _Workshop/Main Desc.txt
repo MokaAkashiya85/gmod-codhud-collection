@@ -1,5 +1,6 @@
 Title: CoD HUD Collection
 
+[h3]Take no prisoners, comrades.[/h3]
 A sequel, improvement and rewrite of landocalrissian's original [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3704210589]Call of Duty: Modern Warfare 2 2009 HUD[/url], now with many new features, improvements and much more.
 
 [h3] Regarding localized voicelines [/h3]
