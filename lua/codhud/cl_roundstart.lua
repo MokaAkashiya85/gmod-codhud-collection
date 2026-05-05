@@ -266,7 +266,9 @@ net.Receive("CoDHUD_RoundStart", function()
 
     CoDHUD_RoundEndTime = net.ReadFloat()
 
-    CoDHUD_MatchMaxTime = maxtimer * 60 -- convert once, store once
+	if maxtimer > 0 then
+		CoDHUD_MatchMaxTime = maxtimer * 60 -- convert once, store once
+	end
 
     timer.Simple(0, function()
         CoDHUD_RS_Start(gamemode, timestart)
