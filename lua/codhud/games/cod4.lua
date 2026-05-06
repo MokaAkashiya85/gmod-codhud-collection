@@ -754,8 +754,6 @@ CoDHUD[hudtype].Killfeed = killfeed
 CoDHUD[hudtype].Medals = nil
 CoDHUD[hudtype].MedalsSound = nil
 
--- local debugpic = true
-
 local function minimap( ... )
 	local ply = select(1, ...)
 	
@@ -1046,7 +1044,7 @@ local function scorebar(data)
 		ICON_Y     = 13,
 
 		-- Timer
-		TIMER_X          = 375,
+		TIMER_X          = 327.5,
 		TIMER_Y          = 60,
 		TIMER_SHIFT_2DIG = -0,
 		TIMER_SHIFT_3DIG = -0,
@@ -1196,7 +1194,7 @@ local function scorebar(data)
     (CoDHUD_MatchMaxTime <= 0 or data.timeRaw <= CoDHUD_MatchMaxTime)
 
 	if shouldDrawTimer then
-		DrawSqueezedText( timeStr, "MW2_Timer", barX + CoDHUD_SX(CFG.TIMER_X) + xShift, barY + CoDHUD_SY(CFG.TIMER_Y), timecol, CFG.SQUEEZE, CFG.SQUEEZE_ONE, 1, CFG.SQUEEZE_ONE_BEFORE, CoDHUD_SX(CFG.TIMER_OUTLINE_W) )
+		DrawSqueezedText( timeStr, "CoD4_Timer", barX + CoDHUD_SX(CFG.TIMER_X) + xShift, barY + CoDHUD_SY(CFG.TIMER_Y), timecol, CFG.SQUEEZE, CFG.SQUEEZE_ONE, 2, CFG.SQUEEZE_ONE_BEFORE, CoDHUD_SX(CFG.TIMER_OUTLINE_W) )
 	end
 	
 	-- Status Colors
@@ -1373,7 +1371,7 @@ local function scoreboard( ... )
 		PING_BAR_SPACING = 3,
 
 		-- Timer / Header Score
-		TIMER_X_POS = 245,
+		TIMER_X_POS = 375,
 		TIMER_Y_OFF = 98,
 		SQUEEZE = -2,
 		SQUEEZE_ONE = -6,
@@ -1428,11 +1426,11 @@ local function scoreboard( ... )
 		local pScore = math.max(0, ply:Frags() * 10)
 
 		-- Text
-		draw.SimpleTextOutlined(ply:Nick(), "CoD4_Scoreboard_Text", x + CoDHUD_S(110), y + (h / 2), tCol, TEXT_ALIGN_LEFT,  TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0))
-		draw.SimpleTextOutlined(ply:Deaths(), "CoD4_Scoreboard_Text", barRight - CoDHUD_S(CFG.OFF_DEATHS),  y + (h / 2), tCol, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0))
-		draw.SimpleTextOutlined(ply:GetNWInt("Assists", 0), "CoD4_Scoreboard_Text", barRight - CoDHUD_S(CFG.OFF_ASSISTS), y + (h / 2), tCol, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0))
-		draw.SimpleTextOutlined(ply:Frags(), "CoD4_Scoreboard_Text", barRight - CoDHUD_S(CFG.OFF_KILLS),   y + (h / 2), tCol, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0))
-		draw.SimpleTextOutlined(pScore, "CoD4_Scoreboard_Text", barRight - CoDHUD_S(CFG.OFF_SCORE),   y + (h / 2), tCol, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0))
+		draw.SimpleTextOutlined(string.Replace(ply:Nick(), "0", "O"), "CoD4_Scoreboard_Text", x + CoDHUD_S(110), y + (h / 2), tCol, TEXT_ALIGN_LEFT,  TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0))
+		draw.SimpleTextOutlined(string.Replace(ply:Deaths(), "0", "O"), "CoD4_Scoreboard_Text", barRight - CoDHUD_S(CFG.OFF_DEATHS),  y + (h / 2), tCol, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0))
+		draw.SimpleTextOutlined(string.Replace(ply:GetNWInt("Assists", 0), "0", "O"), "CoD4_Scoreboard_Text", barRight - CoDHUD_S(CFG.OFF_ASSISTS), y + (h / 2), tCol, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0))
+		draw.SimpleTextOutlined(string.Replace(ply:Frags(), "0", "O"), "CoD4_Scoreboard_Text", barRight - CoDHUD_S(CFG.OFF_KILLS),   y + (h / 2), tCol, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0))
+		draw.SimpleTextOutlined(string.Replace(pScore, "0", "O"), "CoD4_Scoreboard_Text", barRight - CoDHUD_S(CFG.OFF_SCORE),   y + (h / 2), tCol, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0))
 
 		-- Ping Indicator
 		local ping = ply:Ping()
@@ -1544,10 +1542,10 @@ local function scoreboard( ... )
 	
 	render.SetScissorRect(0, viewportTop, ScrW(), viewportBottom, true)
 		-- Stats column headers
-		draw.SimpleTextOutlined( language.GetPhrase("MW2_CGAME_SB_DEATHS"), "CoD4_Scoreboard_Text", barRight - CoDHUD_S(CFG.OFF_DEATHS), headerY, Color(255,255,255), TEXT_ALIGN_RIGHT, 0, outlined and 1 or 0, Color(0,0,0) )
-		draw.SimpleTextOutlined( language.GetPhrase("MW2_CGAME_SB_ASSISTS"), "CoD4_Scoreboard_Text", barRight - CoDHUD_S(CFG.OFF_ASSISTS), headerY, Color(255,255,255), TEXT_ALIGN_RIGHT, 0, outlined and 1 or 0, Color(0,0,0) )
-		draw.SimpleTextOutlined( language.GetPhrase("MW2_CGAME_SB_KILLS"), "CoD4_Scoreboard_Text", barRight - CoDHUD_S(CFG.OFF_KILLS), headerY, Color(255,255,255), TEXT_ALIGN_RIGHT, 0, outlined and 1 or 0, Color(0,0,0) )
-		draw.SimpleTextOutlined( language.GetPhrase("MW2_CGAME_SB_SCORE"), "CoD4_Scoreboard_Text", barRight - CoDHUD_S(CFG.OFF_SCORE), headerY, Color(255,255,255), TEXT_ALIGN_RIGHT, 0, outlined and 1 or 0, Color(0,0,0) )
+		draw.SimpleTextOutlined( language.GetPhrase("MW2_CGAME_SB_DEATHS"), "CoD4_Scoreboard_Headers", barRight - CoDHUD_S(CFG.OFF_DEATHS), headerY, Color(255,255,255), TEXT_ALIGN_RIGHT, 0, outlined and 1 or 0, Color(0,0,0) )
+		draw.SimpleTextOutlined( language.GetPhrase("MW2_CGAME_SB_ASSISTS"), "CoD4_Scoreboard_Headers", barRight - CoDHUD_S(CFG.OFF_ASSISTS), headerY, Color(255,255,255), TEXT_ALIGN_RIGHT, 0, outlined and 1 or 0, Color(0,0,0) )
+		draw.SimpleTextOutlined( language.GetPhrase("MW2_CGAME_SB_KILLS"), "CoD4_Scoreboard_Headers", barRight - CoDHUD_S(CFG.OFF_KILLS), headerY, Color(255,255,255), TEXT_ALIGN_RIGHT, 0, outlined and 1 or 0, Color(0,0,0) )
+		draw.SimpleTextOutlined( language.GetPhrase("MW2_CGAME_SB_SCORE"), "CoD4_Scoreboard_Headers", barRight - CoDHUD_S(CFG.OFF_SCORE), headerY, Color(255,255,255), TEXT_ALIGN_RIGHT, 0, outlined and 1 or 0, Color(0,0,0) )
 		
 		for fi, facData in ipairs(factionList) do
 			local players = facData.players
@@ -1606,7 +1604,7 @@ local function scoreboard( ... )
     local totalSecs = math.floor(CurTime())
     local mins, secs = math.floor(totalSecs / 60), totalSecs % 60
     local timeStr = string.format("%d:%02d", mins, secs)
-    DrawSqueezedText(timeStr, "CoD4_Scoreboard_Text", scrW - CoDHUD_S(CFG.TIMER_X_POS), CoDHUD_S(CFG.TIMER_Y_OFF), Color(255, 255, 255, 255), CFG.SQUEEZE, CFG.SQUEEZE_ONE, 0, CFG.SQUEEZE_ONE_BEFORE, outlined and 1.5 or 0)
+    DrawSqueezedText(timeStr, "CoD4_Timer", scrW - CoDHUD_S(CFG.TIMER_X_POS), CoDHUD_S(CFG.TIMER_Y_OFF), Color(255, 255, 255, 255), CFG.SQUEEZE, CFG.SQUEEZE_ONE, 2, CFG.SQUEEZE_ONE_BEFORE, outlined and 1.5 or 0)
 
 	table.sort(factionList, function(a, b)
 		if a.key == myFaction then return true end

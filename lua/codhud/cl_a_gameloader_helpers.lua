@@ -45,12 +45,13 @@ local function InitiateCoDFonts()
     surface.CreateFont( "CoD4_RS_Timer",				{ font = "Carbon Regular", size = CoDHUD_S(80), weight = 400, antialias = true, shadow = true })
 
 	-- Score Bar
-	surface.CreateFont( "CoD4_Timer", 				{ font = "Carbon Regular", size = CoDHUD_S(34), weight = 400, antialias = true, shadow = false, })
+	surface.CreateFont( "CoD4_Timer", 				{ font = "Carbon Regular", size = CoDHUD_S(38), weight = 400, antialias = true, shadow = false, })
     surface.CreateFont( "CoD4_Status",				{ font = "Carbon Regular", size = CoDHUD_S(34), weight = 400, antialias = true, shadow = true, })
     surface.CreateFont( "CoD4_Font",				{ font = "Carbon Regular", size = CoDHUD_S(36), weight = 400, antialias = true, })
 			
 	-- Scoreboard
     surface.CreateFont( "CoD4_Scoreboard_Text",		{ font = "Carbon Regular", size = CoDHUD_S(34), weight = 400, antialias = true, shadow = true, })
+    surface.CreateFont( "CoD4_Scoreboard_Headers",	{ font = "Carbon Regular", size = CoDHUD_S(28), weight = 400, antialias = true, shadow = true, })
     surface.CreateFont( "CoD4_Scoreboard_Timer",	{ font = "BankGothic Md BT", size = CoDHUD_S(34), weight = 400, antialias = true, })
 	
 	-- Weapon HUD

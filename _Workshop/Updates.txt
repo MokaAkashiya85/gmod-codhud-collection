@@ -1,0 +1,4 @@
+[ Update 1 ]
+- Added CoD4 HUD
+- Added MW3 Settings menu background
+- Added reload checks (hides "Reload" prompt) on all major weapon bases (ARC9, TFA, ArcCW, CW2)
