@@ -14,22 +14,28 @@ CreateConVar("codhud_restrictfactions", "1", {FCVAR_ARCHIVE, FCVAR_NOTIFY, FCVAR
 -- [[ 1. FACTION RELATED ]]
 -- Faction Name Mapping
 CoDHUD.Factions.validfactions = {
+	["cod4"] = {
+		["marines"]			= "Marine First Recon",
+		["sas"]				= "S.A.S.",
+		["ussr"]			= "Spetsnaz",
+		["arab"]			= "OpFor",
+	},
 	["mw2"] = {
-		["rangers"]      = "Army Rangers",
-		["taskforce141"] = "Task Force 141",
-		["seals"]        = "Navy SEALs",
-		["ussr"]         = "Spetsnaz",
-		["arab"]         = "OpFor",
-		["militia"]      = "Militia"
+		["rangers"]			= "Army Rangers",
+		["taskforce141"]	= "Task Force 141",
+		["seals"]			= "Navy SEALs",
+		["ussr"]			= "Spetsnaz",
+		["arab"]			= "OpFor",
+		["militia"]			= "Militia"
 	},
 	["mw3"] = {
-		["sas"]			= "Special Air Service",
-		["delta"]		= "Delta Force",
-		["gign"]		= "GIGN",
-		["innercircle"]	= "Inner Circle",
-		["militia"]		= "Africa Militia",
-		["ussr"]		= "Spetsnaz",
-		["pmc"]			= "P.M.C."
+		["sas"]				= "Special Air Service",
+		["delta"]			= "Delta Force",
+		["gign"]			= "GIGN",
+		["innercircle"]		= "Inner Circle",
+		["militia"]			= "Africa Militia",
+		["ussr"]			= "Spetsnaz",
+		["pmc"]				= "P.M.C."
 	},
 }
 

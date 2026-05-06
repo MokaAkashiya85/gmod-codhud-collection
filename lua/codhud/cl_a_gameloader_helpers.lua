@@ -21,6 +21,30 @@ local function InitiateCoDFonts()
 	-- [ SETTINGS ]
     surface.CreateFont( "CoDHUD_Settings_Main",		{ font = "Conduit ITC", size = CoDHUD_S(42), weight = 10,  antialias = true })
 	
+	-- [ CoD4 ]
+	-- Round End
+	surface.CreateFont( "CoD4_RE_Sc_Pri",			{ font = "Carbon Regular", size = CoDHUD_S(54),  weight = 400, blursize = 0, antialias = true,  outline = false })
+    surface.CreateFont( "CoD4_RE_Sc_Sec",			{ font = "Carbon Regular", size = CoDHUD_S(54),  weight = 400, blursize = 5, antialias = true,  outline = false })
+    surface.CreateFont( "CoD4_RE_Sc_Shd",			{ font = "Carbon Regular", size = CoDHUD_S(54),  weight = 400, blursize = 2, antialias = false, outline = true  })
+    
+    surface.CreateFont( "CoD4_RE_Re_Pri",			{ font = "Carbon Regular", size = CoDHUD_S(72), weight = 400, blursize = 0, antialias = true,  outline = false })
+    surface.CreateFont( "CoD4_RE_Re_Sec",			{ font = "Carbon Regular", size = CoDHUD_S(72), weight = 400, blursize = 5, antialias = true,  outline = false })
+    surface.CreateFont( "CoD4_RE_Re_Shd",			{ font = "Carbon Regular", size = CoDHUD_S(72), weight = 400, blursize = 2, antialias = false, outline = true  })
+    
+    surface.CreateFont( "CoD4_RE_Li_Pri",			{ font = "Carbon Regular", size = CoDHUD_S(48),  weight = 400, blursize = 0, antialias = true,  outline = false })
+    surface.CreateFont( "CoD4_RE_Li_Sec",			{ font = "Carbon Regular", size = CoDHUD_S(48),  weight = 400, blursize = 5, antialias = true,  outline = false })
+    surface.CreateFont( "CoD4_RE_Li_Shd",			{ font = "Carbon Regular", size = CoDHUD_S(48),  weight = 400, blursize = 2, antialias = false, outline = true  })
+
+    surface.CreateFont( "CoD4_RE_Bonus",				{ font = "Carbon Regular", size = CoDHUD_S(48),  weight = 400, blursize = 0, antialias = true,  outline = false })
+
+	-- Round Start
+    surface.CreateFont( "CoD4_RS_Timer",				{ font = "Carbon Regular", size = CoDHUD_S(80), weight = 400, antialias = true, shadow = true })
+
+	-- Score Bar
+	surface.CreateFont( "CoD4_Timer", 				{ font = "Carbon Regular", size = CoDHUD_S(34), weight = 400, antialias = true, shadow = false, })
+    surface.CreateFont( "CoD4_Status",				{ font = "Carbon Regular", size = CoDHUD_S(34), weight = 400, antialias = true, shadow = true, })
+    surface.CreateFont( "CoD4_Font",				{ font = "Carbon Regular", size = CoDHUD_S(36), weight = 400, antialias = true, })
+
 	-- [ MW2 ]
 	-- Challenges
     surface.CreateFont( "MW2_ChalHeader_Pri",		{ font = "Carbon Regular", size = CoDHUD_S(46), weight = 10,  blursize = 0, antialias = true,  outline = false })

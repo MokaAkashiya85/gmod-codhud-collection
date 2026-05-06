@@ -101,10 +101,16 @@ function CoDHUD_GetAnnouncerSound(keys)
     local function tryLang(l)
         for _, key in ipairs(keys) do
 		
+			local filesuffix = ""
+		
+			if CoDHUD[CoDHUD_GetHUDType()].VoiceCallouts and CoDHUD[CoDHUD_GetHUDType()].VoiceCallouts.suffix then
+				filesuffix = CoDHUD[CoDHUD_GetHUDType()].VoiceCallouts.suffix
+			end
+
             -- suffix search
-            for i = 1, 5 do
+            for i = 1, 9 do
                 local suffix = (i < 10 and "0" .. i or tostring(i))
-				local path = "announcer/" .. CoDHUD_GetHUDType() .. "/" .. l .. "/" .. CoDHUD.Factions[CoDHUD_GetHUDType()][faction].voicepath .. key .. "_" .. suffix .. ".wav"
+				local path = "announcer/" .. CoDHUD_GetHUDType() .. "/" .. l .. "/" .. CoDHUD.Factions[CoDHUD_GetHUDType()][faction].voicepath .. key .. "_" .. suffix .. filesuffix .. ".wav"
 
                 if file.Exists("sound/" .. path, "GAME") then
                     return path
@@ -112,7 +118,7 @@ function CoDHUD_GetAnnouncerSound(keys)
             end
 
             -- fallback no suffix
-            local path = "announcer/" .. CoDHUD_GetHUDType() .. "/" .. l .. "/" .. CoDHUD.Factions[CoDHUD_GetHUDType()][faction].voicepath .. key .. ".wav"
+            local path = "announcer/" .. CoDHUD_GetHUDType() .. "/" .. l .. "/" .. CoDHUD.Factions[CoDHUD_GetHUDType()][faction].voicepath .. key .. filesuffix .. ".wav"
 
             if file.Exists("sound/" .. path, "GAME") then
                 return path

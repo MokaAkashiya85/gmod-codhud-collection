@@ -3,12 +3,14 @@ Title: CoD HUD Collection
 [h3]Take no prisoners, comrades.[/h3]
 A sequel, improvement and rewrite of landocalrissian's original [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3704210589]Call of Duty: Modern Warfare 2 2009 HUD[/url], now with many new features, improvements and much more.
 
+Ensure you unsubscribe from the old addon if you're subscribed to it, in order to avoid any possible addon conflicts.
+
 [h3] Regarding localized voicelines [/h3]
 To reduce the size of the addon, it will only contain the necessary elements, including materials, code, localization and English voicelines.
 
 The addon, just like the original, does support localized voicelines.
 However, they are not included here due to file size.
-You can get them here: [url=https://steamcommunity.com/workshop/filedetails/?id=1587455087]Workshop Link[/url]
+You can get them here: [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3720591049]Workshop Link[/url]
 
 [hr][/hr]
 [h1] Features [/h1]
