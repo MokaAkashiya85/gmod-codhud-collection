@@ -2,3 +2,9 @@
 - Added CoD4 HUD
 - Added MW3 Settings menu background
 - Added reload checks (hides "Reload" prompt) on all major weapon bases (ARC9, TFA, ArcCW, CW2)
+
+[ Update 2 ]
+- Music volume is now connected to the game music volume ("snd_musicvolume")
+- Players joining while a round is beginning will be put into the same "round starting" phase
+- When a round is starting or ending, you cannot change factions
+- When a round is ending, you cannot start a new round until the current one has concluded fully
