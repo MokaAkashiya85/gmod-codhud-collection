@@ -1823,7 +1823,7 @@ local function weaponinfo(...)
 		["default"] = { mat = "cod4/hud/ammo_counter_bullet.png",     		 w = 3,  h = 14, gap = 0, y_off = 117.5, x_start = -80, dim = 75 },
 		["rocket"]  = { mat = "cod4/hud/ammo_counter_rocket.png",     		 w = 48, h = 24, gap = 0, y_off = 112.5, x_start = -125, dim = 75 },
 		["sniper"]  = { mat = "cod4/hud/ammo_counter_riflebullet.png",     	 w = 32,  h = 8, gap = 5, y_off = 122, x_start = -105, dim = 75 },
-		["shotgun"] = { mat = "cod4/hud/ammo_counter_shotgunshell.png",      w = 10, h = 20, gap = 0, y_off = 64, x_start = -300, dim = 75 },
+		["shotgun"] = { mat = "cod4/hud/ammo_counter_shotgunshell.png",      w = 25, h = 12.5, gap = 5, y_off = 118, x_start = -100, dim = 75 },
 		["belt"]    = { row_size = 25, row_gap = 0, mat = "cod4/hud/ammo_counter_beltbullet.png", w = 7, h = 2.5, gap = 0, y_off = 126.5, x_start = -80, dim = 75 },
 	}
 
