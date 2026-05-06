@@ -22,6 +22,10 @@ local function InitiateCoDFonts()
     surface.CreateFont( "CoDHUD_Settings_Main",		{ font = "Conduit ITC", size = CoDHUD_S(42), weight = 10,  antialias = true })
 	
 	-- [ CoD4 ]
+	-- Hitmarker / XP
+	surface.CreateFont( "CoD4_Score_Main",			{ font = "Carbon Regular", size = CoDHUD_S(36), weight = 400, antialias = true, shadow = true })
+	surface.CreateFont( "CoD4_Score_Plus",			{ font = "Carbon Regular", size = CoDHUD_S(32), weight = 800, antialias = true, shadow = true })
+	
 	-- Round End
 	surface.CreateFont( "CoD4_RE_Sc_Pri",			{ font = "Carbon Regular", size = CoDHUD_S(54),  weight = 400, blursize = 0, antialias = true,  outline = false })
     surface.CreateFont( "CoD4_RE_Sc_Sec",			{ font = "Carbon Regular", size = CoDHUD_S(54),  weight = 400, blursize = 5, antialias = true,  outline = false })
@@ -44,7 +48,15 @@ local function InitiateCoDFonts()
 	surface.CreateFont( "CoD4_Timer", 				{ font = "Carbon Regular", size = CoDHUD_S(34), weight = 400, antialias = true, shadow = false, })
     surface.CreateFont( "CoD4_Status",				{ font = "Carbon Regular", size = CoDHUD_S(34), weight = 400, antialias = true, shadow = true, })
     surface.CreateFont( "CoD4_Font",				{ font = "Carbon Regular", size = CoDHUD_S(36), weight = 400, antialias = true, })
-
+	
+	-- Weapon HUD
+    surface.CreateFont("CoD4_Res",					{ font = "Carbon Regular", size = CoDHUD_S(64), weight = 400, antialias = true, shadow = true, extended = true })
+    surface.CreateFont("CoD4_Res_3D",				{ font = "Carbon Regular", size = CoDHUD_S(44), weight = 400, antialias = true, shadow = true, extended = true })
+    surface.CreateFont("CoD4_Res_4D",				{ font = "Carbon Regular", size = CoDHUD_S(38), weight = 400, antialias = true, shadow = true, extended = true })
+    surface.CreateFont("CoD4_Wep_Name",				{ font = "Carbon Regular", size = CoDHUD_S(38), weight = 400, antialias = true, shadow = true, extended = true })
+    surface.CreateFont("CoD4_Stat_Font",			{ font = "Carbon Regular", size = CoDHUD_S(28), weight = 400, antialias = true, shadow = true, extended = true })
+    surface.CreateFont("CoD4_Ammo_Alt",				{ font = "Carbon Regular", size = CoDHUD_S(36), weight = 400, antialias = true, shadow = true, extended = true })
+	
 	-- [ MW2 ]
 	-- Challenges
     surface.CreateFont( "MW2_ChalHeader_Pri",		{ font = "Carbon Regular", size = CoDHUD_S(46), weight = 10,  blursize = 0, antialias = true,  outline = false })

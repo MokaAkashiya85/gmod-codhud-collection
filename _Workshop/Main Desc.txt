@@ -16,7 +16,12 @@ You can get them here: [url=https://steamcommunity.com/sharedfiles/filedetails/?
 [h1] Features [/h1]
 [h3] New Highlighted Features [/h3]
 [list]
-	[*] Customizable HUD Types; Switch to another game's HUD and its factions
+	[*] Customizable HUD Types; Switch to another game's HUD and its factions!
+		[list]
+			[*] Call of Duty 4: Modern Warfare
+			[*] Call of Duty: Modern Warfare 2
+			[*] Call of Duty: Modern Warfare 3
+		[/list]
 	[*] Round End now supports Time Limits:
 	[list]
 		[*] HUD Timers will now count down

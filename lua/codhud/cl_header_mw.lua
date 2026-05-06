@@ -12,10 +12,27 @@ local GLITCH = { "a", "¶", "Ð", "ق", "§", "ð", "œ", "ش", "Ф" }
 -- =========================
 -- Constructor
 -- =========================
+local function SafeLen(str)
+    if not str then return 0 end
+
+    local ok, len = pcall(utf8.len, str)
+    if not ok or not len then
+        return #str -- fallback to byte length
+    end
+
+    return len
+end
+
 function CoDHUD_Header_MW:New(cfg)
     local o = setmetatable({}, self)
 
-    o.text       = cfg.text or ""
+    o.lines = string.Split(cfg.text or "", "\n")
+	-- longest line drives timing
+	o.longest = 0
+	for _, line in ipairs(o.lines) do
+		o.longest = math.max(o.longest, SafeLen(line))
+	end
+	
     o.subtext    = cfg.subtext or nil
     o.icon       = cfg.icon or nil
 
@@ -78,22 +95,7 @@ end
 
 function CoDHUD_HeaderQueue.Push(cfg)
 	cfg.groupId = cfg.groupId or (CurTime() .. "_" .. math.random(9999))
-	
-	if cfg.text and string.find(cfg.text, "\n") then
-		local lines = string.Split(cfg.text, "\n")
 
-		for i, line in ipairs(lines) do
-			local copy = table.Copy(cfg)
-			copy.text = line
-			copy.y = cfg.y + ((i - 1) * CoDHUD_S(28))
-			copy.multiple = true
-			copy.groupId = cfg.groupId
-			
-			table.insert(CoDHUD_HeaderQueue.Queue, copy)
-		end
-
-		return
-	end
     table.insert(CoDHUD_HeaderQueue.Queue, cfg)
 end
 
@@ -101,26 +103,37 @@ end
 -- Helpers
 -- =========================
 local function utf8_sub(str, startChar, endChar)
-    local chars = {}
-    local i = 1
-    for _, c in utf8.codes(str) do
-        chars[i] = utf8.char(c)
-        i = i + 1
+    local ok, result = pcall(function()
+        local chars = {}
+        local i = 1
+
+        for _, c in utf8.codes(str) do
+            chars[i] = utf8.char(c)
+            i = i + 1
+        end
+
+        endChar = endChar or #chars
+
+        local out = {}
+        for i = startChar, math.min(endChar, #chars) do
+            out[#out+1] = chars[i]
+        end
+
+        return table.concat(out)
+    end)
+
+    if not ok then
+        return string.sub(str, startChar, endChar)
     end
 
-    endChar = endChar or #chars
-
-    local out = {}
-    for i = startChar, math.min(endChar, #chars) do
-        out[#out+1] = chars[i]
-    end
-
-    return table.concat(out)
+    return result
 end
 
 local function BlankStep(blanks, text, n)
+    local len = SafeLen(text)
     local avail = {}
-    for i = 1, utf8.len(text) do
+
+    for i = 1, len do
         local used = false
         for _, b in ipairs(blanks) do
             if b == i then used = true break end
@@ -136,9 +149,11 @@ local function BlankStep(blanks, text, n)
 end
 
 local function ApplyBlanks(text, blanks)
+    local len = SafeLen(text)
     local chars = {}
-    for i = 1, utf8.len(text) do
-        chars[i] = utf8.sub(text, i, i)
+
+    for i = 1, len do
+        chars[i] = utf8_sub(text, i, i)
     end
 
     for _, b in ipairs(blanks) do
@@ -197,13 +212,13 @@ function CoDHUD_Header_MW:Update()
 		self.iconAlpha = math.min(255, self.iconAlpha + FrameTime() * speed)
 		self.subAlpha  = math.min(255, self.subAlpha  + FrameTime() * speed)
 
-        if now >= self.nextWrite and self.written < utf8.len(self.text) then
+        if now >= self.nextWrite and self.written < self.longest then
             self.written = self.written + 1
             self.nextWrite = now + interval
             surface.PlaySound("hud/cod_write.mp3")
         end
 
-        if self.written >= utf8.len(self.text) then
+        if self.written >= self.longest then
             self.phase = "hold"
             self.holdStart = now
         end
@@ -242,11 +257,11 @@ function CoDHUD_Header_MW:Update()
 			return
 		end
 
-		local step = self.eraseTime / math.max(1, math.ceil(utf8.len(self.text) / 2))
+		local step = self.eraseTime / math.max(1, math.ceil(self.longest / 2))
 
 		if now >= self.nextErase then
 			self.nextErase = now + step
-			BlankStep(self.eraseBlanks, self.text, 2)
+			BlankStep(self.eraseBlanks, string.rep(" ", self.longest), 2)
 
 			if not self.eraseSoundPlayed then
 				surface.PlaySound("hud/cod_dissapear.mp3")
@@ -254,7 +269,7 @@ function CoDHUD_Header_MW:Update()
 			end
 		end
 
-		if (#self.eraseBlanks >= utf8.len(self.text)) and (self.iconAlpha == 0) and (self.subAlpha == 0) then
+		if (#self.eraseBlanks >= self.longest) and (self.iconAlpha == 0) and (self.subAlpha == 0) then
 			self.phase = "done"
 		end
 
@@ -272,24 +287,32 @@ function CoDHUD_Header_MW:Draw()
 	
 	local outlined = GetConVar("codhud_enable_outlinedtext"):GetBool()
 
-    local display
+	for i, line in ipairs(self.lines) do
+		local display = ""
 
-    if self.phase == "write" then
-        display = utf8_sub(self.text, 0, self.written)
+		if self.phase == "write" then
+			display = utf8_sub(line, 0, self.written)
 
-        if self.written < utf8.len(self.text) then
-            display = display .. GLITCH[math.random(#GLITCH)]
-        end
+			local lineLen = SafeLen(line)
 
-    elseif self.phase == "erase" then
-        display = ApplyBlanks(self.text, self.eraseBlanks)
-    else
-        display = self.text
-    end
+			if self.written < lineLen then
+				display = display .. GLITCH[math.random(#GLITCH)]
+			end
 
-    if display ~= "" then
-        DrawCODText( display, self.text, self.fonts.pri, self.fonts.sec, self.fonts.shd, self.x, self.y, self.color, self.align )
-    end
+		elseif self.phase == "erase" then
+			local padded = line .. string.rep(" ", math.max(0, self.longest - SafeLen(line)))
+			display = ApplyBlanks(padded, self.eraseBlanks)
+
+		else
+			display = line
+		end
+
+		if display ~= "" then
+			local y = self.y + ((i - 1) * CoDHUD_S(38))
+
+			DrawCODText( display, line, self.fonts.pri, self.fonts.sec, self.fonts.shd, self.x, y, self.color, self.align )
+		end
+	end
 
     -- SUBTEXT
 	if self.subtext and self.subtext ~= "" and self.subAlpha > 0 then
@@ -311,7 +334,8 @@ function CoDHUD_Header_MW:Draw()
 		local yOffset = 999
 
 		surface.SetFont(self.fonts.pri)
-		local _, textH = surface.GetTextSize(self.text)
+		local _, textH = surface.GetTextSize(self.lines[1] or "")
+		textH = textH * #self.lines
 
 		local padding = 10
 		local size = self.iconSize

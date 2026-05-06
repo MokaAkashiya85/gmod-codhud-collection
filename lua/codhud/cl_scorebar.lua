@@ -41,21 +41,56 @@ local function GetScorebarData()
 
 	data.mins = mins
 
-    -- SCORES
-	local myFaction = ply:GetNW2String("CoDHUD_Faction", "")
-
-	local clientScore = GetFactionScore(myFaction)
-	local enemyScore = 0
+	-- BUILD FACTION SCORE TABLE
+	local factionScores = {}
 
 	for _, p in ipairs(player.GetAll()) do
 		local f = p:GetNW2String("CoDHUD_Faction", "")
-		if f ~= myFaction then
-			enemyScore = enemyScore + math.max(0, p:Frags())
+		if f ~= "" then
+			factionScores[f] = (factionScores[f] or 0) + math.max(0, p:Frags())
 		end
 	end
 
-    data.clientScore = clientScore
-    data.enemyScore  = enemyScore
+	-- CONVERT TO SORTABLE ARRAY
+	local sortedFactions = {}
+	for faction, score in pairs(factionScores) do
+		table.insert(sortedFactions, {
+			faction = faction,
+			score = score
+		})
+	end
+
+	-- SORT DESCENDING (highest score first)
+	table.sort(sortedFactions, function(a, b)
+		return a.score > b.score
+	end)
+
+	-- FIND MY FACTION INDEX
+	local myFaction = ply:GetNW2String("CoDHUD_Faction", "")
+	local myIndex = nil
+
+	for i, v in ipairs(sortedFactions) do
+		if v.faction == myFaction then
+			myIndex = i
+			break
+		end
+	end
+
+	-- GET MY SCORE
+	data.clientScore = factionScores[myFaction] or 0
+
+	-- GET NEXT FACTION BELOW ME (2nd place relative)
+	local enemyFactionData = nil
+
+	for _, v in ipairs(sortedFactions) do
+		if v.faction ~= myFaction then
+			enemyFactionData = v
+			break
+		end
+	end
+
+	data.enemyScore = enemyFactionData and enemyFactionData.score or 0
+	data.enemyFaction = enemyFactionData and enemyFactionData.faction or nil
 
     -- STATUS COLORS
     local COL_WINNING = Color(110, 220, 120, 255)
@@ -64,13 +99,16 @@ local function GetScorebarData()
 
     data.statusText = str.scorebar.tied or "MW2_MPUI_TIED_CAPS"
     data.statusCol  = COL_TIE
+	data.statusLosing = false
 
-    if clientScore > enemyScore then
+    if data.clientScore > data.enemyScore then
         data.statusText = str.scorebar.winning or "MW2_MPUI_WINNING_CAPS"
         data.statusCol  = COL_WINNING
-    elseif clientScore < enemyScore then
+		data.statusLosing = false
+    elseif data.clientScore < data.enemyScore then
         data.statusText = str.scorebar.losing or "MW2_MPUI_LOSING_CAPS"
         data.statusCol  = COL_LOSING
+		data.statusLosing = true
     end
 
     return data
