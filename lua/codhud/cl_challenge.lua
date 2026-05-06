@@ -177,4 +177,5 @@ concommand.Add("codhud_challenge_clear", function()
     CoDHUD_Stats.completed = {}
     SaveCoDHUDStats()
     print("[CoDHUD] Cleared Client Challenges.")
+	CoDHUD_AddKillfeedMessage("CoDHUD.Challenges.Reset.noti")
 end)

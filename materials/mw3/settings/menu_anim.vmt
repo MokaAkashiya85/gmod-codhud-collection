@@ -1,6 +1,6 @@
 UnLitGeneric
 {
-	$basetexture 			"mw2\menu_cloud_overlay"
+	$basetexture 			"mw3\settings\menu_cloud_overlay"
 	$translucent			1
 	$vertexcolor			1
 	$vertexalpha			1

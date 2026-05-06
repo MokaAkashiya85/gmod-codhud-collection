@@ -1,6 +1,6 @@
 UnLitGeneric
 {
-	$basetexture 			"mw2\menu_mp_image"
+	$basetexture 			"mw2\settings\menu_mp_image"
 	$translucent			1
 	$vertexcolor			1
 	$vertexalpha			1

@@ -55,7 +55,7 @@ end
 cvars.AddChangeCallback("codhud_game", function(convar, oldValue, newValue)
     print("[CoDHUD] Game changed from " .. oldValue .. " to " .. newValue)
 
-	local textstr = "[SYSTEM] Game changed! (" .. oldValue .. " > " .. newValue .. ")"
+	local textstr = "Game changed (" .. oldValue .. " > " .. newValue .. ")"
 
 	net.Start("CoDHUD_KillfeedMessage")
 	net.WriteString(textstr)

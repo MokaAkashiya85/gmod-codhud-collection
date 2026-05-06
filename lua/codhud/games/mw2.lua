@@ -317,11 +317,11 @@ local function settingsmenu( ... )
 	draw.RoundedBox(0, 0, 0, w, h, Color(100,100,100))
 
 	surface.SetDrawColor(255, 255, 255, 125)
-	surface.SetMaterial( Material( "mw2/menu_anim" ) )
+	surface.SetMaterial( Material( "mw2/settings/menu_anim" ) )
 	surface.DrawTexturedRect(0, 0, w, h)
 	
 	surface.SetDrawColor(255, 255, 255)
-	surface.SetMaterial( Material( "mw2/menu_bg" ) )
+	surface.SetMaterial( Material( "mw2/settings/menu_bg" ) )
 	surface.DrawTexturedRect(0, 0, w, h)
 end
 CoDHUD[hudtype].SettingsMenu = settingsmenu

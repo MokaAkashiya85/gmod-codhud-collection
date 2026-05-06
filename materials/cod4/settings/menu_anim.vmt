@@ -1,6 +1,6 @@
 UnLitGeneric
 {
-	$basetexture 			"mw2\menu_cloud_overlay"
+	$basetexture 			"cod4\settings\bg_fogscrollthin"
 	$translucent			1
 	$vertexcolor			1
 	$vertexalpha			1
