@@ -174,6 +174,8 @@ end)
 function CoDHUD.Factions.CanPlayerChooseFaction(ply, faction)
     local mode = GetConVar("codhud_restrictfactions"):GetInt()
 
+	if CoDHUD_RoundStarting then return false end
+
     -- 0 = cannot change
     if mode == 0 then
         return false
@@ -421,42 +423,55 @@ hook.Add("PlayerInitialSpawn", "CoDHUD_AssignFactionOnJoin", function(ply)
     timer.Simple(0.5, function()
         if not IsValid(ply) then return end
         CoDHUD_AssignFaction(ply)
+		-- print("Player " .. ply:Nick() .. " assigned to a new faction!")
     end)
 end)
 
 hook.Add("PlayerInitialSpawn", "CoDHUD_LateJoinRoundSync", function(ply)
+
     timer.Simple(1, function()
+
         if not IsValid(ply) then return end
 
-        if ply.CoDHUD_HasSyncedRound then return end
-        ply.CoDHUD_HasSyncedRound = true
+        -- print("[CoDHUD] Checking round sync for " .. ply:Nick())
+
+        -- No active round
+        if not CoDHUD_RoundEndTimeSV and not CoDHUD_RoundStarting then
+            -- print("[CoDHUD] No active round.")
+            return
+        end
 
         local gamemode = GetConVar("codhud_selected_gamemode"):GetString()
-        local matchtimer = GetConVar("codhud_matchstart_timer"):GetInt()
         local maxtimer = GetConVar("codhud_time_limit"):GetFloat()
 
-		if IsValid(ply) then
-			ply:SetFrags(0)
-			ply:SetDeaths(0)
+        local remaining = 0
 
-			if ply:Alive() then
-				ply:KillSilent()
-			end
+        if CoDHUD_RoundStarting and CoDHUD_RoundStartTimer then
+            remaining = math.max(0, math.ceil(CoDHUD_RoundStartTimer - CurTime()))
+        end
 
-			ply:Spawn()
-		end
+        -- print("[CoDHUD] Syncing " .. ply:Nick())
+        -- print("Remaining countdown: " .. remaining)
+        -- print("Faction: " .. tostring(ply.CoDHUD_StoredFaction))
+
+        if remaining > 0 then
+            ply:Freeze(true)
+        end
 
         net.Start("CoDHUD_RoundStart")
             net.WriteString(gamemode)
-            net.WriteInt(0, 6)
+            net.WriteInt(remaining, 6)
             net.WriteInt(maxtimer, 32)
             net.WriteFloat(CoDHUD_RoundEndTimeSV or 0)
         net.Send(ply)
+
     end)
 end)
 
 hook.Add("PlayerDisconnected", "CoDHUD_ResetLateJoinFlag", function(ply)
-    ply.CoDHUD_HasSyncedRound = nil
+    if IsValid(ply) then
+        ply.CoDHUD_HasSyncedRound = nil
+    end
 end)
 
 hook.Add("PlayerSelectSpawn", "CoDHUD_TwoFactionSpawns", function(ply)

@@ -10,6 +10,9 @@ util.AddNetworkString("CoDHUD_SyncFactionPool")
 CreateConVar( "codhud_selected_gamemode", "war", {FCVAR_ARCHIVE, FCVAR_NOTIFY, FCVAR_REPLICATED}, "Which gamemode to start the round on." )
 CreateConVar( "codhud_autobalance_on_roundstart", "0", { FCVAR_ARCHIVE, FCVAR_NOTIFY, FCVAR_REPLICATED }, "If enabled, rebalances all factions at the start of each round." )
 
+CoDHUD_RoundStarting = false
+CoDHUD_RoundStartTimer = nil
+
 net.Receive("CoDHUD_SetGamemode", function(len, ply)
     if not IsValid(ply) or not ply:IsAdmin() then return end
 
@@ -29,6 +32,8 @@ end)
 net.Receive("CoDHUD_StartRound", function(len, ply)
     if not IsValid(ply) or not ply:IsAdmin() then return end
 
+	if CoDHUD_RoundEnding then return end
+
     local gamemode = GetConVar("codhud_selected_gamemode"):GetString()
     local matchtimer = GetConVar("codhud_matchstart_timer"):GetInt()
     local maxtimer = GetConVar("codhud_time_limit"):GetFloat()
@@ -41,6 +46,11 @@ net.Receive("CoDHUD_StartRound", function(len, ply)
 	
 	CoDHUD_FirstBloodOccurred = false
 
+	CoDHUD_RoundStarting = true
+	CoDHUD_RoundStartTimer = CurTime() + matchtimer
+
+	timer.Remove("CoDHUD_RoundStartTime")
+	
 	if GetConVar("codhud_autobalance_on_roundstart"):GetBool() then
 		CoDHUD.Factions.RebuildPool()
 		
@@ -81,12 +91,19 @@ net.Receive("CoDHUD_StartRound", function(len, ply)
 				net.WriteFloat(CoDHUD_RoundEndTimeSV or 0) -- NEW
 			net.Broadcast()
 		end)
-		
-		timer.Simple( matchtimer, function()
+
+		timer.Create("CoDHUD_RoundStartTime", matchtimer, 1, function()
+
+			CoDHUD_RoundStarting = false
+			CoDHUD_RoundStartTimer = nil
+
 			for _, p in ipairs(player.GetAll()) do
-				p:Freeze(false)
+				if IsValid(p) then
+					p:Freeze(false)
+				end
 			end
 		end)
+
 		return
 	end
 
@@ -96,13 +113,19 @@ net.Receive("CoDHUD_StartRound", function(len, ply)
         p:Spawn()
 		p:Freeze(true)
     end
-		
-	timer.Simple( matchtimer, function()
+
+	timer.Create("CoDHUD_RoundStartTime", matchtimer, 1, function()
+
+		CoDHUD_RoundStarting = false
+		CoDHUD_RoundStartTimer = nil
+
 		for _, p in ipairs(player.GetAll()) do
-			p:Freeze(false)
+			if IsValid(p) then
+				p:Freeze(false)
+			end
 		end
 	end)
-	
+
 	net.Start("CoDHUD_RoundStart")
 		net.WriteString(gamemode)
 		net.WriteInt(matchtimer, 6)

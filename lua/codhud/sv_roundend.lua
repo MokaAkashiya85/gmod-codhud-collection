@@ -6,6 +6,7 @@ local RE_ThinkThrottle = 0
 codhud_enable_roundend = CreateConVar("codhud_enable_roundend", "1", {FCVAR_ARCHIVE, FCVAR_NOTIFY, FCVAR_REPLICATED}, "Enable or disable the MW2 round end screen.")
 codhud_enable_roundend_StartNext = CreateConVar("codhud_enable_roundend_startnext", "1", {FCVAR_ARCHIVE, FCVAR_NOTIFY, FCVAR_REPLICATED}, "Immediately starts a new 'Round' once the current one ends.")
 
+CoDHUD_RoundEnding = false
 CoDHUD_RoundEndTimeSV = nil
 
 local function CoDHUD_DoRoundEnd(winnerFaction, loserFaction, winnerScore, loserScore)
@@ -19,6 +20,8 @@ local function CoDHUD_DoRoundEnd(winnerFaction, loserFaction, winnerScore, loser
 			net.WriteInt(winnerScore or 0, 32)
 			net.WriteInt(loserScore or 0, 32)
 		net.Broadcast()
+		
+		CoDHUD_RoundEnding = true
 		
 		for _, ply in ipairs(player.GetAll()) do
             if IsValid(ply) then
@@ -129,6 +132,7 @@ local function CoDHUD_DoRoundEnd(winnerFaction, loserFaction, winnerScore, loser
 			end
 		end
 		RE_Triggered = false
+		CoDHUD_RoundEnding = false
     end)
 end
 

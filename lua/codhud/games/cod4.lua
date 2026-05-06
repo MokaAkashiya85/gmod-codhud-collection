@@ -9,8 +9,8 @@ CoDHUD.Gamemodes = CoDHUD.Gamemodes or {}
 
 -- [[ SPECIAL KILLFEED ICONS ]]
 if CLIENT then
-	killicon.Add("CoDHUD_MW2_Suicide", hudtype .. "/killfeed/death_suicide.png", Color(255, 255, 255, 0))
-	killicon.Add("CoDHUD_MW2_Headshot", hudtype .. "/killfeed/death_headshot.png", Color(255, 255, 255, 0))
+	killicon.Add("CoDHUD_CoD4_Suicide", hudtype .. "/killfeed/death_suicide.png", Color(255, 255, 255, 0))
+	killicon.Add("CoDHUD_CoD4_Headshot", hudtype .. "/killfeed/death_headshot.png", Color(255, 255, 255, 0))
 end
 
 -- [[ SUSPENSE ]]
@@ -380,6 +380,8 @@ CoDHUD[hudtype].RoundStart = rs_title
 local function rs_timer( ... )
 	local disp = select(1, ...)
 	
+	local disptext = string.Replace(disp, 0, "O")
+	
 	local outlined = GetConVar("codhud_enable_outlinedtext"):GetBool()
 
     local tx  = CoDHUD_SX(960)
@@ -399,7 +401,7 @@ local function rs_timer( ... )
 		tMat:Translate(Vector(-tx, -ty, 0))
 
 		cam.PushModelMatrix(tMat)
-			draw.SimpleTextOutlined( disp, "CoD4_RS_Timer", tx, ty, Color(255,255,100), 1, 1, outlined and 1 or 0, Color(0,0,0) )
+			draw.SimpleTextOutlined( disptext, "CoD4_RS_Timer", tx, ty, Color(255,255,100), 1, 1, outlined and 1 or 0, Color(0,0,0) )
 		cam.PopModelMatrix()
 
 		draw.SimpleTextOutlined( "#MW2_MP_MATCH_STARTING_IN", "MW2_RS_S_Pri", tx, ty + syo, Color(255,255,255), 1, 1, outlined and 1 or 0, Color(0,0,0) )
@@ -485,6 +487,8 @@ CoDHUD[hudtype].RoundEnd = re_teams
 local function re_bonus( ... )
 	local re_lock_time = select(1, ...)
 	local re_match_bonus = select(2, ...)
+
+	re_match_bonus = string.Replace(re_match_bonus, "0", "O")
 
 	local outlined = GetConVar("codhud_enable_outlinedtext"):GetBool()
 
@@ -707,7 +711,7 @@ local function killfeed( ... )
 			local ICON_BOX_W = iconW
 			local ICON_BOX_H = iconH
 
-			local cls = data.isHeadshot and "CoDHUD_MW2_Headshot" or data.weaponClass
+			local cls = data.isHeadshot and "CoDHUD_CoD4_Headshot" or data.weaponClass
 			local w, h = killicon.GetSize(cls)
 
 			if not w or w <= 0 then w = ICON_BOX_W end
