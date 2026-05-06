@@ -2039,7 +2039,9 @@ local function weaponinfo(...)
     end
 
     local clip    = wep:Clip1()
+    local clip2    = wep:Clip2()
     local maxClip = wep:GetMaxClip1()
+    local maxClip2 = wep:GetMaxClip2()
     local reserve = ply:GetAmmoCount(wep:GetPrimaryAmmoType())
 
     local barW = CoDHUD_SX(CFG.BAR_W)
@@ -2124,8 +2126,24 @@ local function weaponinfo(...)
         end
     end
 
+	local reloading = 
+	wep.IsReloading or reloadingM203 -- CW2
+	or (wep.ARC9 and wep:GetReloading()) -- ARC9
+	or (wep.ArcCW and wep:GetReloading()) -- ArcCW
+	or (wep.IsTFAWeapon and TFA.Enum.ReloadStatus[wep:GetStatus()]) -- TFA
+
+	local glactive = 
+	wep.dt and (wep.dt.AltActive or wep.dt.M203Active) -- CW2
+	or (wep.ARC9 and wep:GetUBGL())
+
+	if glactive then
+		clip = clip2
+		maxClip = maxClip2
+	end
+
+    local primType = wep:GetPrimaryAmmoType()
     local altType = wep:GetSecondaryAmmoType()
-    if altType ~= -1 then
+    if altType ~= -1 and altType ~= primType then
         local altCount = ply:GetAmmoCount(altType)
 
         surface.SetMaterial(MAT_ALT)
@@ -2136,7 +2154,7 @@ local function weaponinfo(...)
         DrawSqueezedText(altCount, "MW2_Ammo_Alt", barX + barW + CoDHUD_SX(CFG.ALT_TEXT_X), barY + CoDHUD_SY(CFG.ALT_TEXT_Y), altCol, CFG.ALT_TEXT_SQ, CFG.ALT_TEXT_SQ1, 1)
     end
 
-    if clip >= 0 and maxClip > 0 then
+    if clip >= 0 and maxClip > 0 and not reloading then
         local perc      = clip / maxClip
         local statText  = ""
         local statCol   = Color(255, 255, 255)
@@ -2147,7 +2165,7 @@ local function weaponinfo(...)
         if clip == 0 and reserve == 0 then
             statText = "#MW2_WEAPON_NO_AMMO"
             isNoAmmo = true
-        elseif clip > 0 and reserve == 0 then
+        elseif perc <= CFG.STAT_LOW_PERC and reserve == 0 then
             statText = "#MW2_PLATFORM_LOW_AMMO_NO_RELOAD"
             statCol  = Color(255, 230, 0)
             isLowAmmo = true
