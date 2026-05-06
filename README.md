@@ -25,7 +25,7 @@ And so much more.
 |French|XX| | |
 |Italian|XX| | |
 |Japanese|XX| | |
-|Polish|XX| | |
+|Polish| | | |
 |Russian|XX| | |
 |Swedish| |X|X|
 |Turkish| |X|X|
