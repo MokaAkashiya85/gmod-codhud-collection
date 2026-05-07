@@ -175,7 +175,7 @@ CoDHUD[hudtype].Timer = {
 
 local function GetFactionColor(ent)
     if not IsValid(ent) then return Color(255,255,255) end
-    local faction = ent:GetNW2String("CoDHUD_Faction", "none")
+    local faction = ent:GetNW2String("CoDHUD_Faction", "delta")
 
     if CoDHUD.Factions[hudtype][faction] and CoDHUD.Factions[hudtype][faction].killfeedcol then 
 		return CoDHUD.Factions[hudtype][faction].killfeedcol
@@ -353,8 +353,8 @@ local function challengecomplete( ... )
     CoDHUD_HeaderQueue.Push({
         text = CoDHUD_ChallengeTitle(header, level),
         subtext = (sub and sub ~= "") and ResolvePrefix("MW2_CHALLENGE_", sub) or nil,
-        x = 1890,
-        y = 120,
+        x = CoDHUD_SX(1890),
+        y = CoDHUD_SY(120),
         color = Color(0,220,80),
         fonts = {
             pri = "MW2_ChalHeader_Pri",
@@ -417,7 +417,8 @@ local function rs_timer( ... )
 	local outlined = GetConVar("codhud_enable_outlinedtext"):GetBool()
 
     local tx  = CoDHUD_SX(960)
-    local ty  = CoDHUD_SY(540)
+    -- local ty  = CoDHUD_SY(540)
+    local ty  = ScrH() * 0.5
     local syo = CoDHUD_SY(-85)
 
 	if disp ~= rs_last_dig then
@@ -2063,11 +2064,11 @@ local function weaponinfo(...)
             or  Color(255, 255, 255, 255)
 
         if reserve >= 1000 then
-            DrawSqueezedText(reserve, "MW2_Res_4D", barX + barW + CoDHUD_SX(CFG.RES4_X), barY + CoDHUD_SY(CFG.RES4_Y), resCol, -6, -16, 1)
+            DrawSqueezedText(reserve, "MW2_Res_4D", barX + barW + CoDHUD_SX(CFG.RES4_X), barY + CoDHUD_SY(CFG.RES4_Y), resCol, CoDHUD_S(-6), CoDHUD_S(-16), 1)
         elseif reserve >= 100 then
-            DrawSqueezedText(reserve, "MW2_Res_3D", barX + barW + CoDHUD_SX(CFG.RES3_X), barY + CoDHUD_SY(CFG.RES3_Y), resCol, -6, -16, 1)
+            DrawSqueezedText(reserve, "MW2_Res_3D", barX + barW + CoDHUD_SX(CFG.RES3_X), barY + CoDHUD_SY(CFG.RES3_Y), resCol, CoDHUD_S(-6), CoDHUD_S(-16), 1)
         else
-            DrawSqueezedText(reserve, "MW2_Res_3D", barX + barW + CoDHUD_SX(CFG.RES_X), barY + CoDHUD_SY(CFG.RES_Y), resCol, -6, -16, 1)
+            DrawSqueezedText(reserve, "MW2_Res_3D", barX + barW + CoDHUD_SX(CFG.RES_X), barY + CoDHUD_SY(CFG.RES_Y), resCol, CoDHUD_S(-6), CoDHUD_S(-16), 1)
         end
     end
 

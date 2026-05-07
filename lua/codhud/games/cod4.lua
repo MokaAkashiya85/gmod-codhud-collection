@@ -138,7 +138,7 @@ CoDHUD[hudtype].Timer = {
 
 local function GetFactionColor(ent)
     if not IsValid(ent) then return Color(255,255,255) end
-    local faction = ent:GetNW2String("CoDHUD_Faction", "none")
+    local faction = ent:GetNW2String("CoDHUD_Faction", "marines")
 
     if CoDHUD.Factions[hudtype][faction] and CoDHUD.Factions[hudtype][faction].killfeedcol then 
 		return CoDHUD.Factions[hudtype][faction].killfeedcol
@@ -319,8 +319,8 @@ local function challengecomplete( ... )
 	
     CoDHUD_HeaderQueue.Push({
         text = language.GetPhrase("CoD4_MP_CHALLENGE_COMPLETED") .. "\n" .. CoDHUD_ChallengeTitle(header, level),
-        x = 960,
-        y = 205,
+        x = CoDHUD_SX(960),
+        y = CoDHUD_SY(205),
         color = Color(0,220,80),
         fonts = {
             pri = "MW2_ChalHeader_Pri",
@@ -385,7 +385,8 @@ local function rs_timer( ... )
 	local outlined = GetConVar("codhud_enable_outlinedtext"):GetBool()
 
     local tx  = CoDHUD_SX(960)
-    local ty  = CoDHUD_SY(540)
+    -- local ty  = CoDHUD_SY(540)
+    local ty  = ScrH() * 0.5
     local syo = CoDHUD_SY(-85)
 
 	if disp ~= rs_last_dig then
@@ -1068,7 +1069,7 @@ local function scorebar(data)
 	local SCORES_CFG = {
 		-- Text Config
 		X = 122,
-		Y = 960,
+		Y = 55,
 		GAP_OFFSET = 42,
 		SQUEEZE = -0,
 		SQUEEZE_ONE = -0,
@@ -1154,8 +1155,8 @@ local function scorebar(data)
 		bgmat = Material(hudtype .. "/hud/scorebar_backdrop.png", "smooth")
 	else
 		bgmat = Material(hudtype .. "/hud/scorebar_backdrop2.png", "smooth")
-		losingoffset = CoDHUD_S(12)
-		losingarrowoffset = CoDHUD_S(52)
+		losingoffset = CoDHUD_SY(12)
+		losingarrowoffset = CoDHUD_SY(52)
 	end
 	
     surface.SetMaterial(bgmat)
@@ -1305,12 +1306,12 @@ local function scorebar(data)
 	-- Client slant accent
 	local tx1, ty1 = HUD_X + client_w, top_y
 	local tx2, ty2 = HUD_X + client_w + slantSize, top_y + hudH
-	local cky = CoDHUD_S(S_CFG.Y) + losingoffset
-	local eky = CoDHUD_S(S_CFG.Y) + CoDHUD_S(S_CFG.GAP_OFFSET) + losingoffset
+	local cky = HUD_Y - CoDHUD_S(S_CFG.Y) + losingoffset
+	local eky = HUD_Y - CoDHUD_S(S_CFG.Y) + CoDHUD_S(S_CFG.GAP_OFFSET) + losingoffset
 
 	if losing then
-		eky = CoDHUD_S(S_CFG.Y) + losingoffset
-		cky = CoDHUD_S(S_CFG.Y) + CoDHUD_S(S_CFG.GAP_OFFSET) + losingoffset
+		eky = HUD_Y - CoDHUD_S(S_CFG.Y) + losingoffset
+		cky = HUD_Y - CoDHUD_S(S_CFG.Y) + CoDHUD_S(S_CFG.GAP_OFFSET) + losingoffset
 	end
 	
     DrawSqueezedText(clientKills * 10,   "CoD4_Font", CoDHUD_S(S_CFG.X), cky, white, S_CFG.SQUEEZE, S_CFG.SQUEEZE_ONE, 2, S_CFG.SQUEEZE_ONE_BEFORE, S_CFG.OUTLINE_W)
@@ -1771,8 +1772,8 @@ local function weaponinfo(...)
 		BAR_Y_OFF   = 48,
 
 		-- Grenades
-		GRENADE_X_OFF     = 1830,
-		GRENADE_Y_OFF     = 965,
+		GRENADE_X_OFF     = 90,
+		GRENADE_Y_OFF     = 115,
 		GRENADE_ICON_W    = 54,
 		GRENADE_ICON_H    = 54,
 
@@ -1872,8 +1873,8 @@ local function weaponinfo(...)
 	local iW = CoDHUD_S(CFG.GRENADE_ICON_W)
 	local iH = CoDHUD_S(CFG.GRENADE_ICON_H)
 
-	local anchorX = CoDHUD_SX(CFG.GRENADE_X_OFF)
-	local anchorY = CoDHUD_SY(CFG.GRENADE_Y_OFF)
+	local anchorX = ScrW() - CoDHUD_SX(CFG.GRENADE_X_OFF)
+	local anchorY = ScrH() - CoDHUD_SY(CFG.GRENADE_Y_OFF)
 
 	surface.SetMaterial(MAT_GRENADE)
 	surface.SetDrawColor(255,255,255)
@@ -1915,11 +1916,11 @@ local function weaponinfo(...)
             or  Color(255, 255, 255, 255)
 
         if reserve >= 1000 then
-            DrawSqueezedText(reserve, "CoD4_Res_4D", barX + barW + CoDHUD_SX(CFG.RES4_X), barY + CoDHUD_SY(CFG.RES4_Y), resCol, -5, 0, 2)
+            DrawSqueezedText(reserve, "CoD4_Res_4D", barX + barW + CoDHUD_SX(CFG.RES4_X), barY + CoDHUD_SY(CFG.RES4_Y), resCol, CoDHUD_S(-5), CoDHUD_S(0), 2)
         elseif reserve >= 100 then
-            DrawSqueezedText(reserve, "CoD4_Res_3D", barX + barW + CoDHUD_SX(CFG.RES3_X), barY + CoDHUD_SY(CFG.RES3_Y), resCol, -5, -2.5, 2)
+            DrawSqueezedText(reserve, "CoD4_Res_3D", barX + barW + CoDHUD_SX(CFG.RES3_X), barY + CoDHUD_SY(CFG.RES3_Y), resCol, CoDHUD_S(-5), CoDHUD_S(-2.5), 2)
         else
-            DrawSqueezedText(reserve, "CoD4_Res_3D", barX + barW + CoDHUD_SX(CFG.RES_X), barY + CoDHUD_SY(CFG.RES_Y), resCol, 0, 0, 2)
+            DrawSqueezedText(reserve, "CoD4_Res_3D", barX + barW + CoDHUD_SX(CFG.RES_X), barY + CoDHUD_SY(CFG.RES_Y), resCol, CoDHUD_S(0), CoDHUD_S(0), 2)
         end
     end
 

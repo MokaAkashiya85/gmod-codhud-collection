@@ -26,6 +26,8 @@ end
 function CoDHUD_Header_MW:New(cfg)
     local o = setmetatable({}, self)
 
+	o.type = cfg.type or "mw"
+	
     o.lines = string.Split(cfg.text or "", "\n")
 	-- longest line drives timing
 	o.longest = 0
@@ -38,11 +40,13 @@ function CoDHUD_Header_MW:New(cfg)
 
     o.color      = cfg.color or Color(255,255,255)
     o.subcolor   = cfg.subcolor or Color(255,255,255)
-	
-	o.subAlpha     = 255
 
-    o.x          = CoDHUD_SX(cfg.x or 960)
-    o.y          = CoDHUD_SY(cfg.y or 205)
+	o.subAlpha = 0
+	o.alpha = 0
+	o.fadeSpeed = cfg.fadeSpeed or 400
+
+    o.x          = cfg.x or 960
+    o.y          = cfg.y or 205
 
     o.fonts      = cfg.fonts
 
@@ -89,7 +93,7 @@ function CoDHUD_Header_MW:New(cfg)
 		sec = "MW2_RE_Sc_Sec",
 		shd = "MW2_RE_Sc_Shd"
 	}
-	
+
     return o
 end
 
@@ -177,10 +181,10 @@ local function DrawCODText(text, fullText, pri, sec, shd, x, y, glow, align)
 		startX = x - fullW / 2
 	end
 
-    draw.SimpleText(text, sec, startX + 4, y + 0, glow, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
-    draw.SimpleText(text, sec, startX - 4, y - 0, glow, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
-    draw.SimpleText(text, shd, startX + 2, y + 1, Color(0,0,0,255), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
-    draw.SimpleText(text, pri, startX,     y,     Color(255,255,255), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+	draw.SimpleText(text, sec, startX + 4, y + 0, glow, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+	draw.SimpleText(text, sec, startX - 4, y - 0, glow, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+	draw.SimpleText(text, shd, startX + 2, y + 1, Color(0,0,0,glow.a or 255), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+	draw.SimpleText(text, pri, startX, y, Color(255,255,255,glow.a or 255), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 end
 
 local RE_MATS = {}
@@ -206,23 +210,39 @@ function CoDHUD_Header_MW:Update()
 
 
     -- WRITE
-    if self.phase == "write" then
-        local interval = 1 / self.writeSpeed
-		
-		self.iconAlpha = math.min(255, self.iconAlpha + FrameTime() * speed)
-		self.subAlpha  = math.min(255, self.subAlpha  + FrameTime() * speed)
+	if self.phase == "write" then
 
-        if now >= self.nextWrite and self.written < self.longest then
-            self.written = self.written + 1
-            self.nextWrite = now + interval
-            surface.PlaySound("hud/cod_write.mp3")
-        end
+		-- WORLD AT WAR
+		if self.type == "waw" then
 
-        if self.written >= self.longest then
-            self.phase = "hold"
-            self.holdStart = now
-        end
-    end
+			self.alpha     = math.min(255, self.alpha + FrameTime() * self.fadeSpeed)
+			self.iconAlpha = math.min(255, self.iconAlpha + FrameTime() * speed)
+			self.subAlpha  = math.min(255, self.subAlpha  + FrameTime() * speed)
+
+			if self.alpha >= 255 then
+				self.phase = "hold"
+				self.holdStart = now
+			end
+
+		-- MODERN WARFARE
+		else
+			local interval = 1 / self.writeSpeed
+
+			self.iconAlpha = math.min(255, self.iconAlpha + FrameTime() * speed)
+			self.subAlpha  = math.min(255, self.subAlpha  + FrameTime() * speed)
+
+			if now >= self.nextWrite and self.written < self.longest then
+				self.written = self.written + 1
+				self.nextWrite = now + interval
+				surface.PlaySound("hud/cod_write.mp3")
+			end
+
+			if self.written >= self.longest then
+				self.phase = "hold"
+				self.holdStart = now
+			end
+		end
+	end
 
     -- HOLD
 	if self.phase == "hold" then
@@ -246,13 +266,30 @@ function CoDHUD_Header_MW:Update()
 		end
 	end
 
-    -- ERASE
+	-- ERASE
 	if self.phase == "erase" then
+
+		-- WORLD AT WAR
+		if self.type == "waw" then
+
+			self.iconAlpha = math.max(0, self.iconAlpha - FrameTime() * self.iconFadeOutSpeed)
+			self.subAlpha  = math.max(0, self.subAlpha  - FrameTime() * self.iconFadeOutSpeed)
+
+			-- text disappears instantly
+			self.alpha = 0
+
+			if self.iconAlpha <= 0 and self.subAlpha <= 0 then
+				self.phase = "done"
+			end
+
+			return
+		end
+
+		-- MODERN WARFARE
 		self.iconAlpha = math.max(0, self.iconAlpha - FrameTime() * self.iconFadeOutSpeed)
 		self.subAlpha  = math.max(0, self.subAlpha  - FrameTime() * self.iconFadeOutSpeed)
-		
+
 		if self.skipErase then
-			-- Skip erase entirely
 			self.phase = "done"
 			return
 		end
@@ -290,7 +327,10 @@ function CoDHUD_Header_MW:Draw()
 	for i, line in ipairs(self.lines) do
 		local display = ""
 
-		if self.phase == "write" then
+		if self.type == "waw" then
+			display = line
+
+		elseif self.phase == "write" then
 			display = utf8_sub(line, 0, self.written)
 
 			local lineLen = SafeLen(line)
@@ -300,9 +340,12 @@ function CoDHUD_Header_MW:Draw()
 			end
 
 		elseif self.phase == "erase" then
-			local padded = line .. string.rep(" ", math.max(0, self.longest - SafeLen(line)))
-			display = ApplyBlanks(padded, self.eraseBlanks)
-
+			if self.type == "waw" then
+				display = ""
+			else
+				local padded = line .. string.rep(" ", math.max(0, self.longest - SafeLen(line)))
+				display = ApplyBlanks(padded, self.eraseBlanks)
+			end
 		else
 			display = line
 		end
@@ -310,7 +353,14 @@ function CoDHUD_Header_MW:Draw()
 		if display ~= "" then
 			local y = self.y + ((i - 1) * CoDHUD_S(38))
 
-			DrawCODText( display, line, self.fonts.pri, self.fonts.sec, self.fonts.shd, self.x, y, self.color, self.align )
+			local drawCol = Color(
+				self.color.r,
+				self.color.g,
+				self.color.b,
+				self.type == "waw" and self.alpha or 255
+			)
+
+			DrawCODText( display, line, self.fonts.pri, self.fonts.sec, self.fonts.shd, self.x, y, drawCol, self.align )
 		end
 	end
 

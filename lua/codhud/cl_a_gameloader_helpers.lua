@@ -9,7 +9,7 @@ local BASE_W, BASE_H = 1920, 1080
 function CoDHUD_GetUIScale()
     local scaleX = ScrW() / BASE_W
     local scaleY = ScrH() / BASE_H
-    return math.max(math.min(scaleX, scaleY), 0.5)
+    return math.min(scaleX, scaleY)
 end
 
 function CoDHUD_S(x)  return math.Round(x * CoDHUD_GetUIScale()) end
