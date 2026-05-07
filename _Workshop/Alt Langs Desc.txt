@@ -1,0 +1,46 @@
+Title: CoD HUD Collection Language Pack
+
+[h3]Keine Gefangenen, Genossen.[/h3]
+
+[h3] !! READ !! [/h3]
+This addon exclusively adds additional language voicelines for [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3720590485]this HUD addon[/url]!
+
+[table]
+	[tr]
+		[th]CoD4[/th]
+		[th]WaW[/th]
+		[th]MW2[/th]
+		[th]MW3[/th]
+	[/tr]
+	[tr]
+		[td]
+		Deutsch
+		Español
+		Français
+		Italiano
+		Русский
+		[/td]
+		[td]
+		Deutsch
+		Español
+		Français
+		Italiano
+		Русский
+		[/td]
+		[td]
+		Deutsch
+		Español
+		Français
+		Italiano
+		日本語
+		Русский
+		[/td]
+		[td]
+		Deutsch
+		Español
+		Français
+		Italiano
+		Русский
+		[/td]
+	[/tr]
+[/table]

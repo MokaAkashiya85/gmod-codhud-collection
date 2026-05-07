@@ -19,6 +19,7 @@ You can get them here: [url=https://steamcommunity.com/sharedfiles/filedetails/?
 	[*] Customizable HUD Types; Switch to another game's HUD and its factions!
 		[list]
 			[*] Call of Duty 4: Modern Warfare
+			[*] Call of Duty: World at War
 			[*] Call of Duty: Modern Warfare 2
 			[*] Call of Duty: Modern Warfare 3
 		[/list]
