@@ -20,6 +20,12 @@ CoDHUD.Factions.validfactions = {
 		["ussr"]			= "Spetsnaz",
 		["arab"]			= "OpFor",
 	},
+	["waw"] = {
+		["american"]		= "Marine Raiders",
+		["soviet"]			= "Red Army",
+		["german"]			= "Wehrmacht",
+		["japan"]			= "Imperial Army",
+	},
 	["mw2"] = {
 		["rangers"]			= "Army Rangers",
 		["taskforce141"]	= "Task Force 141",

@@ -39,10 +39,10 @@ local function InitiateCoDFonts()
     surface.CreateFont( "CoD4_RE_Li_Sec",			{ font = "Carbon Regular", size = CoDHUD_S(48),  weight = 400, blursize = 5, antialias = true,  outline = false })
     surface.CreateFont( "CoD4_RE_Li_Shd",			{ font = "Carbon Regular", size = CoDHUD_S(48),  weight = 400, blursize = 2, antialias = false, outline = true  })
 
-    surface.CreateFont( "CoD4_RE_Bonus",				{ font = "Carbon Regular", size = CoDHUD_S(48),  weight = 400, blursize = 0, antialias = true,  outline = false })
+    surface.CreateFont( "CoD4_RE_Bonus",			{ font = "Carbon Regular", size = CoDHUD_S(48),  weight = 400, blursize = 0, antialias = true,  outline = false })
 
 	-- Round Start
-    surface.CreateFont( "CoD4_RS_Timer",				{ font = "Carbon Regular", size = CoDHUD_S(80), weight = 400, antialias = true, shadow = true })
+    surface.CreateFont( "CoD4_RS_Timer",			{ font = "Carbon Regular", size = CoDHUD_S(80), weight = 400, antialias = true, shadow = true })
 
 	-- Score Bar
 	surface.CreateFont( "CoD4_Timer", 				{ font = "Carbon Regular", size = CoDHUD_S(38), weight = 400, antialias = true, shadow = false, })
@@ -61,6 +61,72 @@ local function InitiateCoDFonts()
     surface.CreateFont("CoD4_Wep_Name",				{ font = "Carbon Regular", size = CoDHUD_S(38), weight = 400, antialias = true, shadow = true, extended = true })
     surface.CreateFont("CoD4_Stat_Font",			{ font = "Carbon Regular", size = CoDHUD_S(28), weight = 400, antialias = true, shadow = true, extended = true })
     surface.CreateFont("CoD4_Ammo_Alt",				{ font = "Carbon Regular", size = CoDHUD_S(36), weight = 400, antialias = true, shadow = true, extended = true })
+	
+	-- [ WaW ]
+	-- Challenges
+    surface.CreateFont( "WaW_ChalHeader_Pri",		{ font = "Optima Std Roman", size = CoDHUD_S(46), weight = 10,  blursize = 0, antialias = true,  outline = false, extended = true })
+    surface.CreateFont( "WaW_ChalHeader_Sec",		{ font = "Optima Std Roman", size = CoDHUD_S(46), weight = 10,  blursize = 5, antialias = true,  outline = false, extended = true })
+    surface.CreateFont( "WaW_ChalHeader_Shd",		{ font = "Optima Std Roman", size = CoDHUD_S(46), weight = 400, blursize = 2, antialias = false, outline = true , extended = true })
+
+    surface.CreateFont( "WaW_ChalHeader",			{ font = "Optima Std Roman", size = CoDHUD_S(50), weight = 800,  antialias = true, extended = true })
+    surface.CreateFont( "WaW_ChalHeader_Glow",		{ font = "Optima Std Roman", size = CoDHUD_S(52), weight = 1000, blursize = CoDHUD_S(12), antialias = true, extended = true })
+    surface.CreateFont( "WaW_ChalSub",				{ font = "Optima Std Roman", size = CoDHUD_S(28), weight = 400,  antialias = true, extended = true })
+	
+	-- Chat
+	surface.CreateFont( "WaW_ChatFont",				{ font = "Optima Std Roman",  size = CoDHUD_S(22),  weight = 400,  antialias = true, shadow = true })
+	
+	-- Hitmarker / XP
+	surface.CreateFont( "WaW_Score_Main",			{ font = "Optima Std Roman", size = CoDHUD_S(36), weight = 400, antialias = true, shadow = true })
+	surface.CreateFont( "WaW_Score_Plus",			{ font = "Optima Std Roman", size = CoDHUD_S(32), weight = 800, antialias = true, shadow = true })
+	
+	-- Round End
+	surface.CreateFont( "WaW_RE_Sc_Pri",			{ font = "Optima Std Roman", size = CoDHUD_S(54),  weight = 400, blursize = 0, antialias = true,  outline = false })
+    surface.CreateFont( "WaW_RE_Sc_Sec",			{ font = "Optima Std Roman", size = CoDHUD_S(54),  weight = 400, blursize = 5, antialias = true,  outline = false })
+    surface.CreateFont( "WaW_RE_Sc_Shd",			{ font = "Optima Std Roman", size = CoDHUD_S(54),  weight = 400, blursize = 2, antialias = false, outline = true  })
+    
+    surface.CreateFont( "WaW_RE_Re_Pri",			{ font = "Optima Std Roman", size = CoDHUD_S(72), weight = 400, blursize = 0, antialias = true,  outline = false })
+    surface.CreateFont( "WaW_RE_Re_Sec",			{ font = "Optima Std Roman", size = CoDHUD_S(72), weight = 400, blursize = 5, antialias = true,  outline = false })
+    surface.CreateFont( "WaW_RE_Re_Shd",			{ font = "Optima Std Roman", size = CoDHUD_S(72), weight = 400, blursize = 2, antialias = false, outline = true  })
+    
+    surface.CreateFont( "WaW_RE_Li_Pri",			{ font = "Optima Std Roman", size = CoDHUD_S(48),  weight = 400, blursize = 0, antialias = true,  outline = false })
+    surface.CreateFont( "WaW_RE_Li_Sec",			{ font = "Optima Std Roman", size = CoDHUD_S(48),  weight = 400, blursize = 5, antialias = true,  outline = false })
+    surface.CreateFont( "WaW_RE_Li_Shd",			{ font = "Optima Std Roman", size = CoDHUD_S(48),  weight = 400, blursize = 2, antialias = false, outline = true  })
+
+    surface.CreateFont( "WaW_RE_Bonus",				{ font = "Optima Std Roman", size = CoDHUD_S(48),  weight = 400, blursize = 0, antialias = true,  outline = false })
+		
+	-- Round Start	
+	surface.CreateFont( "WaW_RS_H_Pri",				{ font = "Optima Std Roman", size = CoDHUD_S(64), weight = 800,  blursize = 0, antialias = true,  outline = false, extended = true })
+    surface.CreateFont( "WaW_RS_H_Sec",				{ font = "Optima Std Roman", size = CoDHUD_S(64), weight = 800,  blursize = 5, antialias = true,  outline = false, extended = true })
+    surface.CreateFont( "WaW_RS_H_Shd",				{ font = "Optima Std Roman", size = CoDHUD_S(64), weight = 800, blursize = 2, antialias = false, outline = true , extended = true })
+
+    surface.CreateFont( "WaW_RS_O_Pri",				{ font = "Optima Std Roman", size = CoDHUD_S(46), weight = 10,  blursize = 0, antialias = true,  outline = false, extended = true })
+    surface.CreateFont( "WaW_RS_O_Sec",				{ font = "Optima Std Roman", size = CoDHUD_S(46), weight = 10,  blursize = 5, antialias = true,  outline = false, extended = true })
+    surface.CreateFont( "WaW_RS_O_Shd",				{ font = "Optima Std Roman", size = CoDHUD_S(46), weight = 400, blursize = 2, antialias = false, outline = true , extended = true })
+
+    surface.CreateFont( "WaW_RS_S_Pri",				{ font = "Optima Std Roman", size = CoDHUD_S(32), weight = 400, antialias = true, shadow = true })
+
+    surface.CreateFont( "WaW_RS_Timer",				{ font = "Optima Std Roman", size = CoDHUD_S(80), weight = 400, antialias = true, shadow = true })
+
+	-- Round Start
+    surface.CreateFont( "WaW_RS_Timer",				{ font = "Optima Std Roman", size = CoDHUD_S(60), weight = 400, antialias = true, shadow = true })
+
+	-- Score Bar
+	surface.CreateFont( "WaW_Timer", 				{ font = "Optima Std Roman", size = CoDHUD_S(38), weight = 400, antialias = true, shadow = false, })
+    surface.CreateFont( "WaW_Status",				{ font = "Optima Std Roman", size = CoDHUD_S(34), weight = 400, antialias = true, shadow = true, })
+    surface.CreateFont( "WaW_Font",					{ font = "Optima Std Roman", size = CoDHUD_S(32), weight = 400, antialias = true, })
+
+	-- Scoreboard
+    surface.CreateFont( "WaW_Scoreboard_Text",		{ font = "Optima Std Roman", size = CoDHUD_S(34), weight = 400, antialias = true, shadow = true, })
+    surface.CreateFont( "WaW_Scoreboard_Headers",	{ font = "Optima Std Roman", size = CoDHUD_S(28), weight = 400, antialias = true, shadow = true, })
+    surface.CreateFont( "WaW_Scoreboard_Timer",		{ font = "Optima Std Roman", size = CoDHUD_S(34), weight = 400, antialias = true, })
+	
+	-- Weapon HUD
+    surface.CreateFont("WaW_Res",					{ font = "Optima Std Roman", size = CoDHUD_S(64), weight = 400, antialias = true, shadow = true, extended = true })
+    surface.CreateFont("WaW_Res_3D",				{ font = "Optima Std Roman", size = CoDHUD_S(38), weight = 400, antialias = true, shadow = true, extended = true })
+    surface.CreateFont("WaW_Res_4D",				{ font = "Optima Std Roman", size = CoDHUD_S(38), weight = 400, antialias = true, shadow = true, extended = true })
+    surface.CreateFont("WaW_Wep_Name",				{ font = "Optima Std Roman", size = CoDHUD_S(38), weight = 400, antialias = true, shadow = true, extended = true })
+    surface.CreateFont("WaW_Stat_Font",			{ font = "Optima Std Roman", size = CoDHUD_S(28), weight = 400, antialias = true, shadow = true, extended = true })
+    surface.CreateFont("WaW_Ammo_Alt",				{ font = "Optima Std Roman", size = CoDHUD_S(36), weight = 400, antialias = true, shadow = true, extended = true })
 	
 	-- [ MW2 ]
 	-- Challenges

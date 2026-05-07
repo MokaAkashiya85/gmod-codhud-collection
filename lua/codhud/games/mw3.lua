@@ -474,9 +474,9 @@ local function re_teams( ... )
         scoreY = CoDHUD_SY(620),
 
         fonts = {
-            score_pri = "MW2_RE_Sc_Pri",
-            score_sec = "MW2_RE_Sc_Sec",
-            score_shd = "MW2_RE_Sc_Shd",
+            pri = "MW2_RE_Sc_Pri",
+            sec = "MW2_RE_Sc_Sec",
+            shd = "MW2_RE_Sc_Shd",
         }
     })
 

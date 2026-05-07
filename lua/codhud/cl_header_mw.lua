@@ -48,7 +48,11 @@ function CoDHUD_Header_MW:New(cfg)
     o.x          = cfg.x or 960
     o.y          = cfg.y or 205
 
-    o.fonts      = cfg.fonts
+    o.fonts      = cfg.fonts or {
+		pri = "MW2_RE_Sc_Pri",
+		sec = "MW2_RE_Sc_Sec",
+		shd = "MW2_RE_Sc_Shd"
+	}
 
     o.writeSpeed = cfg.writeSpeed or 16
     o.holdTime   = cfg.holdTime or 2
@@ -69,6 +73,10 @@ function CoDHUD_Header_MW:New(cfg)
 	o.persist = cfg.persist or false
 	o.align = cfg.align or "center"
 
+	o.writeSounds = cfg.writeSounds or {
+		"hud/cod_write.mp3"
+	}
+
 	if cfg.endTime then
 		o.endTime = CurTime() + cfg.endTime
 	else
@@ -87,12 +95,6 @@ function CoDHUD_Header_MW:New(cfg)
 	
 	o.teams = cfg.teams or nil
 	o.scoreY = cfg.scoreY or (cfg.y + 100)
-
-	o.scoreFonts = cfg.scoreFonts or {
-		pri = "MW2_RE_Sc_Pri",
-		sec = "MW2_RE_Sc_Sec",
-		shd = "MW2_RE_Sc_Shd"
-	}
 
     return o
 end
@@ -215,11 +217,22 @@ function CoDHUD_Header_MW:Update()
 		-- WORLD AT WAR
 		if self.type == "waw" then
 
-			self.alpha     = math.min(255, self.alpha + FrameTime() * self.fadeSpeed)
+			local interval = 1 / self.writeSpeed
+
 			self.iconAlpha = math.min(255, self.iconAlpha + FrameTime() * speed)
 			self.subAlpha  = math.min(255, self.subAlpha  + FrameTime() * speed)
+			self.alpha     = math.min(255, self.alpha + FrameTime() * self.fadeSpeed)
 
-			if self.alpha >= 255 then
+			-- play one sound per character
+			if now >= self.nextWrite and self.written < self.longest then
+				self.written = self.written + 1
+				self.nextWrite = now + interval
+
+				local snd = self.writeSounds[math.random(#self.writeSounds)]
+				surface.PlaySound(snd)
+			end
+
+			if self.written >= self.longest and self.alpha >= 255 then
 				self.phase = "hold"
 				self.holdStart = now
 			end
@@ -234,7 +247,9 @@ function CoDHUD_Header_MW:Update()
 			if now >= self.nextWrite and self.written < self.longest then
 				self.written = self.written + 1
 				self.nextWrite = now + interval
-				surface.PlaySound("hud/cod_write.mp3")
+				
+				local snd = self.writeSounds[math.random(#self.writeSounds)]
+				surface.PlaySound(snd)
 			end
 
 			if self.written >= self.longest then
@@ -275,10 +290,13 @@ function CoDHUD_Header_MW:Update()
 			self.iconAlpha = math.max(0, self.iconAlpha - FrameTime() * self.iconFadeOutSpeed)
 			self.subAlpha  = math.max(0, self.subAlpha  - FrameTime() * self.iconFadeOutSpeed)
 
-			-- text disappears instantly
-			self.alpha = 0
+			-- only fade text once icon is gone
+			if self.iconAlpha <= 0 then
+				-- self.alpha = math.max(0, self.alpha - FrameTime() * self.fadeSpeed)
+				self.alpha = 0
+			end
 
-			if self.iconAlpha <= 0 and self.subAlpha <= 0 then
+			if self.iconAlpha <= 0 and self.subAlpha <= 0 and self.alpha <= 0 then
 				self.phase = "done"
 			end
 
@@ -414,9 +432,7 @@ function CoDHUD_Header_MW:Draw()
 		local size = self.iconSize or 128
 		local gap  = self.iconGap or 80
 
-		-- =========================================================
 		-- 1. DO NOT trust upstream ordering → normalize safely
-		-- =========================================================
 		local ordered = {}
 
 		for _, t in ipairs(self.teams) do
@@ -432,9 +448,7 @@ function CoDHUD_Header_MW:Draw()
 			return (a.score or 0) > (b.score or 0)
 		end)
 
-		-- =========================================================
 		-- 2. Stable spacing model (no runaway gaps)
-		-- =========================================================
 		local step = size + gap
 
 		-- slight compression only when needed (prevents overlap in 3+ teams)
@@ -449,9 +463,7 @@ function CoDHUD_Header_MW:Draw()
 
 		local totalW = (count - 1) * step
 
-		-- =========================================================
 		-- 3. Render (strict horizontal chain, no drift)
-		-- =========================================================
 		for i, t in ipairs(ordered) do
 			local x = self.x + ((i - 1) * step - totalW / 2)
 			local y = self.iconY or self.y
@@ -468,16 +480,7 @@ function CoDHUD_Header_MW:Draw()
 			local score = t.score or 0
 
 			if fd then
-				DrawCODText(
-					tostring(score),
-					tostring(score),
-					self.scoreFonts.pri,
-					self.scoreFonts.sec,
-					self.scoreFonts.shd,
-					x,
-					self.scoreY,
-					GetSafeColor(fd.glow)
-				)
+				DrawCODText( tostring(score), tostring(score), self.fonts.pri, self.fonts.sec, self.fonts.shd, x, self.scoreY, GetSafeColor(fd.glow) )
 			end
 		end
 	end

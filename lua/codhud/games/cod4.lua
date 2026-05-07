@@ -424,7 +424,7 @@ local function re_teams( ... )
     for k, v in ipairs(teams) do
         scaledTeams[k] = {
             fac = v.fac,
-            score = (v.score or 0) * multiplier
+            score = tostring(string.Replace((v.score or 0) * multiplier, "0", "O"))
         }
     end
 
@@ -442,9 +442,9 @@ local function re_teams( ... )
         scoreY = CoDHUD_SY(620),
 
         fonts = {
-            score_pri = "CoD4_RE_Sc_Pri",
-            score_sec = "CoD4_RE_Sc_Sec",
-            score_shd = "CoD4_RE_Sc_Shd",
+            pri = "CoD4_RE_Sc_Pri",
+            sec = "CoD4_RE_Sc_Sec",
+            shd = "CoD4_RE_Sc_Shd",
         }
     })
 

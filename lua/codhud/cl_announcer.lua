@@ -110,7 +110,7 @@ function CoDHUD_GetAnnouncerSound(keys)
 			end
 
             -- suffix search
-            for i = 1, 9 do
+            for i = 0, 9 do
                 local suffix = (i < 10 and "0" .. i or tostring(i))
 				local path = "announcer/" .. CoDHUD_GetHUDType() .. "/" .. l .. "/" .. CoDHUD.Factions[CoDHUD_GetHUDType()][faction].voicepath .. key .. "_" .. suffix .. filesuffix .. ".wav"
 
