@@ -1764,9 +1764,9 @@ local function scoreboard( ... )
 		local iconPath = CoDHUD.Factions[hudtype][key].spawnIcon
 		local mat = Material(iconPath, "smooth")
 
-		if mat:IsError() then
-			mat = Material(hudtype .. "/vgui/hud/icon_error")
-		end
+		-- if mat:IsError() then
+			-- mat = Material(hudtype .. "/vgui/hud/icon_error")
+		-- end
 
 		-- format label (NOW uses SCORE instead of player count)
 		local label = score
@@ -1981,8 +1981,6 @@ local function weaponinfo(...)
 	for key, data in pairs(AMMO) do
 		MAT_AMMO[key] = Material(data.mat, "smooth")
 	end
-	local MAT_COMPASS_SHADOW  = Material(hudtype .. "/hud/compass_letters_shadow.png", "smooth")
-	local MAT_COMPASS_LETTERS = Material(hudtype .. "/hud/compass_letters.png", "smooth")
 
 	local function GetAmmoConfig(wep)
 		if not IsValid(wep) then return AMMO["default"] end

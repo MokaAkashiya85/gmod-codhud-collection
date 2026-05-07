@@ -821,21 +821,22 @@ local function minimap( ... )
     render.SetStencilCompareFunction(STENCIL_EQUAL)
     render.SetStencilPassOperation(STENCIL_KEEP)
 
-		-- 2. LAYER: RADAR BACKGROUND
-		if radar then -- If GMinimap exists
-			radar:SetDimensions(x, y, w, h)
-			radar.origin = ply:GetPos()
-			radar.rotation = Angle(0, ply:EyeAngles().y, 0)
+	-- 2. LAYER: RADAR BACKGROUND
+	if radar then -- If GMinimap exists
+		radar:SetDimensions(x, y, w, h)
+		radar.origin = ply:GetPos()
+		radar.rotation = Angle(0, ply:EyeAngles().y, 0)
 
-			radar.ratio = 10
+		radar.ratio = 10
 
-			radar:UpdateLayout()
-			radar:Draw()
-		else -- fallback if GMinimap missing
-			surface.SetMaterial(MAT_MAP_BG)
-			surface.SetDrawColor(255, 255, 255, MAP_CFG.ALPHA_MAP_BG)
-			surface.DrawTexturedRect(x, y, w, h)
-		end
+		radar:UpdateLayout()
+		radar:Draw()
+	else -- fallback if GMinimap missing
+		surface.SetMaterial(MAT_MAP_BG)
+		surface.SetDrawColor(255, 255, 255, MAP_CFG.ALPHA_MAP_BG)
+		surface.DrawTexturedRect(x, y, w, h)
+	end
+	
     render.SetStencilEnable(false)
     -- [[ STENCIL END ]]
 
