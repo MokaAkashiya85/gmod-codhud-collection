@@ -33,8 +33,9 @@ hook.Add("AddDeathNotice", "CoDHUD_Killfeed_Core", function(attacker, team1, inf
 	local isHeadshot = vEnt and vEnt.CoDHUD_WasHeadshot == true or false -- Doesn't work atm
 
     -- fallback: try resolving players by name (IMPORTANT)
-    if not aEnt and isstring(attacker) then
-        for _, ply in ipairs(player.GetAll()) do
+    if !(aEnt) or isstring(aEnt) then
+        aEnt = nil
+        for _, ply in player.Iterator() do
             if ply:Nick() == attacker then
                 aEnt = ply
                 break
@@ -42,8 +43,9 @@ hook.Add("AddDeathNotice", "CoDHUD_Killfeed_Core", function(attacker, team1, inf
         end
     end
 
-    if not vEnt and isstring(victim) then
-        for _, ply in ipairs(player.GetAll()) do
+    if !(vEnt) or isstring(vEnt) then
+        vEnt = nil
+        for _, ply in player.Iterator() do
             if ply:Nick() == victim then
                 vEnt = ply
                 break
