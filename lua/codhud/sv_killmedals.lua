@@ -26,6 +26,7 @@ if SERVER then
     hook.Add("EntityTakeDamage", "CoDHUD_CaptureLastDamage", function(target, dmginfo)
         if not IsValid(target) then return end
         target.LastMW2DmgData = {
+            health = target:Health(),
             damage = dmginfo:GetDamage(),
             isExplosion = dmginfo:IsExplosionDamage(),
             type = dmginfo:GetDamageType()
@@ -76,7 +77,7 @@ if SERVER then
         if dData then
             local maxHP = victim:GetMaxHealth()
             -- Check if one hit dealt >= Max Health and wasn't melee (DMG_CLUB) or explosion
-            if dData.damage >= maxHP and not dData.isExplosion and not (bit.band(dData.type, DMG_CLUB) ~= 0) then
+            if dData.damage >= maxHP and dData.health >= maxHP and not dData.isExplosion and not (bit.band(dData.type, DMG_CLUB) ~= 0) then
                 net.Start("CoDHUD_Medal_OneShot")
                 net.Send(attacker)
             end
