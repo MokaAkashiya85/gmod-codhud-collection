@@ -77,7 +77,7 @@ if SERVER then
         if dData then
             local maxHP = victim:GetMaxHealth()
             -- Check if one hit dealt >= Max Health and wasn't melee (DMG_CLUB) or explosion
-            if not dData.isExplosion and not (bit.band(dData.type, DMG_CLUB) ~= 0) and dData.damage >= maxHP and dData.health >= maxHP then
+            if not dData.isExplosion and not (bit.band(dData.type, DMG_CLUB+DMG_SLASH) ~= 0) and dData.damage >= maxHP and dData.health >= maxHP then
                 net.Start("CoDHUD_Medal_OneShot")
                 net.Send(attacker)
             end
