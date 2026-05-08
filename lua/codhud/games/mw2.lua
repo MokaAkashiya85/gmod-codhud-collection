@@ -2064,7 +2064,9 @@ local function weaponinfo(...)
     local clip2    = wep:Clip2()
     local maxClip = wep:GetMaxClip1()
     local maxClip2 = wep:GetMaxClip2()
-    local reserve = ply:GetAmmoCount(wep:GetPrimaryAmmoType())
+    local primType = wep:GetPrimaryAmmoType()
+    local altType = wep:GetSecondaryAmmoType()
+    local reserve = ply:GetAmmoCount(primType)
 
     local barW = CoDHUD_SX(CFG.BAR_W)
     local barH = CoDHUD_SY(CFG.BAR_H)
@@ -2075,7 +2077,7 @@ local function weaponinfo(...)
     surface.SetDrawColor(255, 255, 255, 125)
     surface.DrawTexturedRect(barX, barY, barW, barH)
 
-    if clip >= 0 then
+    if primType ~= -1 then
         local resCol = (reserve == 0 or reserve < maxClip)
             and Color(255, 120, 120, 255)
             or  Color(255, 255, 255, 255)
@@ -2157,8 +2159,6 @@ local function weaponinfo(...)
 		maxClip = maxClip2
 	end
 
-    local primType = wep:GetPrimaryAmmoType()
-    local altType = wep:GetSecondaryAmmoType()
     if altType ~= -1 then
 		if altType ~= primType then
 			local altCount = ply:GetAmmoCount(altType)
