@@ -2182,7 +2182,7 @@ local function weaponinfo(...)
 		local iW      = CoDHUD_S(ammoCfg.w)
 		local iH      = CoDHUD_S(ammoCfg.h)
 		local iGap    = CoDHUD_S(ammoCfg.gap)
-		local iYOff   = CoDHUD_SY(ammoCfg.y_off+38)
+		local iYOff   = CoDHUD_SY(ammoCfg.y_off+40)
 		local iXStart = CoDHUD_SX(ammoCfg.x_start)
 
 		surface.SetMaterial(MAT_AMMO[ammoKey])
