@@ -17,9 +17,11 @@ hook.Add("HUDPaint", "LowHealth_BloodHUD_Dynamic", function()
 
     local hp = ply:Health()
     local curTime = CurTime()
-    
+
     -- 1. Damage Detection
-    if hp < lastHealth then
+    if hp <= 0 then
+        flashEndTime = curTime
+    elseif hp < lastHealth then
         flashEndTime = curTime + flashDuration
     end
     lastHealth = hp
