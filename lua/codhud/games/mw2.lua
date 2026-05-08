@@ -1931,13 +1931,14 @@ local function weaponinfo(...)
 	}
 
 	local AMMO_MAP = {
-		["ammo_357"]      = "357",
-		["ammo_ar2"]      = "rifle",
-		["ammo_crossbow"] = "sniper",
-		["ammo_pistol"]   = "pistol",
-		["ammo_smg1"]     = "default",
+		["357"]      = "357",
+		["ar2"]      = "rifle",
+		["xbowbolt"] = "sniper",
+		["pistol"]   = "pistol",
+		["smg1"]     = "default",
 		["buckshot"]      = "shotgun",
 		["rpg_round"]     = "rocket",
+		["smg1_grenade"]     = "rocket",
 	}
 
 	local MAT_BAR  = Material(hudtype .. "/hud/hud_weaponbar.png", "smooth")
