@@ -1950,10 +1950,10 @@ local function weaponinfo(...)
 	local MAT_COMPASS_SHADOW  = Material(hudtype .. "/hud/compass_letters_shadow.png", "smooth")
 	local MAT_COMPASS_LETTERS = Material(hudtype .. "/hud/compass_letters.png", "smooth")
 
-	local function GetAmmoConfig(wep)
+	local function GetAmmoConfig(wep, alt)
 		if not IsValid(wep) then return AMMO["default"] end
-		if wep:GetMaxClip1() >= 100 then return AMMO["belt"] end
-		local ammoName = string.lower(game.GetAmmoName(wep:GetPrimaryAmmoType()) or "")
+		if (alt and wep:GetMaxClip2() or wep:GetMaxClip1()) >= 100 then return AMMO["belt"] end
+		local ammoName = string.lower(game.GetAmmoName(alt and wep:GetSecondaryAmmoType() or wep:GetPrimaryAmmoType()) or "")
 		return AMMO[AMMO_MAP[ammoName]] or AMMO["default"]
 	end
 
@@ -2096,7 +2096,7 @@ local function weaponinfo(...)
         draw.SimpleTextOutlined(name, "MW2_Wep_Name", barX + barW + CoDHUD_SX(CFG.WEP_NAME_X_OFF), barY + CoDHUD_SY(CFG.WEP_NAME_Y_OFF), Color(255, 255, 255, 255 * alpha), 2, 0, outlined and 1.5 or 0, Color(0, 0, 0, 255 * alpha))
     end
 
-    if clip >= 0 and maxClip > 0 then
+    if maxClip > 0 and clip >= 0 then
         local perc      = clip / maxClip
         local isLowClip = (perc <= CFG.STAT_LOW_PERC)
         local reloadSine = isLowClip and ((math.sin(CurTime() * CFG.BULLET_RELOAD_SPD) + 1) / 2) or 0
@@ -2159,18 +2159,66 @@ local function weaponinfo(...)
 
     local primType = wep:GetPrimaryAmmoType()
     local altType = wep:GetSecondaryAmmoType()
-    if altType ~= -1 and altType ~= primType then
-        local altCount = ply:GetAmmoCount(altType)
+    if altType ~= -1 then
+		if altType ~= primType then
+			local altCount = ply:GetAmmoCount(altType)
 
-        surface.SetMaterial(MAT_ALT)
-        surface.SetDrawColor(255, 255, 255, 255)
-        surface.DrawTexturedRect(barX + barW + CoDHUD_SX(CFG.ALT_ICON_X), barY + CoDHUD_SY(CFG.ALT_ICON_Y), CoDHUD_S(CFG.ALT_ICON_SIZE), CoDHUD_S(CFG.ALT_ICON_SIZE))
+			surface.SetMaterial(MAT_ALT)
+			surface.SetDrawColor(255, 255, 255, 255)
+			surface.DrawTexturedRect(barX + barW + CoDHUD_SX(CFG.ALT_ICON_X), barY + CoDHUD_SY(CFG.ALT_ICON_Y), CoDHUD_S(CFG.ALT_ICON_SIZE), CoDHUD_S(CFG.ALT_ICON_SIZE))
 
-        local altCol = (altCount > 0) and Color(255, 255, 255, 255) or Color(255, 120, 120, 255)
-        DrawSqueezedText(altCount, "MW2_Ammo_Alt", barX + barW + CoDHUD_SX(CFG.ALT_TEXT_X), barY + CoDHUD_SY(CFG.ALT_TEXT_Y), altCol, CFG.ALT_TEXT_SQ, CFG.ALT_TEXT_SQ1, 1)
+			local altCol = (altCount > 0) and Color(255, 255, 255, 255) or Color(255, 120, 120, 255)
+			DrawSqueezedText(altCount, "MW2_Ammo_Alt", barX + barW + CoDHUD_SX(CFG.ALT_TEXT_X), barY + CoDHUD_SY(CFG.ALT_TEXT_Y), altCol, CFG.ALT_TEXT_SQ, CFG.ALT_TEXT_SQ1, 1)
+		end
     end
 
-    if clip >= 0 and maxClip > 0 and not reloading then
+	if maxClip2 > 1 and clip2 >= 0 then
+		local perc      = clip2 / maxClip2
+		local isLowClip = (perc <= CFG.STAT_LOW_PERC)
+		local reloadSine = isLowClip and ((math.sin(CurTime() * CFG.BULLET_RELOAD_SPD) + 1) / 2) or 0
+
+		local ammoCfg = GetAmmoConfig(wep, true)
+		local ammoKey = GetAmmoKey(ammoCfg)
+		local iW      = CoDHUD_S(ammoCfg.w)
+		local iH      = CoDHUD_S(ammoCfg.h)
+		local iGap    = CoDHUD_S(ammoCfg.gap)
+		local iYOff   = CoDHUD_SY(ammoCfg.y_off+38)
+		local iXStart = CoDHUD_SX(ammoCfg.x_start)
+
+		surface.SetMaterial(MAT_AMMO[ammoKey])
+
+		local isBelt  = (ammoCfg.row_size ~= nil)
+		local rowSize = isBelt and ammoCfg.row_size or maxClip2
+		local rowGap  = isBelt and CoDHUD_S(ammoCfg.row_gap) or 0
+
+		for i = 0, maxClip2 - 1 do
+			local isSpent = (i >= clip2)
+			local shade   = isSpent and ammoCfg.dim or 255
+
+			local r, g, b
+			if not isSpent and isLowClip then
+				r = math.floor(Lerp(reloadSine, shade, CFG.BULLET_RELOAD_R))
+				g = math.floor(Lerp(reloadSine, shade, CFG.BULLET_RELOAD_G))
+				b = math.floor(Lerp(reloadSine, shade, CFG.BULLET_RELOAD_B))
+			else
+				r = shade
+				g = shade
+				b = shade
+			end
+
+			surface.SetDrawColor(r, g, b, CFG.BULLET_ALPHA)
+
+			local col = i % rowSize
+			local row = math.floor(i / rowSize)
+
+			local xPos = barX + barW + iXStart - (col * (iW + iGap))
+			local yPos = barY + iYOff - (row * (iH + rowGap))
+
+			surface.DrawTexturedRect(xPos, yPos, iW, iH)
+		end
+	end
+
+    if maxClip > 0 and clip >= 0 and not reloading then
         local perc      = clip / maxClip
         local statText  = ""
         local statCol   = Color(255, 255, 255)
