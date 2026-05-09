@@ -2106,7 +2106,7 @@ local function weaponinfo(...)
     local timeSinceSwitch = CurTime() - wepSwitchTime
     if timeSinceSwitch < CFG.WEP_NAME_FADE then
         local alpha = math.Clamp(1 - (timeSinceSwitch / CFG.WEP_NAME_FADE), 0, 1)
-        local name  = (wep:GetPrintName() or wep:GetClass()):upper()
+        local name  = language.GetPhrase(wep:GetPrintName() or wep:GetClass()):upper()
         draw.SimpleTextOutlined(name, "MW2_Wep_Name", barX + barW + CoDHUD_SX(CFG.WEP_NAME_X_OFF), barY + CoDHUD_SY(CFG.WEP_NAME_Y_OFF), Color(255, 255, 255, 255 * alpha), 2, 0, outlined and 1.5 or 0, Color(0, 0, 0, 255 * alpha))
     end
 
@@ -2172,7 +2172,7 @@ local function weaponinfo(...)
 	end
 
     if altType ~= -1 then
-		if altType ~= primType then
+		if altType ~= primType and altType ~= game.GetAmmoID("Grenade") then
 			local altCount = ply:GetAmmoCount(altType)
 
 			surface.SetMaterial(MAT_ALT)
