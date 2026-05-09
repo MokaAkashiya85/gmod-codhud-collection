@@ -2167,32 +2167,6 @@ local function weaponinfo(...)
         end
     end
 
-	local reloading = 
-	wep.IsReloading or reloadingM203 -- CW2
-	or (wep.ARC9 and wep:GetReloading()) -- ARC9
-	or (wep.ArcCW and wep:GetReloading()) -- ArcCW
-	or (wep.IsTFAWeapon and TFA.Enum.ReloadStatus[wep:GetStatus()]) -- TFA
-
-	local glactive = 
-	wep.dt and (wep.dt.AltActive or wep.dt.M203Active) -- CW2
-	or (wep.ARC9 and wep:GetUBGL())
-
-	if glactive then
-		clip = clip2
-		maxClip = maxClip2
-	end
-
-    if altType ~= -1 and altType ~= primType and altType ~= game.GetAmmoID("Grenade") then
-		local altCount = ply:GetAmmoCount(altType)
-
-		surface.SetMaterial(MAT_ALT)
-		surface.SetDrawColor(255, 255, 255, 255)
-		surface.DrawTexturedRect(barX + barW + CoDHUD_SX(CFG.ALT_ICON_X), barY + CoDHUD_SY(CFG.ALT_ICON_Y), CoDHUD_S(CFG.ALT_ICON_SIZE), CoDHUD_S(CFG.ALT_ICON_SIZE))
-
-		local altCol = (altCount > 0) and Color(255, 255, 255, 255) or Color(255, 120, 120, 255)
-		DrawSqueezedText(altCount, "MW2_Ammo_Alt", barX + barW + CoDHUD_SX(CFG.ALT_TEXT_X), barY + CoDHUD_SY(CFG.ALT_TEXT_Y), altCol, CFG.ALT_TEXT_SQ, CFG.ALT_TEXT_SQ1, 1)
-    end
-
 	if maxClip2 > 0 and clip2 >= 0 then
 		local perc      = clip2 / maxClip2
 		local isLowClip = (perc <= CFG.STAT_LOW_PERC)
@@ -2209,7 +2183,7 @@ local function weaponinfo(...)
 		surface.SetMaterial(MAT_AMMO[ammoKey])
 
 		local isBelt  = (ammoCfg.row_size ~= nil)
-		local rowSize = isBelt and ammoCfg.row_size or maxClip2
+		local rowSize = isBelt and ammoCfg.row_size or math.max(maxClip2, clip2)
 		local rowGap  = isBelt and CoDHUD_S(ammoCfg.row_gap) or 0
 
 		for i = 0, math.max(maxClip2, clip2) - 1 do
@@ -2238,6 +2212,32 @@ local function weaponinfo(...)
 			surface.DrawTexturedRect(xPos, yPos, iW, iH)
 		end
 	end
+
+	local reloading = 
+	wep.IsReloading or reloadingM203 -- CW2
+	or (wep.ARC9 and wep:GetReloading()) -- ARC9
+	or (wep.ArcCW and wep:GetReloading()) -- ArcCW
+	or (wep.IsTFAWeapon and TFA.Enum.ReloadStatus[wep:GetStatus()]) -- TFA
+
+	local glactive = 
+	wep.dt and (wep.dt.AltActive or wep.dt.M203Active) -- CW2
+	or (wep.ARC9 and wep:GetUBGL())
+
+	if glactive then
+		clip = clip2
+		maxClip = maxClip2
+	end
+
+    if altType ~= -1 and altType ~= primType and altType ~= game.GetAmmoID("Grenade") then
+		local altCount = ply:GetAmmoCount(altType)
+
+		surface.SetMaterial(MAT_ALT)
+		surface.SetDrawColor(255, 255, 255, 255)
+		surface.DrawTexturedRect(barX + barW + CoDHUD_SX(CFG.ALT_ICON_X), barY + CoDHUD_SY(CFG.ALT_ICON_Y), CoDHUD_S(CFG.ALT_ICON_SIZE), CoDHUD_S(CFG.ALT_ICON_SIZE))
+
+		local altCol = (altCount > 0) and Color(255, 255, 255, 255) or Color(255, 120, 120, 255)
+		DrawSqueezedText(altCount, "MW2_Ammo_Alt", barX + barW + CoDHUD_SX(CFG.ALT_TEXT_X), barY + CoDHUD_SY(CFG.ALT_TEXT_Y), altCol, CFG.ALT_TEXT_SQ, CFG.ALT_TEXT_SQ1, 1)
+    end
 
     if maxClip > 0 and clip >= 0 and not reloading then
         local perc      = clip / maxClip
