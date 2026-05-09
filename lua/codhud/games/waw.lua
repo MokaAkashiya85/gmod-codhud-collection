@@ -1845,7 +1845,11 @@ local function weaponinfo(...)
 		["rpg_round"]     = "rocket",
 	}
 
-	local MAT_ALT  = Material(hudtype .. "/hud/hud_grenade_launcher_dpad.png", "smooth mips")
+	local MAT_ALT  = {
+		["grenade"] = Material(hudtype .. "/hud/hud_grenade_launcher_dpad.png", "smooth mips"),
+		["buckshot"] = Material("mw2/hud/dpad_underbarrel_shotgun.png", "smooth mips")
+	}
+	
 	local MAT_GRENADE = Material(hudtype .. "/hud/hud_us_grenade.png", "smooth")
 	local MAT_AMMO = {}
 	for key, data in pairs(AMMO) do
@@ -2000,10 +2004,16 @@ local function weaponinfo(...)
 
     local primType = wep:GetPrimaryAmmoType()
     local altType = wep:GetSecondaryAmmoType()
+	local altAmmoName = game.GetAmmoName(altType)
+	
     if altType ~= -1 and altType ~= primType then
         local altCount = ply:GetAmmoCount(altType)
 
-        surface.SetMaterial(MAT_ALT)
+		local alticon = "grenade"
+
+		if altAmmoName == "Buckshot" then alticon = "buckshot" end
+
+		surface.SetMaterial(MAT_ALT[alticon])
         surface.SetDrawColor(255, 255, 255, 255)
         surface.DrawTexturedRect(CoDHUD_SX(CFG.ALT_ICON_X), CoDHUD_SY(CFG.ALT_ICON_Y), CoDHUD_S(CFG.ALT_ICON_SIZE), CoDHUD_S(CFG.ALT_ICON_SIZE))
 

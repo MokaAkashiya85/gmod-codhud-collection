@@ -1952,7 +1952,12 @@ local function weaponinfo(...)
 	}
 
 	local MAT_BAR  = Material(hudtype .. "/hud/hud_weaponbar.png", "smooth")
-	local MAT_ALT  = Material(hudtype .. "/hud/dpad_40mm_grenade.png", "smooth mips")
+
+	local MAT_ALT  = {
+		["grenade"] = Material(hudtype .. "/hud/dpad_40mm_grenade.png", "smooth mips"),
+		["buckshot"] = Material("mw2/hud/dpad_underbarrel_shotgun.png", "smooth mips")
+	}
+	
 	local MAT_GRENADE = Material(hudtype .. "/hud/hud_us_grenade.png", "smooth")
 	local MAT_AMMO = {}
 	for key, data in pairs(AMMO) do
@@ -2077,6 +2082,7 @@ local function weaponinfo(...)
     local maxClip2 = wep:GetMaxClip2()
     local primType = wep:GetPrimaryAmmoType()
     local altType = wep:GetSecondaryAmmoType()
+	local altAmmoName = game.GetAmmoName(altType)
     local reserve = ply:GetAmmoCount(primType)
 
     local barW = CoDHUD_SX(CFG.BAR_W)
@@ -2174,7 +2180,11 @@ local function weaponinfo(...)
 		if altType ~= primType then
 			local altCount = ply:GetAmmoCount(altType)
 
-			surface.SetMaterial(MAT_ALT)
+			local alticon = "grenade"
+
+			if altAmmoName == "Buckshot" then alticon = "buckshot" end
+
+			surface.SetMaterial(MAT_ALT[alticon])
 			surface.SetDrawColor(255, 255, 255, 255)
 			surface.DrawTexturedRect(barX + barW + CoDHUD_SX(CFG.ALT_ICON_X), barY + CoDHUD_SY(CFG.ALT_ICON_Y), CoDHUD_S(CFG.ALT_ICON_SIZE), CoDHUD_S(CFG.ALT_ICON_SIZE))
 
