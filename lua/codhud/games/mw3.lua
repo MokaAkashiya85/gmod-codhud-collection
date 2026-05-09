@@ -1967,13 +1967,25 @@ local function weaponinfo(...)
 	}
 
 	local AMMO_MAP = {
-		["ammo_357"]      = "357",
-		["ammo_ar2"]      = "rifle",
-		["ammo_crossbow"] = "sniper",
-		["ammo_pistol"]   = "pistol",
-		["ammo_smg1"]     = "default",
+		["357"]      = "default",
+		["ar2"]      = "default",
+		["xbowbolt"] = "sniper",
+		["xbowbolthl1"] = "sniper",
+		["sniperround"] = "sniper",
+		["sniperpenetratedround"] = "sniper",
+		["pistol"]   = "default",
+		["smg1"]     = "default",
 		["buckshot"]      = "shotgun",
+		["buckshothl1"]      = "shotgun",
 		["rpg_round"]     = "rocket",
+		["smg1_grenade"]     = "rocket",
+		["mp5_grenade"]     = "rocket",
+		["rpg_rocket"]     = "rocket",
+		["smg1_grenade"]     = "rocket",
+		["ar2altfire"]     = "rocket",
+		["slam"]     = "rocket",
+		["gaussenergy"]     = "belt",
+		["ti_sniper"]		= "sniper",
 	}
 
 	local MAT_BAR  = Material(hudtype .. "/hud/hud_weaponbar.png", "smooth")
@@ -2098,7 +2110,7 @@ local function weaponinfo(...)
         surface.SetMaterial(MAT_AMMO[ammoKey])
 
         local isBelt  = (ammoCfg.row_size ~= nil)
-        local rowSize = isBelt and ammoCfg.row_size > maxClip and ammoCfg.row_size or math.max(maxClip, clip)
+        local rowSize = isBelt and ammoCfg.row_size or math.max(maxClip, clip)
         local rowGap  = isBelt and CoDHUD_S(ammoCfg.row_gap) or 0
 
         for i = 0, math.max(maxClip, clip) - 1 do
@@ -2144,7 +2156,7 @@ local function weaponinfo(...)
         surface.SetMaterial(MAT_AMMO[ammoKey])
 
         local isBelt  = (ammoCfg.row_size ~= nil)
-        local rowSize = isBelt and ammoCfg.row_size > maxClip2 and ammoCfg.row_size or math.max(maxClip2, clip2)
+        local rowSize = isBelt and ammoCfg.row_size or math.max(maxClip2, clip2)
         local rowGap  = isBelt and CoDHUD_S(ammoCfg.row_gap) or 0
 
         for i = 0, math.max(maxClip2, clip2) - 1 do

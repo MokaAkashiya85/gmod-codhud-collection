@@ -1964,7 +1964,7 @@ local function weaponinfo(...)
         surface.SetMaterial(MAT_AMMO[ammoKey])
 
         local isBelt  = (ammoCfg.row_size ~= nil)
-        local rowSize = isBelt and ammoCfg.row_size < maxClip and ammoCfg.row_size or math.max(maxClip, clip)
+        local rowSize = isBelt and ammoCfg.row_size or math.max(maxClip, clip)
         local rowGap  = isBelt and CoDHUD_S(ammoCfg.row_gap) or 0
 
         for i = 0, math.max(maxClip, clip) - 1 do
@@ -2010,7 +2010,7 @@ local function weaponinfo(...)
         surface.SetMaterial(MAT_AMMO[ammoKey])
 
         local isBelt  = (ammoCfg.row_size ~= nil)
-        local rowSize = isBelt and ammoCfg.row_size < maxClip2 and ammoCfg.row_size or math.max(maxClip2, clip2)
+        local rowSize = isBelt and ammoCfg.row_size or math.max(maxClip2, clip2)
         local rowGap  = isBelt and CoDHUD_S(ammoCfg.row_gap) or 0
 
         for i = 0, math.max(maxClip2, clip2) - 1 do
