@@ -1946,6 +1946,8 @@ local function weaponinfo(...)
 		["ar2"]      = "default",
 		["xbowbolt"] = "sniper",
 		["xbowbolthl1"] = "sniper",
+		["sniperround"] = "sniper",
+		["sniperpenetratedround"] = "sniper",
 		["pistol"]   = "default",
 		["smg1"]     = "default",
 		["buckshot"]      = "shotgun",
@@ -1958,6 +1960,7 @@ local function weaponinfo(...)
 		["ar2altfire"]     = "rocket",
 		["slam"]     = "rocket",
 		["gaussenergy"]     = "belt",
+		["ti_sniper"]		= "sniper",
 	}
 
 	local MAT_BAR  = Material(hudtype .. "/hud/hud_weaponbar.png", "smooth")
@@ -1973,7 +1976,7 @@ local function weaponinfo(...)
 	local function GetAmmoConfig(wep, alt)
 		if not IsValid(wep) then return AMMO["default"] end
 		local ammoName = string.lower(game.GetAmmoName(alt and wep:GetSecondaryAmmoType() or wep:GetPrimaryAmmoType()) or "")
-		if (alt and wep:GetMaxClip2() or wep:GetMaxClip1()) >= math.min(100, (AMMO[AMMO_MAP[ammoName]] or AMMO["default"]).row_size+1) then return AMMO["belt"] end
+		if (alt and wep:GetMaxClip2() or wep:GetMaxClip1()) > math.min(50, (AMMO[AMMO_MAP[ammoName]] or AMMO["default"]).row_size) then return AMMO["belt"] end
 		return AMMO[AMMO_MAP[ammoName]] or AMMO["default"]
 	end
 
