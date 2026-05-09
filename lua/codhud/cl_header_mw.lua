@@ -97,6 +97,19 @@ function CoDHUD_Header_MW:New(cfg)
 	o.teams = cfg.teams or nil
 	o.scoreY = cfg.scoreY or (cfg.y + 100)
 
+	o.challengeDesc   = cfg.challengeDesc or nil
+	o.challengePoints = cfg.challengePoints or nil
+	o.isSpecial       = cfg.isSpecial or false
+	o.scale = 1
+
+	if o.type == "bo_challenge" then
+		o.holdTime = cfg.holdTime or 1.25
+
+		o.fadeInTime   = 0.2
+		o.exitDuration = 0.125
+		o.fadeOutStart = o.holdTime - o.exitDuration
+	end
+
     return o
 end
 
@@ -226,6 +239,39 @@ function CoDHUD_Header_MW:Update()
 
     local speed = self.iconFadeInSpeed or 400
 
+	-- BLACK OPS CHALLENGE
+	if self.type == "bo_challenge" then
+		local age = CurTime() - self.startTime
+
+		local fadeIn  = self.fadeInTime or 0.2
+		local fadeOut = self.fadeOutStart or 1
+		local exitDur = self.exitDuration or 0.125
+
+		if age < fadeIn then
+			local p = age / fadeIn
+
+			self.alpha = p * 255
+			self.scale = Lerp(p, 0.0, 1.1)
+
+		elseif age > fadeOut then
+			local p = (age - fadeOut) / exitDur
+
+			self.alpha = math.Clamp((1 - p) * 255, 0, 255)
+			self.scale = Lerp(p, 1.0, 0.0)
+		else
+			self.alpha = 255
+			self.scale = 1
+		end
+
+		self.iconAlpha = self.alpha
+		self.subAlpha  = self.alpha
+
+		if age >= self.holdTime then
+			self.phase = "done"
+		end
+
+		return
+	end
 
     -- WRITE
 	if self.phase == "write" then
@@ -366,6 +412,76 @@ function CoDHUD_Header_MW:Draw()
     if self.phase == "done" then return end
 	
 	local outlined = GetConVar("codhud_enable_outlinedtext"):GetBool()
+
+	if self.type == "bo_challenge" then
+		local outlined = GetConVar("codhud_enable_outlinedtext"):GetBool()
+
+		local cx = self.x
+		local cy = self.y
+
+		local alpha = self.alpha or 255
+		local scale = self.scale or 1
+
+		local colWhite      = Color(255,255,255,alpha)
+		local colBlack      = Color(0,0,0,alpha * 0.8)
+		local colYellow     = Color(255,255,50,alpha)
+		local colRedGlow    = Color(195,110,115,alpha * 0.5)
+
+		local bgmat = Material(CoDHUD_GetHUDType() .. "/icons/hud_medal_burst.png", "smooth")
+		local iconmat = Material(CoDHUD_GetHUDType() .. "/icons/menu_mp_lobby_aar_award_challenge.png", "smooth")
+
+		local bgSize = CoDHUD_S(360)
+		local iconSize = CoDHUD_S(240)
+
+		local mat = Matrix()
+		mat:Translate(Vector(cx, cy, 0))
+		mat:Scale(Vector(scale, scale, 1))
+		mat:Translate(Vector(-cx, -cy, 0))
+
+		cam.PushModelMatrix(mat)
+
+			-- BACKING
+			surface.SetDrawColor(255,255,255,math.Clamp(alpha,0,125))
+			surface.SetMaterial(bgmat)
+			surface.DrawTexturedRect( cx - bgSize, cy - (bgSize * 0.5), bgSize * 2, bgSize )
+
+			surface.SetDrawColor(255,255,255,math.Clamp(alpha,0,175))
+			surface.SetMaterial(iconmat)
+			surface.DrawTexturedRect( cx - (iconSize * 0.5), cy - (iconSize * 0.5), iconSize, iconSize )
+
+			-- HEADER TEXT
+			for i, line in ipairs(self.lines) do
+				draw.SimpleTextOutlined( line, self.fonts.pri, cx, cy - CoDHUD_S(20) + ((i - 1) * CoDHUD_S(34)), colWhite, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, outlined and 1.5 or 0, colBlack )
+			end
+
+			-- SUBTEXT / DESC
+			if self.subtext and self.subtext ~= "" then
+				local col = Color(self.subcolor.r, self.subcolor.g, self.subcolor.b, self.subAlpha)
+				local lines = string.Split(self.subtext, "\n")
+
+				local align = self.align or "center"
+
+				for i, line in ipairs(lines) do
+					local y = cy + CoDHUD_S(5) + (i - 1) * CoDHUD_S(32)
+
+					draw.SimpleTextOutlined( line, self.fonts.sub, cx, y, colWhite, TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP, outlined and 1 or 0, Color(0,0,0,col.a) )
+				end
+			end
+
+			-- ICON
+			if self.icon then
+				local size = self.iconSize or 96
+
+				surface.SetMaterial(self.icon)
+				surface.SetDrawColor(255,255,255,alpha)
+
+				surface.DrawTexturedRect( cx - (size / 2), cy - CoDHUD_S(120), size, size )
+			end
+
+		cam.PopModelMatrix()
+
+		return
+	end
 
 	for i, line in ipairs(self.lines) do
 		local display = ""

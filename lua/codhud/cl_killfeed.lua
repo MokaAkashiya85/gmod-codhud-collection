@@ -119,19 +119,14 @@ end)
 function CoDHUD_AddKillfeedMessage(textstr, textstr2, textstr3)
     timer.Simple(0.1, function()
         local msg = language.GetPhrase(textstr)
-        local textstr2 = language.GetPhrase(textstr2)
-        local textstr3 = language.GetPhrase(textstr3)
+        local textstr2 = textstr2 and language.GetPhrase(textstr2) or ""
+        local textstr3 = textstr3 and language.GetPhrase(textstr3) or ""
 
         if textstr2 ~= "" or textstr3 ~= "" then
             msg = string.format(msg, textstr2, textstr3)
         end
 
-        table.insert(KillFeed, {
-            type = "meta",
-            msg = msg,
-            spawnTime = CurTime(),
-            dieTime = CurTime() + CFG.LIFETIME
-        })
+        table.insert( KillFeed, { type = "meta", msg = msg, spawnTime = CurTime(), dieTime = CurTime() + CFG.LIFETIME } )
     end)
 end
 

@@ -43,9 +43,8 @@ CoDHUD.Factions[hudtype] = {
 		defeattheme = "results/loss/foe_loss_a.wav",
 		spawnIcon = hudtype .. "/factions/faction_128_op40.png",
 		scoreIcon = hudtype .. "/factions/faction_128_op40.png",
-		color = Color(100, 105, 80),
+		color = Color(101, 152, 151),
 		killfeedcol = Color(100, 110, 120),
-		glow = Color(240, 230, 190),
 		order = 1
 	},
 	["ops"] = {
@@ -57,9 +56,8 @@ CoDHUD.Factions[hudtype] = {
 		defeattheme = "results/loss/pentagon_sting_b.wav",
 		spawnIcon = hudtype .. "/factions/faction_128_specops.png",
 		scoreIcon = hudtype .. "/factions/faction_128_specops.png",
-		color = Color(100, 105, 80),
+		color = Color(101, 152, 151),
 		killfeedcol = Color(100, 110, 120),
-		glow = Color(240, 230, 190),
 		order = 2
 	},
 	["sog"] = {
@@ -71,9 +69,8 @@ CoDHUD.Factions[hudtype] = {
 		defeattheme = "results/loss/foe_loss_a.wav",
 		spawnIcon = hudtype .. "/factions/faction_128_marines.png",
 		scoreIcon = hudtype .. "/factions/faction_128_marines.png",
-		color = Color(100, 105, 80),
+		color = Color(101, 152, 151),
 		killfeedcol = Color(100, 110, 120),
-		glow = Color(240, 230, 190),
 		order = 3
 	},
 	["rus"] = {
@@ -85,9 +82,8 @@ CoDHUD.Factions[hudtype] = {
 		defeattheme = "results/loss/commies_sting_b.wav",
 		spawnIcon = hudtype .. "/factions/faction_128_spetsnaz.png",
 		scoreIcon = hudtype .. "/factions/faction_128_spetsnaz.png",
-		color = Color(100, 105, 80),
-		killfeedcol = Color(100, 110, 120),
-		glow = Color(240, 230, 190),
+		color = Color(175, 50, 50),
+		killfeedcol = Color(120, 110, 100),
 		order = 4
 	},
 	["nva"] = {
@@ -99,9 +95,8 @@ CoDHUD.Factions[hudtype] = {
 		defeattheme = "results/loss/foe_loss_a.wav",
 		spawnIcon = hudtype .. "/factions/faction_128_nva.png",
 		scoreIcon = hudtype .. "/factions/faction_128_nva.png",
-		color = Color(100, 105, 80),
-		killfeedcol = Color(100, 110, 120),
-		glow = Color(240, 230, 190),
+		color = Color(175, 50, 50),
+		killfeedcol = Color(120, 110, 100),
 		order = 5
 	},
 	["cub"] = {
@@ -113,9 +108,8 @@ CoDHUD.Factions[hudtype] = {
 		defeattheme = "results/loss/albion_sting_a.wav",
 		spawnIcon = hudtype .. "/factions/faction_128_tropas.png",
 		scoreIcon = hudtype .. "/factions/faction_128_tropas.png",
-		color = Color(100, 105, 80),
-		killfeedcol = Color(100, 110, 120),
-		glow = Color(240, 230, 190),
+		color = Color(175, 50, 50),
+		killfeedcol = Color(120, 110, 100),
 		order = 6
 	},
 }
@@ -136,9 +130,9 @@ CoDHUD[hudtype].TextStrings = {
 		}
 	},
 	scorebar = {
-		tied = "MW2_MPUI_TIED_CAPS",
-		winning = "MW2_MPUI_WINNING_CAPS",
-		losing = "MW2_MPUI_LOSING_CAPS"
+		tied = "BO1_MENU_TIED_CAPS",
+		winning = "BO1_MENU_WINNING_CAPS",
+		losing = "BO1_MENU_LOSING_CAPS"
 	},
 }
 
@@ -336,21 +330,18 @@ local function challengecomplete( ... )
 	end
 	
     CoDHUD_HeaderQueue.Push({
-		type = "bo",
-		writeSounds = textype,
-		writeSpeed = 8,
+		type = "bo_challenge",
         text = CoDHUD_ChallengeTitle(header, level),
         subtext = (sub and sub ~= "") and ResolvePrefix("MW2_CHALLENGE_", sub) or nil,
         x = CoDHUD_SX(960),
-        y = CoDHUD_SY(205),
+        y = CoDHUD_SY(125),
+		holdTime = 2.5,
+
         color = Color(0,0,0),
         fonts = {
-            pri = "MW2_ChalHeader_Pri",
-            sec = "MW2_ChalHeader_Sec",
-            shd = "MW2_ChalHeader_Shd",
-            sub = "MW2_ChalSub"
+            pri = "BO1_ChalHeader",
+            sub = "BO1_ChalSub",
         },
-		align = align or nil
     })
 
     surface.PlaySound("music/bo1/stings/mp_milestone_sting.wav")
@@ -1143,16 +1134,16 @@ CoDHUD[hudtype].Minimap = minimap
 
 local MAT_GRADIENT = Material("bo1/hud/hud_score_progress.png")
 
--- local debugpic = true
-local debugpicture = Material("debugref/bo1.png", "smooth")
+local debugpic = true
+local debugpicture = Material("debugref/bo1_3.png", "smooth")
 
 local function scorebar(data)
 
-	if debugpic then
-		surface.SetMaterial(debugpicture)
-		surface.SetDrawColor(255, 255, 255, 255)
-		surface.DrawTexturedRect(0, 0, ScrW(), ScrH())
-	end
+	-- if debugpic then
+		-- surface.SetMaterial(debugpicture)
+		-- surface.SetDrawColor(255, 255, 255, 255)
+		-- surface.DrawTexturedRect(0, 0, ScrW(), ScrH())
+	-- end
 
 	local CFG = {
 		-- Base Bar
@@ -1368,25 +1359,31 @@ local function scoreboard( ... )
 	-- local KillFeed = select(1, ...)
 	local outlined = GetConVar("codhud_enable_outlinedtext"):GetBool()
 
+	if debugpic then
+		surface.SetMaterial(debugpicture)
+		surface.SetDrawColor(255, 255, 255, 255)
+		-- surface.DrawTexturedRect(0, 0, ScrW(), ScrH())
+	end
+
 	local CFG = {
 		-- Player Row Background
 		BAR_W = 1086,
-		BAR_H = 38,
+		BAR_H = 28,
 		BAR_X_OFF = 0,
-		BAR_Y_OFF = 290,
+		BAR_Y_OFF = 235,
 		BAR_ALPHA = 200,
 
 		-- Spacing & Layout
-		ROW_GAP = 2,
+		ROW_GAP = 8,
 		TEAM_GAP = 120,
 
 		-- Faction Icon
-		ICON_SIZE = 77,
-		ICON_X_OFF = 0,
-		ICON_Y_OFF = -86,
+		ICON_SIZE = 96,
+		ICON_X_OFF = -111,
+		ICON_Y_OFF = -52.5,
 
 		-- Faction Name Position
-		FAC_NAME_X = 96,
+		FAC_NAME_X = 0,
 		FAC_NAME_Y = -44,
 
 		-- Stats Header Y Position
@@ -1403,26 +1400,20 @@ local function scoreboard( ... )
 		-- Map Display
 		MAP_Y_OFF = 98,
 
-		-- Ping Indicator
-		PING_BOX_SIZE = 38,
-		PING_BOX_ALPHA = 155,
-		PING_X_OFF = 5,
-		PING_BAR_W = 6,
-		PING_BAR_SPACING = 3,
-
 		-- Timer / Header Score
-		TIMER_X_POS = 245,
-		TIMER_Y_OFF = 98,
-		SQUEEZE = -2,
-		SQUEEZE_ONE = -6,
-		SQUEEZE_ONE_BEFORE = -4,
-		TIMER_OUTLINE_W = 2,
+		TIMER_X_POS = 462.5,
+		TIMER_Y_OFF = 18,
+		SQUEEZE = 0,
+		SQUEEZE_ONE = -0,
+		SQUEEZE_ONE_BEFORE = -0,
 
 		-- Stat Offsets (from barRight, going left)
-		OFF_DEATHS = 10,
-		OFF_ASSISTS = 120,
-		OFF_KILLS = 225,
-		OFF_SCORE = 335,
+		OFF_PING = 10,
+		OFF_DEATHS = 120,
+		OFF_RATIO = 240,
+		OFF_ASSISTS = 360,
+		OFF_KILLS = 480,
+		OFF_SCORE = 600,
 	}
 
 	local MAT_GRADIENT_L = Material("vgui/gradient-l")
@@ -1464,59 +1455,25 @@ local function scoreboard( ... )
 		local isMe = (ply == lp)
 		local tCol = isMe and Color(255, 200, 50, 255) or Color(255, 255, 255, 255)
 		local pScore = math.max(0, ply:Frags() * 100)
+		local kills = ply:Frags()
+		local deaths = ply:Deaths()
+
+		local ratio = 0
+
+		if kills > 0 then
+			ratio = kills / (deaths > 1 and deaths or 1)
+		end
+
+		local kd = string.format("%.2f", ratio)
 
 		-- Text
 		draw.SimpleTextOutlined(ply:Nick(), "BO1_Scoreboard_Text", x + CoDHUD_S(110), y + (h / 2), tCol, TEXT_ALIGN_LEFT,  TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0))
-		draw.SimpleTextOutlined(ply:Deaths(), "BO1_Scoreboard_Text", barRight - CoDHUD_S(CFG.OFF_DEATHS),  y + (h / 2), tCol, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0))
+		draw.SimpleTextOutlined(ply:Ping(), "BO1_Scoreboard_Text", barRight - CoDHUD_S(CFG.OFF_PING),  y + (h / 2), tCol, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0))
+		draw.SimpleTextOutlined(deaths, "BO1_Scoreboard_Text", barRight - CoDHUD_S(CFG.OFF_DEATHS),  y + (h / 2), tCol, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0))
+		draw.SimpleTextOutlined(kd, "BO1_Scoreboard_Text", barRight - CoDHUD_S(CFG.OFF_RATIO),  y + (h / 2), tCol, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0))
 		draw.SimpleTextOutlined(ply:GetNWInt("Assists", 0), "BO1_Scoreboard_Text", barRight - CoDHUD_S(CFG.OFF_ASSISTS), y + (h / 2), tCol, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0))
-		draw.SimpleTextOutlined(ply:Frags(), "BO1_Scoreboard_Text", barRight - CoDHUD_S(CFG.OFF_KILLS),   y + (h / 2), tCol, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0))
+		draw.SimpleTextOutlined(kills, "BO1_Scoreboard_Text", barRight - CoDHUD_S(CFG.OFF_KILLS),   y + (h / 2), tCol, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0))
 		draw.SimpleTextOutlined(pScore, "BO1_Scoreboard_Text", barRight - CoDHUD_S(CFG.OFF_SCORE),   y + (h / 2), tCol, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0))
-
-		-- Ping Indicator
-		local ping = ply:Ping()
-
-		local barCount = 4
-		local col = Color(0, 255, 0, 255) -- default green
-
-		if ping >= 150 then
-			barCount = 1
-			col = Color(255, 60, 60, 255) -- red
-		elseif ping >= 100 then
-			barCount = 2
-			col = Color(255, 140, 0, 255) -- orange
-		elseif ping >= 50 then
-			barCount = 3
-			col = Color(180, 255, 80, 255) -- lighter green
-		else
-			barCount = 4
-			col = Color(0, 255, 0, 255) -- green
-		end
-
-		local boxSize = CoDHUD_S(CFG.PING_BOX_SIZE)
-		local pingX = barRight + CoDHUD_S(CFG.PING_X_OFF)
-		local pingY = y + (h / 2) - (boxSize / 2)
-
-		-- background box
-		surface.SetDrawColor(0, 0, 0, CFG.PING_BOX_ALPHA)
-		surface.DrawRect(pingX, pingY, boxSize, boxSize)
-
-		local rodW = CoDHUD_S(CFG.PING_BAR_W)
-		local rodSpacing = CoDHUD_S(CFG.PING_BAR_SPACING)
-		local totalRodsWidth = (rodW * 4) + (rodSpacing * 3)
-		local startX = pingX + (boxSize / 2) - (totalRodsWidth / 2)
-
-		-- draw 4 bars, filling only barCount
-		for i = 1, 4 do
-			local bh = (boxSize - CoDHUD_S(6)) * (i / 4)
-
-			if i <= barCount then
-				surface.SetDrawColor(col.r, col.g, col.b, col.a)
-				surface.DrawRect( startX + ((i - 1) * (rodW + rodSpacing)), pingY + (boxSize - bh - CoDHUD_S(3)), rodW, bh )
-			end
-
-		end
-		
-		-- draw.SimpleTextOutlined(" - " .. ping, "BO1_Scoreboard_Text", barRight - CoDHUD_S(CFG.OFF_DEATHS) + boxSize + CoDHUD_S(CFG.PING_BAR_W) + CoDHUD_S(10), y + (h / 2), Color(255,255,255), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0))
 	end
 
     local scrW, scrH = ScrW(), ScrH()
@@ -1582,7 +1539,9 @@ local function scoreboard( ... )
 	
 	render.SetScissorRect(0, viewportTop, ScrW(), viewportBottom, true)
 		-- Stats column headers
+		draw.SimpleTextOutlined( language.GetPhrase("BO1_CGAME_SB_PING"), "BO1_Scoreboard_Text", barRight - CoDHUD_S(CFG.OFF_PING), headerY, Color(255,255,255), TEXT_ALIGN_RIGHT, 0, outlined and 1 or 0, Color(0,0,0) )
 		draw.SimpleTextOutlined( language.GetPhrase("BO1_CGAME_SB_DEATHS"), "BO1_Scoreboard_Text", barRight - CoDHUD_S(CFG.OFF_DEATHS), headerY, Color(255,255,255), TEXT_ALIGN_RIGHT, 0, outlined and 1 or 0, Color(0,0,0) )
+		draw.SimpleTextOutlined( language.GetPhrase("BO1_CGAME_SB_KDRATIO"), "BO1_Scoreboard_Text", barRight - CoDHUD_S(CFG.OFF_RATIO), headerY, Color(255,255,255), TEXT_ALIGN_RIGHT, 0, outlined and 1 or 0, Color(0,0,0) )
 		draw.SimpleTextOutlined( language.GetPhrase("BO1_CGAME_SB_ASSISTS"), "BO1_Scoreboard_Text", barRight - CoDHUD_S(CFG.OFF_ASSISTS), headerY, Color(255,255,255), TEXT_ALIGN_RIGHT, 0, outlined and 1 or 0, Color(0,0,0) )
 		draw.SimpleTextOutlined( language.GetPhrase("BO1_CGAME_SB_KILLS"), "BO1_Scoreboard_Text", barRight - CoDHUD_S(CFG.OFF_KILLS), headerY, Color(255,255,255), TEXT_ALIGN_RIGHT, 0, outlined and 1 or 0, Color(0,0,0) )
 		draw.SimpleTextOutlined( language.GetPhrase("BO1_CGAME_SB_SCORE"), "BO1_Scoreboard_Text", barRight - CoDHUD_S(CFG.OFF_SCORE), headerY, Color(255,255,255), TEXT_ALIGN_RIGHT, 0, outlined and 1 or 0, Color(0,0,0) )
@@ -1590,6 +1549,7 @@ local function scoreboard( ... )
 		for fi, facData in ipairs(factionList) do
 			local players = facData.players
 			local facKey = facData.key
+			local score = facData.score or 0
 			local fData = CoDHUD.Factions[hudtype] and CoDHUD.Factions[hudtype][facKey] or {
 				name = facKey,
 				short = facKey,
@@ -1606,7 +1566,12 @@ local function scoreboard( ... )
 			surface.SetDrawColor(255,255,255,255)
 			surface.DrawTexturedRect(barX + CoDHUD_S(CFG.ICON_X_OFF), sectionY + CoDHUD_S(CFG.ICON_Y_OFF), CoDHUD_S(CFG.ICON_SIZE), CoDHUD_S(CFG.ICON_SIZE))
 
-			draw.SimpleTextOutlined( language.GetPhrase(fData.short) .. " (" .. #players .. ")", "BO1_Scoreboard_Text", barX + CoDHUD_S(CFG.FAC_NAME_X), sectionY + CoDHUD_S(CFG.FAC_NAME_Y), Color(255,255,255), 0,0, outlined and 1 or 0, Color(0,0,0) )
+			DrawSqueezedText( score, "BO1_Scoreboard_Score", barX + CoDHUD_SX(CFG.FAC_NAME_X), sectionY + CoDHUD_S(CFG.FAC_NAME_Y) - CoDHUD_S(22), Color(255,255,255), CoDHUD_S(-4), CoDHUD_S(-12), 2, CoDHUD_S(-12), CoDHUD_SX(1) )
+			
+			surface.SetFont("BO1_Scoreboard_Score")
+			local scorew, scoreh = surface.GetTextSize(score)
+			
+			draw.SimpleTextOutlined( language.GetPhrase(fData.short) .. " (" .. #players .. ")", "BO1_Scoreboard_Text", barX + CoDHUD_S(CFG.FAC_NAME_X) + CoDHUD_S(scorew), sectionY + CoDHUD_S(CFG.FAC_NAME_Y), Color(255,255,255), 0,0, outlined and 1 or 0, Color(0,0,0) )
 
 			-- rows
 			for i, ply in ipairs(players) do
@@ -1620,74 +1585,11 @@ local function scoreboard( ... )
 		end
 	render.SetScissorRect(0, 0, 0, 0, false)
 
-    surface.SetDrawColor(110, 110, 110, CFG.HEADER_ALPHA)
-    surface.SetMaterial(MAT_GRADIENT_L)
-    surface.DrawTexturedRect(0, CoDHUD_S(CFG.HEADER_Y_POS), scrW, CoDHUD_S(CFG.HEADER_H))
-
-    -- Map name
-    local mapName = string.upper(game.GetMap())
-	draw.SimpleTextOutlined( mapName, "BO1_Scoreboard_Timer", scrW/2, CoDHUD_S(CFG.MAP_Y_OFF), Color(255, 255, 255), 1, 0, outlined and 1.5 or 0, Color(0,0,0) )
-
     -- Timer
     local totalSecs = math.floor(CurTime())
     local mins, secs = math.floor(totalSecs / 60), totalSecs % 60
     local timeStr = string.format("%d:%02d", mins, secs)
-    DrawSqueezedText(timeStr, "BO1_Scoreboard_Timer", scrW - CoDHUD_S(CFG.TIMER_X_POS), CoDHUD_S(CFG.TIMER_Y_OFF), Color(255, 255, 255, 255), CFG.SQUEEZE, CFG.SQUEEZE_ONE, 0, CFG.SQUEEZE_ONE_BEFORE, outlined and 1.5 or 0)
-
-	local lp = LocalPlayer()
-	local myFaction = lp:GetNW2String("CoDHUD_Faction", "rangers")
-	if myFaction == "" then myFaction = "rangers" end
-	
-	table.sort(factionList, function(a, b)
-		if a.key == myFaction then return true end
-		if b.key == myFaction then return false end
-		return a.score > b.score
-	end)
-
-	local stripX = CoDHUD_S(20)
-	local stripY = CoDHUD_S(CFG.HEADER_Y_POS) + (CoDHUD_S(CFG.HEADER_H) / 2) - (CoDHUD_S(CFG.HEADER_ICON_SIZE) / 2)
-	local stripGap = CoDHUD_S(18)
-	local iconSize = CoDHUD_S(CFG.HEADER_ICON_SIZE)
-	local textOffset = CoDHUD_S(8)
-	
-	local x = stripX
-
-	surface.SetFont("BO1_Scoreboard_Text")
-
-	for _, fac in ipairs(factionList) do
-		local key = fac.key
-		local players = fac.players
-		local score = fac.score or 0
-
-		local fData = CoDHUD.Factions[hudtype] and CoDHUD.Factions[hudtype][key] or {
-			short = key,
-			color = Color(150,150,150)
-		}
-
-		local iconPath = CoDHUD.Factions[hudtype][key].scoreIcon
-		local mat = Material(iconPath, "smooth")
-
-		if mat:IsError() then
-			mat = Material(hudtype .. "/vgui/hud/icon_error")
-		end
-
-		-- format label (NOW uses SCORE instead of player count)
-		local label = score
-
-		local textW, textH = surface.GetTextSize(label)
-
-		-- icon (aligned left)
-		surface.SetMaterial(mat)
-		surface.SetDrawColor(255,255,255,255)
-		surface.DrawTexturedRect(x, stripY, iconSize, iconSize)
-
-		-- text (VERTICALLY CENTERED like old system)
-		draw.SimpleTextOutlined( label, "BO1_Scoreboard_Text", x + iconSize + textOffset, stripY + iconSize / 2, Color(255,255,255), 0, 1, outlined and 1 or 0, Color(0,0,0) )
-
-		-- spacing correction (tightened + consistent)
-		x = x + iconSize + textW + CoDHUD_S(25)
-	end
-
+    DrawSqueezedText(timeStr, "BO1_Scoreboard_Timer", scrW - CoDHUD_S(CFG.TIMER_X_POS), CoDHUD_S(CFG.TIMER_Y_OFF), Color(255, 255, 255, 255), CFG.SQUEEZE, CFG.SQUEEZE_ONE, 1, CFG.SQUEEZE_ONE_BEFORE, outlined and 1.5 or 0)
 end
 CoDHUD[hudtype].Scoreboard = scoreboard
 
