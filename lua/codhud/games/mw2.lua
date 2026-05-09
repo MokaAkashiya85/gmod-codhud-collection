@@ -1920,14 +1920,14 @@ local function weaponinfo(...)
 	local ply = select(3, ...)
 
 	local AMMO = {
-		["default"] = { mat = "mw2/hud/ammo_counter_bullet_mp.png",      w = 3,  h = 20, gap = 1, y_off = 62, x_start = -294, dim = 75 },
-		["357"]     = { mat = "mw2/hud/ammo_counter_riflebullet_mp.png", w = 4,  h = 14, gap = 1, y_off = 41, x_start = -242, dim = 75 },
-		["rifle"]   = { mat = "mw2/hud/ammo_counter_riflebullet_mp.png", w = 4,  h = 14, gap = 1, y_off = 41, x_start = -242, dim = 75 },
-		["rocket"]  = { mat = "mw2/hud/ammo_counter_rocket_mp.png",      w = 12, h = 24, gap = 1, y_off = 58, x_start = -290, dim = 75 },
-		["sniper"]  = { mat = "mw2/hud/ammo_counter_rocket_mp.png",      w = 4,  h = 14, gap = 1, y_off = 41, x_start = -242, dim = 75 },
-		["shotgun"] = { mat = "mw2/hud/ammo_counter_rocket_mp.png",      w = 10, h = 20, gap = 1, y_off = 64, x_start = -300, dim = 75 },
-		["pistol"]  = { mat = "mw2/hud/ammo_counter_bullet_mp.png",      w = 4,  h = 14, gap = 1, y_off = 41, x_start = -242, dim = 75 },
-		["belt"]    = { row_size = 25, row_gap = 0, mat = "mw2/hud/ammo_counter_beltbullet_mp.png", w = 7, h = 5, gap = 0, y_off = 78, x_start = -298, dim = 75 },
+		["default"] = { mat = "mw2/hud/ammo_counter_bullet_mp.png",      w = 3,  h = 20, gap = 1, y_off = 1, x_start = -1, dim = 75 },
+		["357"]     = { mat = "mw2/hud/ammo_counter_riflebullet_mp.png", w = 4,  h = 14, gap = 1, y_off = 1, x_start = 0, dim = 75 },
+		["rifle"]   = { mat = "mw2/hud/ammo_counter_riflebullet_mp.png", w = 4,  h = 14, gap = 1, y_off = 1, x_start = 0, dim = 75 },
+		["rocket"]  = { mat = "mw2/hud/ammo_counter_rocket_mp.png",      w = 12, h = 24, gap = 1, y_off = -1, x_start = 5, dim = 75 },
+		["sniper"]  = { mat = "mw2/hud/ammo_counter_rocket_mp.png",      w = 4,  h = 14, gap = 1, y_off = 1, x_start = -1, dim = 75 },
+		["shotgun"] = { mat = "mw2/hud/ammo_counter_rocket_mp.png",      w = 10, h = 20, gap = 1, y_off = 0, x_start = 3, dim = 75 },
+		["pistol"]  = { mat = "mw2/hud/ammo_counter_bullet_mp.png",      w = 4,  h = 14, gap = 1, y_off = 2, x_start = 0, dim = 75 },
+		["belt"]    = { row_size = 25, row_gap = 0, mat = "mw2/hud/ammo_counter_beltbullet_mp.png", w = 7, h = 5, gap = 0, y_off = -5, x_start = 0, dim = 75 },
 	}
 
 	local AMMO_MAP = {
@@ -2109,8 +2109,8 @@ local function weaponinfo(...)
         local iW      = CoDHUD_S(ammoCfg.w)
         local iH      = CoDHUD_S(ammoCfg.h)
         local iGap    = CoDHUD_S(ammoCfg.gap)
-        local iYOff   = CoDHUD_SY(ammoCfg.y_off)
-        local iXStart = CoDHUD_SX(ammoCfg.x_start)
+        local iYOff   = CoDHUD_SY(77+iH*-0.5-ammoCfg.y_off)
+        local iXStart = CoDHUD_SX(-291-iW+ammoCfg.x_start)
 
         surface.SetMaterial(MAT_AMMO[ammoKey])
 
@@ -2173,7 +2173,7 @@ local function weaponinfo(...)
 		end
     end
 
-	if maxClip2 > 1 and clip2 >= 0 then
+	if maxClip2 > 0 and clip2 >= 0 then
 		local perc      = clip2 / maxClip2
 		local isLowClip = (perc <= CFG.STAT_LOW_PERC)
 		local reloadSine = isLowClip and ((math.sin(CurTime() * CFG.BULLET_RELOAD_SPD) + 1) / 2) or 0
@@ -2183,8 +2183,8 @@ local function weaponinfo(...)
 		local iW      = CoDHUD_S(ammoCfg.w)
 		local iH      = CoDHUD_S(ammoCfg.h)
 		local iGap    = CoDHUD_S(ammoCfg.gap)
-		local iYOff   = CoDHUD_SY(ammoCfg.y_off+40)
-		local iXStart = CoDHUD_SX(ammoCfg.x_start)
+		local iYOff   = CoDHUD_SY(118-iH*0.5-ammoCfg.y_off)
+		local iXStart = CoDHUD_SX(-291-iW+ammoCfg.x_start)
 
 		surface.SetMaterial(MAT_AMMO[ammoKey])
 
