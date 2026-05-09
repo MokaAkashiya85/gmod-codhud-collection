@@ -2173,23 +2173,6 @@ local function weaponinfo(...)
         end
     end
 
-
-    if altType ~= -1 then
-		if altType ~= primType then
-			local altCount = ply:GetAmmoCount(altType)
-
-			local alticon = "grenade"
-
-			if altAmmoName == "Buckshot" then alticon = "buckshot" end
-
-			surface.SetMaterial(MAT_ALT[alticon])
-			surface.SetDrawColor(255, 255, 255, 255)
-			surface.DrawTexturedRect(barX + barW + CoDHUD_SX(CFG.ALT_ICON_X), barY + CoDHUD_SY(CFG.ALT_ICON_Y), CoDHUD_S(CFG.ALT_ICON_SIZE), CoDHUD_S(CFG.ALT_ICON_SIZE))
-
-			local altCol = (altCount > 0) and Color(255, 255, 255, 255) or Color(255, 120, 120, 255)
-			DrawSqueezedText(altCount, "MW2_Ammo_Alt", barX + barW + CoDHUD_SX(CFG.ALT_TEXT_X), barY + CoDHUD_SY(CFG.ALT_TEXT_Y), altCol, CFG.ALT_TEXT_SQ, CFG.ALT_TEXT_SQ1, 1)
-		end
-    end
 	if maxClip2 > 0 and clip2 >= 0 then
 		local perc      = clip2 / maxClip2
 		local isLowClip = (perc <= CFG.STAT_LOW_PERC)
@@ -2254,7 +2237,11 @@ local function weaponinfo(...)
     if altType ~= -1 and altType ~= primType and altType ~= game.GetAmmoID("Grenade") then
 		local altCount = ply:GetAmmoCount(altType)
 
-		surface.SetMaterial(MAT_ALT)
+		local alticon = "grenade"
+
+		if altAmmoName == "Buckshot" then alticon = "buckshot" end
+
+		surface.SetMaterial(MAT_ALT[alticon])
 		surface.SetDrawColor(255, 255, 255, 255)
 		surface.DrawTexturedRect(barX + barW + CoDHUD_SX(CFG.ALT_ICON_X), barY + CoDHUD_SY(CFG.ALT_ICON_Y), CoDHUD_S(CFG.ALT_ICON_SIZE), CoDHUD_S(CFG.ALT_ICON_SIZE))
 
