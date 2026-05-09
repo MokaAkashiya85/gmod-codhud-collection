@@ -1,112 +1,121 @@
-CoDHUD.RegisterHUD( "mw2", "#CoDHUD.Type.MW2", true )
+CoDHUD.RegisterHUD( "bo1", "#CoDHUD.Type.BO1", true )
 
-local hudtype = "mw2"
+local hudtype = "bo1"
 
 CoDHUD = CoDHUD or {}
 CoDHUD[hudtype] = CoDHUD[hudtype] or {}
 CoDHUD.Factions = CoDHUD.Factions or {}
 CoDHUD.Gamemodes = CoDHUD.Gamemodes or {}
 
+local textype = {
+	-- "hud/bo1/type.wav",
+	"hud/bo1/delete.wav",
+}
+
 -- [[ SPECIAL KILLFEED ICONS ]]
 if CLIENT then
-	killicon.Add("CoDHUD_MW2_Suicide", hudtype .. "/killfeed/death_suicide.png", Color(255, 255, 255, 0))
-	killicon.Add("CoDHUD_MW2_Headshot", hudtype .. "/killfeed/death_headshot.png", Color(255, 255, 255, 0))
+	killicon.Add("CoDHUD_BO1_Suicide", hudtype .. "/killfeed/death_suicide.png", Color(255, 255, 255, 0))
+	killicon.Add("CoDHUD_BO1_Headshot", hudtype .. "/killfeed/death_headshot.png", Color(255, 255, 255, 0))
 end
 
 -- [[ SUSPENSE ]]
 CoDHUD[hudtype].SuspenseTracks = {
-    "music/mw2/ambient/hz_mp_suspense_arcadia_panic_LR.mp3",
-    "music/mw2/ambient/hz_mp_suspense_clfhang_sat_bust_LR.mp3",
-    "music/mw2/ambient/hz_mp_suspense_contg_stlth_short_LR.mp3",
-    "music/mw2/ambient/hz_mp_suspense_gulag_intro_LR.mp3",
-    "music/mw2/ambient/hz_mp_suspense_gulag_liftoff_LR.mp3",
-    "music/mw2/ambient/hz_mp_suspense_state_basement_LR.mp3"
+	"music/bo1/underscores/arclight_underscore_Ip_b.wav",
+	"music/bo1/underscores/blackbird_underscore_lp_a.wav",
+	"music/bo1/underscores/canyonrock_underscore_lp_a.wav",
+	"music/bo1/underscores/chopperintro_underscore_a.wav",
+	"music/bo1/underscores/commies_underscore_a.wav",
+	"music/bo1/underscores/deviant_underscore_Ip_a.wav",
+	"music/bo1/underscores/eagleclaw_underscore_a.wav",
+	"music/bo1/underscores/eagleclaw_underscore_b.wav",
+	"music/bo1/underscores/foe_underscore_a.wav",
+	"music/bo1/underscores/pentagon_underscore_a.wav",
 }
 
 -- [[ FACTIONS ]]
 CoDHUD.Factions[hudtype] = {
-	["rangers"] = {
-		name = "MW2_MP_US_ARMY_NAME",
-		short = "MW2_MP_US_ARMY_SHORT_NAME",
-		voicepath = "us/mp/us_1mc_",
-		spawntheme = "us/hz_mp_usspawn_1.mp3",
-		victorytheme = "us/hz_mp_usvictory_1.mp3",
-		defeattheme = "us/hz_mp_usdefeat_1.mp3",
-		spawnIcon = hudtype .. "/factions/faction_128_rangers.png",
-		scoreIcon = hudtype .. "/factions/faction_128_rangers_fade.png",
+	["op4"] = {
+		name = "BO1_MP_REBELS_NAME",
+		short = "BO1_MPUI_REBELS_SHORT",
+		voicepath = "op4/vox_op4_",
+		spawntheme = "spawn/long/mp_spawn_01.wav",
+		victorytheme = "results/victory/eagleclaw_win_a.wav",
+		defeattheme = "results/loss/foe_loss_a.wav",
+		spawnIcon = hudtype .. "/factions/faction_128_op40.png",
+		scoreIcon = hudtype .. "/factions/faction_128_op40.png",
 		color = Color(100, 105, 80),
 		killfeedcol = Color(100, 110, 120),
 		glow = Color(240, 230, 190),
 		order = 1
 	},
-	["taskforce141"] = {
-		name = "MW2_MP_TASKFORCE_NAME",
-		short = "MW2_MP_TASKFORCE_SHORT_NAME",
-		voicepath = "uk/mp/uk_1mc_",
-		spawntheme = "uk/hz_mp_ukspawn_1.mp3",
-		victorytheme = "uk/hz_mp_ukvictory_1.mp3",
-		defeattheme = "uk/hz_mp_ukdefeat_1.mp3",
-		spawnIcon = hudtype .. "/factions/faction_128_taskforce141.png",
-		scoreIcon = hudtype .. "/factions/faction_128_taskforce141_fade.png",
-		color = Color(70, 80, 80),
+	["ops"] = {
+		name = "BO1_MP_SPECOPS_NAME",
+		short = "BO1_MPUI_SPECOPS_SHORT",
+		voicepath = "ops/vox_ops_",
+		spawntheme = "spawn/long/pentagon_start_a.wav",
+		victorytheme = "results/victory/eagleclaw_win_a.wav",
+		defeattheme = "results/loss/pentagon_sting_b.wav",
+		spawnIcon = hudtype .. "/factions/faction_128_specops.png",
+		scoreIcon = hudtype .. "/factions/faction_128_specops.png",
+		color = Color(100, 105, 80),
 		killfeedcol = Color(100, 110, 120),
-		glow = Color(225, 225, 255),
+		glow = Color(240, 230, 190),
 		order = 2
 	},
-	["seals"] = {
-		name = "MW2_MP_SEALS_UDT_NAME",
-		short = "MW2_MP_SEALS_UDT_SHORT_NAME",
-		voicepath = "ns/mp/ns_1mc_",
-		spawntheme = "ns/hz_mp_nsspawn_1.mp3",
-		victorytheme = "ns/hz_mp_nsvictory_1.mp3",
-		defeattheme = "ns/hz_mp_nsdefeat_1.mp3",
-		spawnIcon = hudtype .. "/factions/faction_128_seals.png",
-		scoreIcon = hudtype .. "/factions/faction_128_seals_fade.png",
-		color = Color(65, 90, 130),
+	["sog"] = {
+		name = "BO1_MP_MARINE_NAME",
+		short = "BO1_MPUI_MARINE_SHORT",
+		voicepath = "sog/vox_sog_",
+		spawntheme = "spawn/long/chopperintro_spawn_long_a.wav",
+		victorytheme = "results/victory/eagleclaw_win_a.wav",
+		defeattheme = "results/loss/foe_loss_a.wav",
+		spawnIcon = hudtype .. "/factions/faction_128_marines.png",
+		scoreIcon = hudtype .. "/factions/faction_128_marines.png",
+		color = Color(100, 105, 80),
 		killfeedcol = Color(100, 110, 120),
-		glow = Color(170, 170, 185),
+		glow = Color(240, 230, 190),
 		order = 3
 	},
-	["ussr"] = {
-		name = "MW2_MP_SPETSNAZ_NAME",
-		short = "MW2_MPUI_SPETSNAZ_SHORT",
-		voicepath = "ru/mp/ru_1mc_",
-		spawntheme = "ru/hz_mp_ruspawn_1.mp3",
-		victorytheme = "ru/hz_mp_ruvictory_1.mp3",
-		defeattheme = "ru/hz_mp_rudefeat_1.mp3",
-		spawnIcon = hudtype .. "/factions/faction_128_ussr.png",
-		scoreIcon = hudtype .. "/factions/faction_128_ussr_fade.png",
-		color = Color(105, 40, 45),
-		killfeedcol = Color(120, 110, 100),
-		glow = Color(185, 140, 120),
+	["rus"] = {
+		name = "BO1_MP_RUSSIAN_NAME",
+		short = "BO1_MPUI_RUSSIAN_SHORT",
+		voicepath = "rus/vox_rus_",
+		spawntheme = "spawn/long/commies_match_start_a.wav",
+		victorytheme = "results/victory/pentagon_treyarch_sting.wav",
+		defeattheme = "results/loss/commies_sting_b.wav",
+		spawnIcon = hudtype .. "/factions/faction_128_spetsnaz.png",
+		scoreIcon = hudtype .. "/factions/faction_128_spetsnaz.png",
+		color = Color(100, 105, 80),
+		killfeedcol = Color(100, 110, 120),
+		glow = Color(240, 230, 190),
 		order = 4
 	},
-	["arab"] = {
-		name = "MW2_MP_OPFOR_NAME",
-		short = "MW2_MPUI_OPFOR_SHORT",
-		voicepath = "ab/mp/ab_1mc_",
-		spawntheme = "ab/hz_mp_abspawn_1.mp3",
-		victorytheme = "ab/hz_mp_abvictory_1.mp3",
-		defeattheme = "ab/hz_mp_abdefeat_1.mp3",
-		spawnIcon = hudtype .. "/factions/faction_128_arab.png",
-		scoreIcon = hudtype .. "/factions/faction_128_arab_fade.png",
-		color = Color(105, 60, 45),
-		killfeedcol = Color(120, 110, 100),
-		glow = Color(220, 180, 150),
+	["nva"] = {
+		name = "BO1_MP_NVA_NAME",
+		short = "BO1_MPUI_NVA_SHORT",
+		voicepath = "nva/vox_nva_",
+		spawntheme = "spawn/long/invictus_spawn_long_a.wav",
+		victorytheme = "results/victory/pentagon_treyarch_sting.wav",
+		defeattheme = "results/loss/foe_loss_a.wav",
+		spawnIcon = hudtype .. "/factions/faction_128_nva.png",
+		scoreIcon = hudtype .. "/factions/faction_128_nva.png",
+		color = Color(100, 105, 80),
+		killfeedcol = Color(100, 110, 120),
+		glow = Color(240, 230, 190),
 		order = 5
 	},
-	["militia"] = {
-		name = "MW2_MP_MILITIA_NAME",
-		short = "MW2_MP_MILITIA_SHORT_NAME",
-		voicepath = "pg/mp/pg_1mc_",
-		spawntheme = "pg/hz_mp_pgspawn_1.mp3",
-		victorytheme = "pg/hz_mp_pgvictory_1.mp3",
-		defeattheme = "pg/hz_mp_pgdefeat_1.mp3",
-		spawnIcon = hudtype .. "/factions/faction_128_militia.png",
-		scoreIcon = hudtype .. "/factions/faction_128_militia_fade.png",
-		color = Color(100, 10, 15),
-		killfeedcol = Color(120, 110, 100),
-		glow = Color(150, 85, 85),
+	["cub"] = {
+		name = "BO1_MP_TROPAS_NAME",
+		short = "BO1_MPUI_TROPAS_SHORT",
+		voicepath = "cub/vox_cub_",
+		spawntheme = "spawn/long/mus_virus_downhill_perc_mp.wav",
+		victorytheme = "results/victory/pentagon_treyarch_sting.wav",
+		defeattheme = "results/loss/albion_sting_a.wav",
+		spawnIcon = hudtype .. "/factions/faction_128_tropas.png",
+		scoreIcon = hudtype .. "/factions/faction_128_tropas.png",
+		color = Color(100, 105, 80),
+		killfeedcol = Color(100, 110, 120),
+		glow = Color(240, 230, 190),
 		order = 6
 	},
 }
@@ -134,9 +143,9 @@ CoDHUD[hudtype].TextStrings = {
 }
 
 CoDHUD[hudtype].VoiceCallouts = {
-	winningmusic = "music/mw2/hz_mp_opfor_victory.mp3",
-	losingmusic = "music/mw2/hz_mp_time_out_losing.mp3",
-	drawmusic = "music/mw2/hz_mp_defeat_01.mp3",
+	winningmusic = "music/bo1/timers/eagleclaw_timer_a.wav",
+	losingmusic = "music/bo1/timers/invictus_time_a.wav",
+	drawmusic = "music/bo1/results/draw/pentagon_lose_a.wav",
 
 	winningfight = "winning",
 	losingfight = "losing",
@@ -144,7 +153,6 @@ CoDHUD[hudtype].VoiceCallouts = {
 	
 	leadtaken = "lead_taken",
 	leadlost = "lead_lost",
-	leadtied = "tied",
 	
 	missionwin = "mission_success",
 	missionlose = "mission_fail",
@@ -179,52 +187,40 @@ CoDHUD.Gamemodes[hudtype] = {
 	{ "#MW2_MPUI_SABOTAGE", "sab" },
 	{ "#MW2_MPUI_CAPTURE_THE_FLAG", "ctf" },
 	{ "#MW2_MPUI_HEADQUARTERS", "hq" },
-	{ "#MW2_MPUI_ONE_FLAG", "oneflag" },
-	{ "#MW2_MPUI_ARENA", "arena" },
 	{ "#MW2_MPUI_DD", "dd" },
-	{ "#MW2_MPUI_GTNW", "gtnw" },
 }
 
 CoDHUD.Gamemodes[hudtype].Hints = {
-    ["war"] = "MW2_MP_OBJ_WAR_HINT", -- TDM
-    ["dm"] = "MW2_MP_OBJ_DM_HINT", -- FFA
-    ["dom"] = "MW2_OBJECTIVES_DOM_HINT", -- Domination
-    ["sd"] = "MW2_OBJECTIVES_SD_ATTACKER_HINT", -- Search & Destroy
-    ["sab"] = "MW2_OBJECTIVES_SAB_HINT", -- Sabotage
-    ["ctf"] = "MW2_OBJECTIVES_CTF_HINT", -- Capture the Flag
-    ["hq"] = "MW2_OBJECTIVES_KOTH_HINT", -- Headquarters
-    ["oneflag"] = "MW2_OBJECTIVES_ONE_FLAG_ATTACKER_HINT", -- One Flag CTF
-    ["arena"] = "MW2_OBJECTIVES_ARENA_HINT", -- Arena
-    ["dd"] = "MW2_OBJECTIVES_SD_ATTACKER_HINT", -- Demolition
-    ["gtnw"] = "MW2_OBJECTIVES_GTNW_HINT", -- Global Thermonuclear War
+    ["war"] = "BO1_OBJECTIVES_TDM_HINT", -- TDM
+    ["dm"] = "BO1_OBJECTIVES_DM_HINT", -- FFA
+    ["dom"] = "BO1_OBJECTIVES_DOM_HINT", -- Domination
+    ["sd"] = "BO1_OBJECTIVES_SD_ATTACKER_HINT", -- Search & Destroy
+    ["sab"] = "BO1_OBJECTIVES_SAB_HINT", -- Sabotage
+    ["ctf"] = "BO1_OBJECTIVES_CTF_HINT", -- Capture the Flag
+    ["hq"] = "BO1_OBJECTIVES_TDM_HINT", -- Headquarters (REPLACEME LATER MAYBE?)
+    ["dd"] = "BO1_OBJECTIVES_DEM_ATTACKER_HINT", -- Demolition
 }
 
 CoDHUD.Gamemodes[hudtype].Callouts = {
-    ["war"] = "team_deathmtch",
-    ["dm"] = "freeforall",
-    ["dom"] = "domination",
-    ["sd"] = "searchdestroy",
-    ["sab"] = "sabotage",
-    ["ctf"] = "captureflag",
-    ["hq"] = "headquarters",
-    ["oneflag"] = "one_flag",
-    ["arena"] = "arena",
-    ["dd"] = "demolition",
-    ["gtnw"] = "gtw",
+    ["war"] = "tdm_start",
+    ["dm"] = "ffa_start",
+    ["dom"] = "dom_start",
+    ["sd"] = "sd_start",
+    ["sab"] = "sab_start",
+    ["ctf"] = "ctf_start",
+    ["hq"] = "hq_start",
+    ["dd"] = "demo_start",
 }
 
 CoDHUD.Gamemodes[hudtype].Boosts = {
-    ["war"] = "boost",
-    ["dm"] = "boost",
-    ["dom"] = "capture_obj",
-    ["sd"] = "objs_destroy",
-    ["sab"] = "obj_destroy",
-    ["ctf"] = "capture_obj",
-    ["hq"] = "capture_obj",
-    ["oneflag"] = "capture_obj",
-    ["arena"] = "boost",
-    ["dd"] = "objs_destroy",
-    ["gtnw"] = "capture_obj",
+    ["war"] = "generic_boost",
+    ["dm"] = "generic_boost",
+    ["dom"] = "cap_start",
+    ["sd"] = "destroy_start",
+    ["sab"] = "destroy_start",
+    ["ctf"] = "cap_start",
+    ["hq"] = "cap_start",
+    ["dd"] = "cap_start",
 }
 
 -- [[ HELPERS ]]
@@ -234,11 +230,11 @@ local function DrawSqueezedScore(val, x, y, alpha)
 	local s_val     = tostring(val)
 	local partPlus  = "+"
 
-	surface.SetFont("MW2_Score_Plus")
+	surface.SetFont("BO1_Score_Plus")
 	local wP  = surface.GetTextSize(partPlus)
-	local gapPlus = CoDHUD_SX(-6)
+	local gapPlus = CoDHUD_SX(0)
 
-	surface.SetFont("MW2_Score_Main")
+	surface.SetFont("BO1_Score_Main")
 
 	local totalW = wP + gapPlus
 	for i = 1, #s_val do
@@ -246,8 +242,7 @@ local function DrawSqueezedScore(val, x, y, alpha)
 		local w    = surface.GetTextSize(char)
 		totalW = totalW + w
 		if i < #s_val then
-			local gap = (char == "1") and CoDHUD_SX(-11) or CoDHUD_SX(-5)
-			totalW = totalW + gap
+			totalW = totalW
 		end
 	end
 
@@ -261,14 +256,13 @@ local function DrawSqueezedScore(val, x, y, alpha)
 	end
 
 	local runX = curX
-	runX = runX + DrawComponent(partPlus, "MW2_Score_Plus", runX, y) + gapPlus
+	runX = runX + DrawComponent(partPlus, "BO1_Score_Plus", runX, y) + gapPlus
 
 	for i = 1, #s_val do
 		local char = s_val:sub(i, i)
-		local w    = DrawComponent(char, "MW2_Score_Main", runX, y)
+		local w    = DrawComponent(char, "BO1_Score_Main", runX, y)
 		if i < #s_val then
-			local gap = (char == "1") and CoDHUD_SX(-11) or CoDHUD_SX(-5)
-			runX = runX + w + gap
+			runX = runX + w
 		end
 	end
 end
@@ -314,14 +308,8 @@ local function settingsmenu( ... )
 	local w = select(1, ...)
 	local h = select(2, ...)
 
-	draw.RoundedBox(0, 0, 0, w, h, Color(100,100,100))
-
-	surface.SetDrawColor(255, 255, 255, 125)
-	surface.SetMaterial( Material( "mw2/settings/menu_anim" ) )
-	surface.DrawTexturedRect(0, 0, w, h)
-	
 	surface.SetDrawColor(255, 255, 255)
-	surface.SetMaterial( Material( "mw2/settings/menu_bg" ) )
+	surface.SetMaterial( Material( "bo1/settings/menu_mp_background_main2.png" ) )
 	surface.DrawTexturedRect(0, 0, w, h)
 end
 CoDHUD[hudtype].SettingsMenu = settingsmenu
@@ -348,11 +336,14 @@ local function challengecomplete( ... )
 	end
 	
     CoDHUD_HeaderQueue.Push({
+		type = "bo",
+		writeSounds = textype,
+		writeSpeed = 8,
         text = CoDHUD_ChallengeTitle(header, level),
         subtext = (sub and sub ~= "") and ResolvePrefix("MW2_CHALLENGE_", sub) or nil,
         x = CoDHUD_SX(960),
         y = CoDHUD_SY(205),
-        color = Color(0,220,80),
+        color = Color(0,0,0),
         fonts = {
             pri = "MW2_ChalHeader_Pri",
             sec = "MW2_ChalHeader_Sec",
@@ -362,7 +353,7 @@ local function challengecomplete( ... )
 		align = align or nil
     })
 
-    surface.PlaySound("hud/mp_challengecomplete_metal_2.mp3")
+    surface.PlaySound("music/bo1/stings/mp_milestone_sting.wav")
 end
 CoDHUD[hudtype].ChallengeComplete = challengecomplete
 
@@ -370,14 +361,17 @@ local function rs_obj( ... )
 	local text = select(1, ...)
 
 	CoDHUD_HeaderQueue.Push({
+		type = "bo",
+		writeSounds = textype,
+		writeSpeed = 8,
 		text = language.GetPhrase(text),
 		x = CoDHUD_SX(960),
-		y = CoDHUD_SY(205),
-		color = Color(0, 220, 80),
+		y = CoDHUD_SY(170),
+		color = Color(0, 0, 0),
 		fonts = {
-			pri = "MW2_RS_O_Pri",
-			sec = "MW2_RS_O_Sec",
-			shd = "MW2_RS_O_Shd"
+			pri = "BO1_RS_O_Pri",
+			sec = "BO1_RS_O_Sec",
+			shd = "BO1_RS_O_Shd"
 		}
 	})
 end
@@ -389,18 +383,21 @@ local function rs_title( ... )
 	local logo = select(3, ...)
 
 	CoDHUD_HeaderQueue.Push({
+		type = "bo",
+		writeSounds = textype,
+		writeSpeed = 8,
 		text = language.GetPhrase(text),
 		x = CoDHUD_SX(960),
-		y = CoDHUD_SY(150),
-		color = glow,
+		y = CoDHUD_SY(50),
+		color = Color(0,0,0),
 
-		iconY = CoDHUD_SY(180),
+		iconY = CoDHUD_SY(80),
 		iconSize = CoDHUD_S(134),
 
 		fonts = {
-			pri = "MW2_RS_H_Pri",
-			sec = "MW2_RS_H_Sec",
-			shd = "MW2_RS_H_Shd"
+			pri = "BO1_RS_H_Pri",
+			sec = "BO1_RS_H_Sec",
+			shd = "BO1_RS_H_Shd"
 		},
 
 		icon = logo
@@ -431,10 +428,10 @@ local function rs_timer( ... )
 		tMat:Translate(Vector(-tx, -ty, 0))
 
 		cam.PushModelMatrix(tMat)
-			draw.SimpleTextOutlined( disp, "MW2_RS_Timer", tx, ty, Color(255,255,100), 1, 1, outlined and 1 or 0, Color(0,0,0) )
+			draw.SimpleTextOutlined( disp, "BO1_RS_Timer", tx, ty, Color(255,255,100), 1, 1, outlined and 1 or 0, Color(0,0,0) )
 		cam.PopModelMatrix()
 
-		draw.SimpleTextOutlined( "#MW2_MP_MATCH_STARTING_IN", "MW2_RS_S_Pri", tx, ty + syo, Color(255,255,255), 1, 1, outlined and 1 or 0, Color(0,0,0) )
+		draw.SimpleTextOutlined( "#BO1_MP_MATCH_STARTING_IN", "BO1_RS_S_Pri", tx, ty + syo, Color(255,255,255), 1, 1, outlined and 1 or 0, Color(0,0,0) )
 	end
 end
 CoDHUD[hudtype].RoundStartTimer = rs_timer
@@ -459,7 +456,10 @@ local function re_teams( ... )
 
     -- Teams
     CoDHUD_HeaderQueue.Push({
+		type = "bo",
         teams = scaledTeams, -- use scaled version
+		writeSounds = textype,
+		writeSpeed = 8,
         x = CoDHUD_SX(960),
         y = CoDHUD_SY(400),
         multiple = true,
@@ -471,15 +471,18 @@ local function re_teams( ... )
         scoreY = CoDHUD_SY(620),
 
         fonts = {
-            pri = "MW2_RE_Sc_Pri",
-            sec = "MW2_RE_Sc_Sec",
-            shd = "MW2_RE_Sc_Shd",
+            pri = "BO1_RE_Sc_Pri",
+            sec = "BO1_RE_Sc_Sec",
+            shd = "BO1_RE_Sc_Shd",
         }
     })
 
 	-- Text
 	CoDHUD_HeaderQueue.Push({
+		type = "bo",
 		text = ws_result,
+		writeSounds = textype,
+		writeSpeed = 8,
 		x = CoDHUD_SX(960),
 		y = CoDHUD_SY(240),
 		color = re_result_glow,
@@ -488,15 +491,18 @@ local function re_teams( ... )
 		persist = true,
 		endTime = CFG.SCOREBOARD_DELAY,
 		fonts = {
-			pri = "MW2_RE_Re_Pri",
-			sec = "MW2_RE_Re_Sec",
-			shd = "MW2_RE_Re_Shd",
-			sub = "MW2_ChalSub"
+			pri = "BO1_RE_Re_Pri",
+			sec = "BO1_RE_Re_Sec",
+			shd = "BO1_RE_Re_Shd",
+			sub = "BO1_ChalSub"
 		}
 	})
 
 	CoDHUD_HeaderQueue.Push({
+		type = "bo",
 		text = ws_limit,
+		writeSounds = textype,
+		writeSpeed = 8,
 		x = CoDHUD_SX(960),
 		y = CoDHUD_SY(330),
 		color = Color(135, 135, 180),
@@ -505,9 +511,9 @@ local function re_teams( ... )
 		persist = true,
 		endTime = CFG.SCOREBOARD_DELAY,
 		fonts = {
-			pri = "MW2_RE_Li_Pri",
-			sec = "MW2_RE_Li_Sec",
-			shd = "MW2_RE_Li_Shd",
+			pri = "BO1_RE_Li_Pri",
+			sec = "BO1_RE_Li_Sec",
+			shd = "BO1_RE_Li_Shd",
 		}
 	})
 
@@ -526,7 +532,7 @@ local function re_bonus( ... )
 
     local iconAlpha = math.floor(math.Clamp(el / 1.0, 0, 1) * 255)
 
-	draw.SimpleTextOutlined( string.format( language.GetPhrase("MW2_MP_MATCH_BONUS_IS"), tostring(re_match_bonus) ), "MW2_RE_Bonus", CoDHUD_SX(960), CoDHUD_SY(720), Color(240, 250, 110, iconAlpha), 1, 1, outlined and 1 or 0, Color(0,0,0, iconAlpha) )
+	draw.SimpleTextOutlined( string.format( language.GetPhrase("MW2_MP_MATCH_BONUS_IS"), tostring(re_match_bonus) ), "BO1_RE_Bonus", CoDHUD_SX(960), CoDHUD_SY(720), Color(240, 250, 110, iconAlpha), 1, 1, outlined and 1 or 0, Color(0,0,0, iconAlpha) )
 end
 CoDHUD[hudtype].RoundEndBonus = re_bonus
 
@@ -535,7 +541,7 @@ local function hitmarker( ... )
 	local ct = CurTime()
 	local cx, cy = ScrW() / 2, ScrH() / 2
 
-	local matHit = Material(hudtype .. "/icons/hitmarker.png", "mips smooth")
+	local matHit = Material(hudtype .. "/icons/damage_feedback.png", "mips smooth")
 
 	local fade = math.Clamp((hitTime - ct) / 0.9, 0, 1) * 255
 	surface.SetMaterial(matHit)
@@ -624,8 +630,8 @@ local function grenade_dir( ... )
 
     local cx, cy = ScrW() / 2, ScrH() / 2
 
-	local matIcon = Material(hudtype .. "/icons/grenadeicon_white.png", "mips smooth")
-	local matPointer = Material(hudtype .. "/icons/grenadepointer_white.png", "mips smooth")
+	local matIcon = Material(hudtype .. "/hud/grenadeicon.png", "mips smooth")
+	local matPointer = Material(hudtype .. "/icons/grenadepointer.png", "mips smooth")
 		
     for _, ent in ipairs(nearEnts) do
         if not CoDHUD_IsGrenade(ent) then continue end
@@ -681,7 +687,7 @@ local function killfeed( ... )
 	local outlined = GetConVar("codhud_enable_outlinedtext"):GetBool()
 
     local xPos = CoDHUD_S(10)
-    local yPos = CoDHUD_S(210)
+    local yPos = CoDHUD_S(260)
     local spacing = CoDHUD_S(36)
     local iconW = CoDHUD_S(32)
     local iconH = CoDHUD_S(32)
@@ -724,7 +730,7 @@ local function killfeed( ... )
         local x = xPos
         local finalTxtAlpha = 155 * fadeFactor
 
-        surface.SetFont("MW2_KillfeedFont")
+        surface.SetFont("BO1_KillfeedFont")
 
 		local attackerEnt = data.attackerEnt
 		local victimEnt = data.victimEnt
@@ -739,7 +745,7 @@ local function killfeed( ... )
 			local ICON_BOX_W = iconW
 			local ICON_BOX_H = iconH
 
-			local cls = data.isHeadshot and "CoDHUD_MW2_Headshot" or data.weaponClass
+			local cls = data.isHeadshot and "CoDHUD_BO1_Headshot" or data.weaponClass
 			local w, h = killicon.GetSize(cls)
 
 			if not w or w <= 0 then w = ICON_BOX_W end
@@ -749,7 +755,7 @@ local function killfeed( ... )
 
 			-- 1. Attacker
 			if data.attackerName != "" then
-				draw.SimpleText(data.attackerName, "MW2_KillfeedFont", x, currentY, aCol)
+				draw.SimpleText(data.attackerName, "BO1_KillfeedFont", x, currentY, aCol)
 
 				local tw, _ = surface.GetTextSize(data.attackerName)
 				x = x + tw
@@ -763,7 +769,7 @@ local function killfeed( ... )
 			local offsetX = CoDHUD_S(0)
 			local offsetY = CoDHUD_S(-15)
 
-			if cls == "CoDHUD_MW2_Headshot" then
+			if cls == "CoDHUD_BO1_Headshot" then
 				offsetY = CoDHUD_S(-2)
 			end
 
@@ -775,9 +781,9 @@ local function killfeed( ... )
 			x = x + w + (gap * 2)
 
 			-- 3. Victim
-			draw.SimpleText(data.victimName, "MW2_KillfeedFont", x, currentY, vCol)
+			draw.SimpleText(data.victimName, "BO1_KillfeedFont", x, currentY, vCol)
         else
-            draw.SimpleText(data.msg, "MW2_KillfeedFont", x, currentY, Color(255, 255, 255, finalTxtAlpha))
+            draw.SimpleText(data.msg, "BO1_KillfeedFont", x, currentY, Color(255, 255, 255, finalTxtAlpha))
         end
     end
 end
@@ -791,7 +797,7 @@ local function medals( ... )
 	local outlined = GetConVar("codhud_enable_outlinedtext"):GetBool()
     local cx, cy = ScrW() / 2, ScrH() / 2
     local MEDAL_DURATION = 1.25
-    local FADE_IN_TIME   = 0.125
+    local FADE_IN_TIME   = 0.2
     local EXIT_DURATION  = 0.125
     local FADE_OUT_START = MEDAL_DURATION - EXIT_DURATION
 
@@ -799,7 +805,7 @@ local function medals( ... )
 
     local MEDAL_CFG = {
         X_OFFSET = 0,    -- Horizontal offset from center
-        Y_OFFSET = -250, -- Vertical offset (Match this with cl_mw2_challenge.lua)
+        Y_OFFSET = -0, -- Vertical offset (Match this with cl_mw2_challenge.lua)
     }
 
 	if age > MEDAL_DURATION then
@@ -813,22 +819,24 @@ local function medals( ... )
 	if age < FADE_IN_TIME then
 		local progress = age / FADE_IN_TIME
 		alpha = progress * 255
-		scale = Lerp(progress, 3.5, 1.0)
+		scale = Lerp(progress, 3.0, 1.0)
 
 	elseif age > FADE_OUT_START then
 		local progress = (age - FADE_OUT_START) / EXIT_DURATION
 		alpha = math.Clamp((1 - progress) * 255, 0, 255)
-		scale = Lerp(progress, 1.0, 3.0)
+		scale = Lerp(progress, 1.0, 1.0)
 	end
 
 	local cx = (ScrW() / 2) + CoDHUD_S(MEDAL_CFG.X_OFFSET)
-	local cy = (ScrH() / 2) + CoDHUD_S(MEDAL_CFG.Y_OFFSET)
+	local cy = (ScrH() * 0.1) + CoDHUD_S(MEDAL_CFG.Y_OFFSET)
 
 	local colWhite      = Color(255, 255, 255, alpha)
 	local colBlack      = Color(0, 0, 0, alpha * 0.8)
 	local colYellow     = Color(COL_POINTS.r, COL_POINTS.g, COL_POINTS.b, alpha)
 	local colRedGlow    = Color(195, 110, 115, alpha * 0.5)
 	local colRedOutline = Color(180, 0, 0, alpha * 0.8)
+
+	local iconSize = CoDHUD_S(320)
 
 	local mat = Matrix()
 	mat:Translate(Vector(cx, cy, 0))
@@ -837,58 +845,55 @@ local function medals( ... )
 
 	cam.PushModelMatrix(mat)
 		-- ICON
-		if activeMedal.hasIcon then
-			surface.SetDrawColor(255, 255, 255, alpha)
-			surface.SetMaterial(Material(hudtype .. "/icons/crosshair_red.png", "smooth"))
-			surface.DrawTexturedRect(cx - CoDHUD_S(60), cy - CoDHUD_S(120), CoDHUD_S(120), CoDHUD_S(120))
-		end
+		surface.SetDrawColor(255, 0, 0, math.Clamp(alpha, 0, 50))
+		surface.SetMaterial(Material(hudtype .. "/icons/hud_notification_medal_backing.png", "smooth"))
+		surface.DrawTexturedRect(cx - iconSize, cy - (iconSize * 0.5), iconSize * 2, iconSize)
 
-		-- TEXT
-		local localizedText = language.GetPhrase(activeMedal.text)
-
-		draw.SimpleTextOutlined( localizedText, "MW2_MedalGlow", cx, cy, Color(0,0,0,0), 1, 1, 0.75, colRedGlow )
-		draw.SimpleTextOutlined( localizedText, "MW2_MedalPrimary", cx, cy, colWhite, 1, 1, 0, colRedOutline )
+		-- HEADER
+		draw.SimpleTextOutlined( language.GetPhrase(activeMedal.text), "BO1_MedalPrimary", cx, cy - CoDHUD_S(20), colWhite, 1, 1, outlined and 1.5 or 0, colBlack )
 
 		-- DESC / POINTS
 		if activeMedal.desc then
 			local localizedDesc = language.GetPhrase(activeMedal.desc)
 
 			if activeMedal.isSpecial then
-				draw.SimpleTextOutlined( localizedDesc, "MW2_MedalDesc", cx, cy + CoDHUD_S(35), colWhite, 1, 1, outlined and 1 or 0, colBlack )
+				draw.SimpleTextOutlined( localizedDesc, "BO1_MedalDesc", cx, cy + CoDHUD_S(25), colWhite, 1, 1, outlined and 1 or 0, colBlack )
 			else
-				local descText     = localizedDesc .. " ("
-				local pointsText   = "+" .. activeMedal.points
-				local bracketClose = ")"
+				local descText     = localizedDesc
+				local pointsText   = " +" .. activeMedal.points
+				local bracketClose = ""
 
-				surface.SetFont("MW2_MedalDesc")
-				local w1 = surface.GetTextSize(descText)
+				surface.SetFont("BO1_MedalPoints")
 				local w2 = surface.GetTextSize(pointsText)
+				
+				surface.SetFont("BO1_MedalDesc")
+				local w1 = surface.GetTextSize(descText)
 				local totalW = w1 + w2 + surface.GetTextSize(bracketClose)
 
 				local startX = cx - (totalW / 2)
 
-				draw.SimpleTextOutlined( descText, "MW2_MedalDesc", startX, cy + CoDHUD_S(35), colWhite, 0, 1, outlined and 1 or 0, colBlack )
-				draw.SimpleTextOutlined( pointsText, "MW2_MedalDesc", startX + w1, cy + CoDHUD_S(35), colYellow, 0, 1, outlined and 1 or 0, colBlack )
-				draw.SimpleTextOutlined( bracketClose, "MW2_MedalDesc", startX + w1 + w2, cy + CoDHUD_S(35), colWhite, 0, 1, outlined and 1 or 0, colBlack )
+				draw.SimpleTextOutlined( descText, "BO1_MedalDesc", startX, cy + CoDHUD_S(30), colWhite, 0, 1, outlined and 1 or 0, colBlack )
+				draw.SimpleTextOutlined( pointsText, "BO1_MedalPoints", startX + w1, cy + CoDHUD_S(30), colYellow, 0, 1, outlined and 1 or 0, colBlack )
+				draw.SimpleTextOutlined( bracketClose, "BO1_MedalDesc", startX + w1 + w2, cy + CoDHUD_S(30), colWhite, 0, 1, outlined and 1 or 0, colBlack )
 			end
 		else
-			draw.SimpleTextOutlined( "+" .. activeMedal.points, "MW2_MedalDesc", cx, cy + CoDHUD_S(35), colYellow, 1, 1, outlined and 1 or 0, colBlack )
+			draw.SimpleTextOutlined( "+" .. activeMedal.points, "BO1_MedalDesc", cx, cy + CoDHUD_S(30), colYellow, 1, 1, outlined and 1 or 0, colBlack )
 		end
 	cam.PopModelMatrix()
 
 end
 CoDHUD[hudtype].Medals = medals
-CoDHUD[hudtype].MedalsSound = "hud/hud_medal.mp3"
+CoDHUD[hudtype].MedalsSound = "hud/bo1/repeatable.wav"
 CoDHUD[hudtype].MedalsTable = {
-	["headshot"] = { "MW2_SPLASHES_HEADSHOT" },
-	["doublekill"] = { "MW2_SPLASHES_DOUBLEKILL" },
-	["triplekill"] = { "MW2_SPLASHES_TRIPLEKILL" },
-	["multikill"] = { "MW2_SPLASHES_MULTIKILL" },
-	["longshot"] = { "MW2_SPLASHES_LONGSHOT", "MW2_SPLASHES_LONGSHOT_DESC" },
-	["oneshot"] = { "MW2_SPLASHES_ONE_SHOT_KILL", "MW2_SPLASHES_ONE_SHOT_KILL_DESC" },
-	["firstblood"] = { "MW2_SPLASHES_FIRSTBLOOD", "MW2_SPLASHES_FIRSTBLOOD_DESC" },
-	["comeback"] = { "MW2_SPLASHES_COMEBACK", "MW2_SPLASHES_COMEBACK_DESC" },
-	["payback"] = { "MW2_SPLASHES_REVENGE", "MW2_SPLASHES_REVENGE_DESC" },
+	["headshot"] = { "BO1_MEDAL_HEAD_SHOT", "BO1_MEDAL_HEAD_SHOT_DESC" },
+	["doublekill"] = { "BO1_MEDAL_DOUBLE_KILL", "BO1_MEDAL_DOUBLE_KILL_DESC" },
+	["triplekill"] = { "BO1_MEDAL_TRIPLE_KILL", "BO1_MEDAL_TRIPLE_KILL_DESC" },
+	["multikill"] = { "BO1_MEDAL_MULTI_KILL", "BO1_MEDAL_MULTI_KILL_DESC" },
+	["longshot"] = { "BO1_MEDAL_LONG_SHOT", "BO1_MEDAL_LONG_SHOT_DESC" },
+	["oneshot"] = { "BO1_MEDAL_ONE_SHOT_KILL", "BO1_MEDAL_ONE_SHOT_KILL_DESC" },
+	["firstblood"] = { "BO1_MEDAL_FIRST_BLOOD", "BO1_MEDAL_FIRST_BLOOD_DESC" },
+	["comeback"] = { "BO1_MEDAL_COMEBACK", "BO1_MEDAL_COMEBACK_DESC" },
+	["payback"] = { "BO1_MEDAL_PAYBACK", "BO1_MEDAL_PAYBACK_DESC" },
 }
 
 local function minimap( ... )
@@ -920,11 +925,9 @@ local function minimap( ... )
 		EDGE_PADDING    = 0, 
 	}
 
-	local MAT_BORDER        = Material(hudtype .. "/minimap/minimap_background.png", "smooth")
-	local MAT_MAP_BG        = Material(hudtype .. "/minimap/compass_map_default.png", "smooth")
+	local MAT_BORDER        = Material(hudtype .. "/minimap/compass_map_border.png", "smooth")
+	local MAT_MAP_BG        = Material("cod4/minimap/compass_map_default.png", "smooth")
 	local MAT_PLAYER        = Material(hudtype .. "/minimap/compassping_player.png", "smooth")
-	local MAT_STATIC_SCAN   = Material(hudtype .. "/minimap/minimap_scanlines.png", "smooth")
-	local MAT_MOVING_SCAN   = Material(hudtype .. "/minimap/scanlines.png", "smooth")
 
 	local MAT_FRIEND_HOLLOW  = Material(hudtype .. "/minimap/compassping_green_hollow_mp.png", "smooth")
 	local MAT_ENEMY_FIRING   = Material(hudtype .. "/minimap/compassping_enemyfiring.png", "smooth")
@@ -957,7 +960,7 @@ local function minimap( ... )
 
 		-- 2. LAYER: RADAR BACKGROUND
 		if radar then -- If GMinimap exists
-			radar:SetDimensions(x, y, w, h)
+			radar:SetDimensions(x + CoDHUD_S(2), y + CoDHUD_S(2), w - CoDHUD_S(4), h - CoDHUD_S(4))
 			radar.origin = ply:GetPos()
 			radar.rotation = Angle(0, ply:EyeAngles().y, 0)
 
@@ -968,20 +971,8 @@ local function minimap( ... )
 		else -- fallback if GMinimap missing
 			surface.SetMaterial(MAT_MAP_BG)
 			surface.SetDrawColor(255, 255, 255, MAP_CFG.ALPHA_MAP_BG)
-			surface.DrawTexturedRect(x, y, w, h)
+			surface.DrawTexturedRect(x + CoDHUD_S(2), y + CoDHUD_S(2), w - CoDHUD_S(4), h - CoDHUD_S(4))
 		end
-        
-        -- 3. LAYER: STATIC SCANLINES
-        surface.SetMaterial(MAT_STATIC_SCAN)
-        surface.SetDrawColor(255, 255, 255, MAP_CFG.ALPHA_STATIC_S)
-        surface.DrawTexturedRect(x, y, w, h)
-
-        -- 4. LAYER: REPETITIVE MOVING SCANLINES
-        surface.SetMaterial(MAT_MOVING_SCAN)
-        surface.SetDrawColor(255, 255, 255, MAP_CFG.ALPHA_MOVING_S)
-        local moveOffset = (CurTime() * MAP_CFG.SCAN_SPEED) % h
-        surface.DrawTexturedRect(x, y - moveOffset, w, h)
-        surface.DrawTexturedRect(x, y - moveOffset + h, w, h)
 
     render.SetStencilEnable(false)
     -- [[ STENCIL END ]]
@@ -1150,91 +1141,84 @@ local function minimap( ... )
 end
 CoDHUD[hudtype].Minimap = minimap
 
-local MAT_GRADIENT = Material("vgui/gradient-r")
+local MAT_GRADIENT = Material("bo1/hud/hud_score_progress.png")
+
+-- local debugpic = true
+local debugpicture = Material("debugref/bo1.png", "smooth")
 
 local function scorebar(data)
+
+	if debugpic then
+		surface.SetMaterial(debugpicture)
+		surface.SetDrawColor(255, 255, 255, 255)
+		surface.DrawTexturedRect(0, 0, ScrW(), ScrH())
+	end
+
 	local CFG = {
 		-- Base Bar
-		BAR_W     = 776,
-		BAR_H     = 96,
-		BAR_X_OFF = 0,
-		BAR_Y_OFF = 44,
+		BAR_W     = 512,
+		BAR_H     = 128,
+		BAR_X_OFF = -64,
+		BAR_Y_OFF = 0,
 
 		-- Faction Icon
-		ICON_SCALE = 1.28,
-		ICON_X     = 12,
-		ICON_Y     = 8,
+		ICON_SCALE = 1.15,
+		ICON_X     = 73.5,
+		ICON_Y     = -35.5,
 
 		-- Timer
-		TIMER_X          = 86,
-		TIMER_Y          = -32,
-		TIMER_SHIFT_2DIG = -10,
-		TIMER_SHIFT_3DIG = -12,
+		TIMER_X          = 145,
+		TIMER_Y          = -64,
+		TIMER_SHIFT_2DIG = 0,
+		TIMER_SHIFT_3DIG = 0,
 		TIMER_OUTLINE_W  = 1.5,
 
 		-- Winning / Losing / Tie Text Position
-		STATUS_X = 150,
-		STATUS_Y = 5,
+		STATUS_X = 242.5,
+		STATUS_Y = 2,
 
 		-- Squeeze Values
-		SQUEEZE            = -2,
-		SQUEEZE_ONE        = -6,
-		SQUEEZE_ONE_BEFORE = -4,
+		SQUEEZE            = 2,
+		SQUEEZE_ONE        = 2,
+		SQUEEZE_ONE_BEFORE = 2,
 	}
 
 	local SCORES_CFG = {
 		-- Text Config
-		X = 162,
-		Y = 974,
-		GAP_OFFSET = 32,
+		X = 177.5,
+		Y = 87.5,
+		GAP_OFFSET = 44,
 		SQUEEZE = -4,
-		SQUEEZE_ONE = -10,
-		SQUEEZE_ONE_BEFORE = -10,
+		SQUEEZE_ONE = 0,
+		SQUEEZE_ONE_BEFORE = 0,
 		OUTLINE_W = 1.5,
 
 		-- Score Limit for Bar Scaling
 		SCORE_LIMIT = 75,
 
 		-- Active Bar Config (Green/Red)
-		HUD_X = 200,
-		HUD_Y = 1015,
-		HUD_W_BASE = 14,
-		HUD_W_MAX = 282,
-		HUD_H = 10,
+		HUD_X = 187.5,
+		HUD_Y = 38,
+		HUD_W_BASE = 0,
+		HUD_W_MAX = 215,
+		HUD_H = 43,
+		HUD_H_LOWER = 31.5,
 		SLANT_SIZE = 11,
-		VERTICAL_GAP = 10,
+		VERTICAL_GAP = 5,
 		SHADOW_OFFSET = 2,
 
 		-- Base Bar Config (Black Backgrounds)
-		BASE_X = 190,
-		BASE_Y = 1012,
-		BASE_W = 298,
-		BASE_H = 11,
-		BASE_SLANT = 10,
-		BASE_GAP = 4,
-
-		-- End Cap Config
-		CAP_W = 3,
-		CAP_H_OFFSET = 2,
-		CAP_SLANT = 10,
-		CAP_COLOR = Color(255, 255, 255, 155),
-
-		-- Active Slant Config
-		SLANT_W = 7,
-		SLANT_H_OFFSET = 0.4,
-		SLANT_SEP_W = 1,
-		SLANT_Y_OFFSET_TOP = 0,
-		SLANT_COLOR = Color(255, 255, 255, 220),
+		BASE_X = 52,
+		BASE_Y = 97,
+		BASE_W = 384,
+		BASE_H = 99,
 	}
 
 	local ARROW_CFG = {
 		x = 140,
 		y = 978,
-		w = 27,
-		h = 31,
-		outline = 4,
-		color = Color(140, 220, 140, 255),
-		outlineColor = Color(0, 0, 0, 255),
+		size = 24,
+		color = Color(255, 255, 255),
 		material = Material(hudtype .. "/hud/ui_arrow_right.png", "smooth noclamp"),
 	}
 
@@ -1253,16 +1237,13 @@ local function scorebar(data)
 
     local scrW, scrH = ScrW(), ScrH()
 
-    -- =========================
     -- TOP BAR
-    -- =========================
-
     local barW, barH = CoDHUD_SX(CFG.BAR_W), CoDHUD_SY(CFG.BAR_H)
     local barX = CoDHUD_SX(CFG.BAR_X_OFF)
     local barY = scrH - CoDHUD_SY(CFG.BAR_Y_OFF) - barH
 
-    surface.SetMaterial(Material(hudtype .. "/hud/hud_scorebar.png", "smooth"))
-    surface.SetDrawColor(255, 255, 255, 155)
+    surface.SetDrawColor(255, 255, 255)
+    surface.SetMaterial(Material(hudtype .. "/hud/hud_frame_faction_lines.png", "smooth"))
     surface.DrawTexturedRect(barX, barY, barW, barH)
 
 	local factionData = CoDHUD.Factions[hudtype] and CoDHUD.Factions[hudtype][currentFaction]
@@ -1273,17 +1254,18 @@ local function scorebar(data)
 		currentFaction = "rangers"
 		factionData = CoDHUD.Factions[hudtype][currentFaction]
 	end
-	
+
 	if factionMat then
 		local iSize = math.Round(barH * CFG.ICON_SCALE)
+		
+		-- Background element
+		surface.SetDrawColor(255, 255, 255, 175)
+		surface.SetMaterial(Material(hudtype .. "/hud/hud_faction_back_light.png", "smooth"))
+		surface.DrawTexturedRect( barX + CoDHUD_SX(CFG.ICON_X * 0.75), barY + CoDHUD_SY(CFG.ICON_Y * 1.25), iSize * 1.25, iSize * 1.25)
+
 		surface.SetMaterial(Material(factionMat, "smooth"))
 		surface.SetDrawColor(255, 255, 255, 255)
-		surface.DrawTexturedRect(
-			barX + CoDHUD_SX(CFG.ICON_X),
-			barY + CoDHUD_SY(CFG.ICON_Y),
-			iSize,
-			iSize
-		)
+		surface.DrawTexturedRect( barX + CoDHUD_SX(CFG.ICON_X), barY + CoDHUD_SY(CFG.ICON_Y), iSize, iSize )
 	end
 
     -- TIMER (NOW FROM DATA)
@@ -1294,7 +1276,7 @@ local function scorebar(data)
         (#tostring(mins) >= 3 and CoDHUD_SX(CFG.TIMER_SHIFT_3DIG)) or
         (#tostring(mins) >= 2 and CoDHUD_SX(CFG.TIMER_SHIFT_2DIG)) or 0
 	
-	local timecol = Color(255,255,255)
+	local timecol = Color(225,225,255)
 	
 	if data.timeRaw > 30 and data.timeRaw < 60 then
 		timecol = Color(218,136,43)
@@ -1307,7 +1289,7 @@ local function scorebar(data)
     (CoDHUD_MatchMaxTime <= 0 or data.timeRaw <= CoDHUD_MatchMaxTime)
 
 	if shouldDrawTimer then
-		DrawSqueezedText( timeStr, "MW2_Timer", barX + CoDHUD_SX(CFG.TIMER_X) + xShift, barY + CoDHUD_SY(CFG.TIMER_Y), timecol, CFG.SQUEEZE, CFG.SQUEEZE_ONE, 1, CFG.SQUEEZE_ONE_BEFORE, CoDHUD_SX(CFG.TIMER_OUTLINE_W) )
+		DrawSqueezedText( timeStr, "BO1_Timer", barX + CoDHUD_SX(CFG.TIMER_X) + xShift, barY + CoDHUD_SY(CFG.TIMER_Y), timecol, CFG.SQUEEZE, CFG.SQUEEZE_ONE, 1, CFG.SQUEEZE_ONE_BEFORE, CoDHUD_SX(CFG.TIMER_OUTLINE_W) )
 	end
 	
 	-- Status Colors
@@ -1315,7 +1297,7 @@ local function scorebar(data)
 	data.winningCol = Color(215, 110, 120, 255)
 	data.losingCol = Color(230, 230, 110, 255)
 
-    draw.SimpleTextOutlined( language.GetPhrase(data.statusText), "MW2_Status", barX + CoDHUD_SX(CFG.STATUS_X), barY + CoDHUD_SY(CFG.STATUS_Y), data.statusCol, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP, outlined and 1 or 0, Color(0,0,0) )
+    draw.SimpleTextOutlined( language.GetPhrase(data.statusText), "BO1_Status", barX + CoDHUD_SX(CFG.STATUS_X), barY + CoDHUD_SY(CFG.STATUS_Y), data.statusCol, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP, outlined and 1 or 0, Color(0,0,0) )
 
     -- SCORE BARS (UNCHANGED)
     local clientKills   = data.clientScore
@@ -1324,73 +1306,20 @@ local function scorebar(data)
     local S_CFG = SCORES_CFG
 
     local baseX     = CoDHUD_S(S_CFG.BASE_X)
-    local baseY_raw = scrH - CoDHUD_S(1080 - S_CFG.BASE_Y)
+    local baseY		= scrH - CoDHUD_S(S_CFG.BASE_Y)
     local baseW     = CoDHUD_S(S_CFG.BASE_W)
     local baseH     = CoDHUD_S(S_CFG.BASE_H)
-    local baseSlant = CoDHUD_S(S_CFG.BASE_SLANT)
-    local baseGap   = CoDHUD_S(S_CFG.BASE_GAP)
 
-    local capW      = CoDHUD_S(S_CFG.CAP_W)
-    local capSlant  = CoDHUD_S(S_CFG.CAP_SLANT)
-    local capHOff   = CoDHUD_S(S_CFG.CAP_H_OFFSET)
+    local textX     = CoDHUD_S(S_CFG.X)
+    local textY		= scrH - CoDHUD_S(S_CFG.Y)
 
     local hudX      = CoDHUD_S(S_CFG.HUD_X)
-    local hudY_raw  = scrH - CoDHUD_S(1080 - S_CFG.HUD_Y)
+    local hudY      = scrH - CoDHUD_S(S_CFG.HUD_Y)
     local hudWBase  = CoDHUD_S(S_CFG.HUD_W_BASE)
     local hudWMax   = CoDHUD_S(S_CFG.HUD_W_MAX)
     local hudH      = CoDHUD_S(S_CFG.HUD_H)
-    local slantSize = CoDHUD_S(S_CFG.SLANT_SIZE)
+    local hudHLower      = CoDHUD_S(S_CFG.HUD_H_LOWER)
     local vertGap   = CoDHUD_S(S_CFG.VERTICAL_GAP)
-    local shadowOff = CoDHUD_S(S_CFG.SHADOW_OFFSET)
-
-    local slantW    = CoDHUD_S(S_CFG.SLANT_W)
-    local slantHOff = CoDHUD_S(S_CFG.SLANT_H_OFFSET)
-    local slantSepW = CoDHUD_S(S_CFG.SLANT_SEP_W)
-
-    local BASE_X = baseX
-    local BASE_Y = baseY_raw
-    local BASE_W = baseW
-    local BASE_H = baseH
-    local BASE_SLANT = baseSlant
-    local top_y_base = BASE_Y - baseGap - BASE_H
-
-    surface.SetMaterial(MAT_GRADIENT)
-    surface.SetDrawColor(0, 0, 0, 175)
-    surface.DrawTexturedRect(BASE_X, BASE_Y, BASE_W, BASE_H)
-
-    draw.NoTexture()
-    surface.SetDrawColor(0, 0, 0, 175)
-    surface.DrawPoly({
-        { x = BASE_X + BASE_W,              y = BASE_Y },
-        { x = BASE_X + BASE_W + BASE_SLANT, y = BASE_Y },
-        { x = BASE_X + BASE_W,              y = BASE_Y + BASE_H },
-    })
-
-    surface.SetMaterial(MAT_GRADIENT)
-    surface.SetDrawColor(0, 0, 0, 175)
-    surface.DrawTexturedRect(BASE_X, top_y_base, BASE_W, BASE_H)
-
-    draw.NoTexture()
-    surface.SetDrawColor(0, 0, 0, 175)
-    surface.DrawPoly({
-        { x = BASE_X + BASE_W,              y = top_y_base },
-        { x = BASE_X + BASE_W + BASE_SLANT, y = top_y_base + BASE_H },
-        { x = BASE_X + BASE_W,              y = top_y_base + BASE_H },
-    })
-
-    surface.SetDrawColor(S_CFG.CAP_COLOR)
-    surface.DrawPoly({
-        { x = BASE_X + BASE_W,                  y = top_y_base - (capHOff / 2) },
-        { x = BASE_X + BASE_W + capW,            y = top_y_base - (capHOff / 2) },
-        { x = BASE_X + BASE_W + capSlant + capW, y = top_y_base + BASE_H + (capHOff / 2) },
-        { x = BASE_X + BASE_W + capSlant,        y = top_y_base + BASE_H + (capHOff / 2) },
-    })
-    surface.DrawPoly({
-        { x = BASE_X + BASE_W + capSlant,        y = BASE_Y - (capHOff / 2) },
-        { x = BASE_X + BASE_W + capSlant + capW, y = BASE_Y - (capHOff / 2) },
-        { x = BASE_X + BASE_W + capW,            y = BASE_Y + BASE_H + (capHOff / 2) },
-        { x = BASE_X + BASE_W,                  y = BASE_Y + BASE_H + (capHOff / 2) },
-    })
 
     local liveScoreLimit = S_CFG.SCORE_LIMIT
     local cv_limit = GetConVar("codhud_score_limit")
@@ -1406,109 +1335,32 @@ local function scorebar(data)
     local enemy_w  = math.Round(hudWBase + math.Clamp(((topEnemyKills * 100) / liveScoreLimit) * maxAddedWidth, 0, maxAddedWidth))
 
     local HUD_X = hudX
-    local HUD_Y = hudY_raw
+    local HUD_Y = hudY
     local top_y = HUD_Y - vertGap - hudH
     local white = Color(255,255,255,255)
 
-	-- Shadows
-	surface.SetMaterial(MAT_GRADIENT)
-	surface.SetDrawColor(Color(0, 0, 0, 100))
-	surface.DrawTexturedRect(HUD_X + shadowOff, top_y + shadowOff, client_w, hudH)
-	surface.DrawTexturedRect(HUD_X + shadowOff, HUD_Y + shadowOff, enemy_w, hudH)
-
-	draw.NoTexture()
-	surface.SetDrawColor(Color(0, 0, 0, 100))
-	surface.DrawPoly({
-		{ x = HUD_X + client_w + shadowOff,             y = top_y + shadowOff },
-		{ x = HUD_X + client_w + slantSize + shadowOff, y = top_y + hudH + shadowOff },
-		{ x = HUD_X + client_w + shadowOff,             y = top_y + hudH + shadowOff },
-	})
-	surface.DrawPoly({
-		{ x = HUD_X + enemy_w + shadowOff,             y = HUD_Y + shadowOff },
-		{ x = HUD_X + enemy_w + slantSize + shadowOff, y = HUD_Y + shadowOff },
-		{ x = HUD_X + enemy_w + shadowOff,             y = HUD_Y + hudH + shadowOff },
-	})
+	-- Background element
+    surface.SetDrawColor(255, 255, 255, 175)
+    surface.SetMaterial(Material(hudtype .. "/hud/hud_frame_faction_fade.png", "smooth"))
+    surface.DrawTexturedRect(baseX, baseY, baseW, baseH)
 
 	-- Client bar (green)
 	surface.SetMaterial(MAT_GRADIENT)
 	surface.SetDrawColor(Color(110, 180, 90))
-	surface.DrawTexturedRect(HUD_X, top_y, client_w, hudH)
-
-	draw.NoTexture()
-	surface.SetDrawColor(Color(110, 180, 90))
-	surface.DrawPoly({
-		{ x = HUD_X + client_w,             y = top_y },
-		{ x = HUD_X + client_w + slantSize, y = top_y + hudH },
-		{ x = HUD_X + client_w,             y = top_y + hudH },
-	})
+	surface.DrawTexturedRect(hudX, top_y, client_w, hudH)
 
 	-- Enemy bar (red)
 	surface.SetMaterial(MAT_GRADIENT)
 	surface.SetDrawColor(Color(180, 55, 55))
-	surface.DrawTexturedRect(HUD_X, HUD_Y, enemy_w, hudH)
-
-	draw.NoTexture()
-	surface.SetDrawColor(Color(180, 55, 55))
-	surface.DrawPoly({
-		{ x = HUD_X + enemy_w,             y = HUD_Y },
-		{ x = HUD_X + enemy_w + slantSize, y = HUD_Y },
-		{ x = HUD_X + enemy_w,             y = HUD_Y + hudH },
-	})
-
-	-- Client slant accent
-	local tx1, ty1 = HUD_X + client_w, top_y
-	local tx2, ty2 = HUD_X + client_w + slantSize, top_y + hudH
-
-	surface.SetDrawColor(0, 0, 0, 255)
-	surface.DrawPoly({
-		{ x = tx1 - slantSepW, y = ty1 },
-		{ x = tx1,             y = ty1 },
-		{ x = tx2,             y = ty2 },
-		{ x = tx2 - slantSepW, y = ty2 },
-	})
-	surface.SetDrawColor(S_CFG.SLANT_COLOR)
-	surface.DrawPoly({
-		{ x = tx1,           y = ty1 - (slantHOff / 2) },
-		{ x = tx1 + slantW,  y = ty1 - (slantHOff / 2) },
-		{ x = tx2 + slantW,  y = ty2 + (slantHOff / 2) },
-		{ x = tx2,           y = ty2 + (slantHOff / 2) },
-	})
-
-	-- Enemy slant accent
-	local bx1, by1 = HUD_X + enemy_w + slantSize, HUD_Y
-	local bx2, by2 = HUD_X + enemy_w, HUD_Y + hudH
-
-	surface.SetDrawColor(0, 0, 0, 255)
-	surface.DrawPoly({
-		{ x = bx1,             y = by1 },
-		{ x = bx1 + slantSepW, y = by1 },
-		{ x = bx2 + slantSepW, y = by2 },
-		{ x = bx2,             y = by2 },
-	})
-	surface.SetDrawColor(S_CFG.SLANT_COLOR)
-	surface.DrawPoly({
-		{ x = bx1 + slantSepW,          y = by1 - (slantHOff / 2) },
-		{ x = bx1 + slantSepW + slantW, y = by1 - (slantHOff / 2) },
-		{ x = bx2 + slantSepW + slantW, y = by2 + (slantHOff / 2) },
-		{ x = bx2 + slantSepW,          y = by2 + (slantHOff / 2) },
-	})
-
-    DrawSqueezedText(clientKills * 100,   "MW2_Font", CoDHUD_S(S_CFG.X), HUD_Y - CoDHUD_S(41),          white, S_CFG.SQUEEZE, S_CFG.SQUEEZE_ONE, 2, S_CFG.SQUEEZE_ONE_BEFORE, S_CFG.OUTLINE_W)
-    DrawSqueezedText(topEnemyKills * 100, "MW2_Font", CoDHUD_S(S_CFG.X), HUD_Y - CoDHUD_S(41) + CoDHUD_S(S_CFG.GAP_OFFSET), white, S_CFG.SQUEEZE, S_CFG.SQUEEZE_ONE, 2, S_CFG.SQUEEZE_ONE_BEFORE, S_CFG.OUTLINE_W)
-
-    local ax = CoDHUD_S(ARROW_CFG.x)
-    local ay = scrH - CoDHUD_S(1080 - ARROW_CFG.y)
-    local aw = CoDHUD_S(ARROW_CFG.w)
-    local ah = CoDHUD_S(ARROW_CFG.h)
-    local ao = CoDHUD_S(ARROW_CFG.outline)
+	surface.DrawTexturedRect(hudX, hudY, enemy_w, hudHLower)
 
     surface.SetMaterial(ARROW_CFG.material)
-
-    surface.SetDrawColor(ARROW_CFG.outlineColor)
-    surface.DrawTexturedRectUV(ax - ao, ay - ao, aw + (ao * 2), ah + (ao * 2), 0, 0, 1, 1)
-
     surface.SetDrawColor(ARROW_CFG.color)
-    surface.DrawTexturedRectUV(ax, ay, aw, ah, 0, 0, 1, 1)
+    surface.DrawTexturedRectRotated(hudX + client_w, top_y, ARROW_CFG.size, ARROW_CFG.size, -90)
+    surface.DrawTexturedRectRotated(hudX + enemy_w, hudY + hudHLower, ARROW_CFG.size, ARROW_CFG.size, 90)
+
+    DrawSqueezedText(clientKills * 100,   "BO1_Font", CoDHUD_SX(S_CFG.X) - CoDHUD_SX(2.5), ScrH() - CoDHUD_SY(S_CFG.Y), white, S_CFG.SQUEEZE, S_CFG.SQUEEZE_ONE, 2, S_CFG.SQUEEZE_ONE_BEFORE, S_CFG.OUTLINE_W)
+    DrawSqueezedText(topEnemyKills * 100, "BO1_Font2", CoDHUD_SX(S_CFG.X), ScrH() - CoDHUD_SY(S_CFG.Y) + CoDHUD_S(S_CFG.GAP_OFFSET), white, S_CFG.SQUEEZE, S_CFG.SQUEEZE_ONE, 2, S_CFG.SQUEEZE_ONE_BEFORE, S_CFG.OUTLINE_W)
 end
 CoDHUD[hudtype].Scorebar = scorebar
 
@@ -1614,11 +1466,11 @@ local function scoreboard( ... )
 		local pScore = math.max(0, ply:Frags() * 100)
 
 		-- Text
-		draw.SimpleTextOutlined(ply:Nick(), "MW2_Scoreboard_Text", x + CoDHUD_S(110), y + (h / 2), tCol, TEXT_ALIGN_LEFT,  TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0))
-		draw.SimpleTextOutlined(ply:Deaths(), "MW2_Scoreboard_Text", barRight - CoDHUD_S(CFG.OFF_DEATHS),  y + (h / 2), tCol, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0))
-		draw.SimpleTextOutlined(ply:GetNWInt("Assists", 0), "MW2_Scoreboard_Text", barRight - CoDHUD_S(CFG.OFF_ASSISTS), y + (h / 2), tCol, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0))
-		draw.SimpleTextOutlined(ply:Frags(), "MW2_Scoreboard_Text", barRight - CoDHUD_S(CFG.OFF_KILLS),   y + (h / 2), tCol, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0))
-		draw.SimpleTextOutlined(pScore, "MW2_Scoreboard_Text", barRight - CoDHUD_S(CFG.OFF_SCORE),   y + (h / 2), tCol, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0))
+		draw.SimpleTextOutlined(ply:Nick(), "BO1_Scoreboard_Text", x + CoDHUD_S(110), y + (h / 2), tCol, TEXT_ALIGN_LEFT,  TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0))
+		draw.SimpleTextOutlined(ply:Deaths(), "BO1_Scoreboard_Text", barRight - CoDHUD_S(CFG.OFF_DEATHS),  y + (h / 2), tCol, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0))
+		draw.SimpleTextOutlined(ply:GetNWInt("Assists", 0), "BO1_Scoreboard_Text", barRight - CoDHUD_S(CFG.OFF_ASSISTS), y + (h / 2), tCol, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0))
+		draw.SimpleTextOutlined(ply:Frags(), "BO1_Scoreboard_Text", barRight - CoDHUD_S(CFG.OFF_KILLS),   y + (h / 2), tCol, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0))
+		draw.SimpleTextOutlined(pScore, "BO1_Scoreboard_Text", barRight - CoDHUD_S(CFG.OFF_SCORE),   y + (h / 2), tCol, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0))
 
 		-- Ping Indicator
 		local ping = ply:Ping()
@@ -1664,7 +1516,7 @@ local function scoreboard( ... )
 
 		end
 		
-		-- draw.SimpleTextOutlined(" - " .. ping, "MW2_Scoreboard_Text", barRight - CoDHUD_S(CFG.OFF_DEATHS) + boxSize + CoDHUD_S(CFG.PING_BAR_W) + CoDHUD_S(10), y + (h / 2), Color(255,255,255), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0))
+		-- draw.SimpleTextOutlined(" - " .. ping, "BO1_Scoreboard_Text", barRight - CoDHUD_S(CFG.OFF_DEATHS) + boxSize + CoDHUD_S(CFG.PING_BAR_W) + CoDHUD_S(10), y + (h / 2), Color(255,255,255), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0))
 	end
 
     local scrW, scrH = ScrW(), ScrH()
@@ -1730,10 +1582,10 @@ local function scoreboard( ... )
 	
 	render.SetScissorRect(0, viewportTop, ScrW(), viewportBottom, true)
 		-- Stats column headers
-		draw.SimpleTextOutlined( language.GetPhrase("MW2_CGAME_SB_DEATHS"), "MW2_Scoreboard_Text", barRight - CoDHUD_S(CFG.OFF_DEATHS), headerY, Color(255,255,255), TEXT_ALIGN_RIGHT, 0, outlined and 1 or 0, Color(0,0,0) )
-		draw.SimpleTextOutlined( language.GetPhrase("MW2_CGAME_SB_ASSISTS"), "MW2_Scoreboard_Text", barRight - CoDHUD_S(CFG.OFF_ASSISTS), headerY, Color(255,255,255), TEXT_ALIGN_RIGHT, 0, outlined and 1 or 0, Color(0,0,0) )
-		draw.SimpleTextOutlined( language.GetPhrase("MW2_CGAME_SB_KILLS"), "MW2_Scoreboard_Text", barRight - CoDHUD_S(CFG.OFF_KILLS), headerY, Color(255,255,255), TEXT_ALIGN_RIGHT, 0, outlined and 1 or 0, Color(0,0,0) )
-		draw.SimpleTextOutlined( language.GetPhrase("MW2_CGAME_SB_SCORE"), "MW2_Scoreboard_Text", barRight - CoDHUD_S(CFG.OFF_SCORE), headerY, Color(255,255,255), TEXT_ALIGN_RIGHT, 0, outlined and 1 or 0, Color(0,0,0) )
+		draw.SimpleTextOutlined( language.GetPhrase("BO1_CGAME_SB_DEATHS"), "BO1_Scoreboard_Text", barRight - CoDHUD_S(CFG.OFF_DEATHS), headerY, Color(255,255,255), TEXT_ALIGN_RIGHT, 0, outlined and 1 or 0, Color(0,0,0) )
+		draw.SimpleTextOutlined( language.GetPhrase("BO1_CGAME_SB_ASSISTS"), "BO1_Scoreboard_Text", barRight - CoDHUD_S(CFG.OFF_ASSISTS), headerY, Color(255,255,255), TEXT_ALIGN_RIGHT, 0, outlined and 1 or 0, Color(0,0,0) )
+		draw.SimpleTextOutlined( language.GetPhrase("BO1_CGAME_SB_KILLS"), "BO1_Scoreboard_Text", barRight - CoDHUD_S(CFG.OFF_KILLS), headerY, Color(255,255,255), TEXT_ALIGN_RIGHT, 0, outlined and 1 or 0, Color(0,0,0) )
+		draw.SimpleTextOutlined( language.GetPhrase("BO1_CGAME_SB_SCORE"), "BO1_Scoreboard_Text", barRight - CoDHUD_S(CFG.OFF_SCORE), headerY, Color(255,255,255), TEXT_ALIGN_RIGHT, 0, outlined and 1 or 0, Color(0,0,0) )
 		
 		for fi, facData in ipairs(factionList) do
 			local players = facData.players
@@ -1754,7 +1606,7 @@ local function scoreboard( ... )
 			surface.SetDrawColor(255,255,255,255)
 			surface.DrawTexturedRect(barX + CoDHUD_S(CFG.ICON_X_OFF), sectionY + CoDHUD_S(CFG.ICON_Y_OFF), CoDHUD_S(CFG.ICON_SIZE), CoDHUD_S(CFG.ICON_SIZE))
 
-			draw.SimpleTextOutlined( language.GetPhrase(fData.short) .. " (" .. #players .. ")", "MW2_Scoreboard_Text", barX + CoDHUD_S(CFG.FAC_NAME_X), sectionY + CoDHUD_S(CFG.FAC_NAME_Y), Color(255,255,255), 0,0, outlined and 1 or 0, Color(0,0,0) )
+			draw.SimpleTextOutlined( language.GetPhrase(fData.short) .. " (" .. #players .. ")", "BO1_Scoreboard_Text", barX + CoDHUD_S(CFG.FAC_NAME_X), sectionY + CoDHUD_S(CFG.FAC_NAME_Y), Color(255,255,255), 0,0, outlined and 1 or 0, Color(0,0,0) )
 
 			-- rows
 			for i, ply in ipairs(players) do
@@ -1774,13 +1626,13 @@ local function scoreboard( ... )
 
     -- Map name
     local mapName = string.upper(game.GetMap())
-	draw.SimpleTextOutlined( mapName, "MW2_Scoreboard_Timer", scrW/2, CoDHUD_S(CFG.MAP_Y_OFF), Color(255, 255, 255), 1, 0, outlined and 1.5 or 0, Color(0,0,0) )
+	draw.SimpleTextOutlined( mapName, "BO1_Scoreboard_Timer", scrW/2, CoDHUD_S(CFG.MAP_Y_OFF), Color(255, 255, 255), 1, 0, outlined and 1.5 or 0, Color(0,0,0) )
 
     -- Timer
     local totalSecs = math.floor(CurTime())
     local mins, secs = math.floor(totalSecs / 60), totalSecs % 60
     local timeStr = string.format("%d:%02d", mins, secs)
-    DrawSqueezedText(timeStr, "MW2_Scoreboard_Timer", scrW - CoDHUD_S(CFG.TIMER_X_POS), CoDHUD_S(CFG.TIMER_Y_OFF), Color(255, 255, 255, 255), CFG.SQUEEZE, CFG.SQUEEZE_ONE, 0, CFG.SQUEEZE_ONE_BEFORE, outlined and 1.5 or 0)
+    DrawSqueezedText(timeStr, "BO1_Scoreboard_Timer", scrW - CoDHUD_S(CFG.TIMER_X_POS), CoDHUD_S(CFG.TIMER_Y_OFF), Color(255, 255, 255, 255), CFG.SQUEEZE, CFG.SQUEEZE_ONE, 0, CFG.SQUEEZE_ONE_BEFORE, outlined and 1.5 or 0)
 
 	local lp = LocalPlayer()
 	local myFaction = lp:GetNW2String("CoDHUD_Faction", "rangers")
@@ -1800,7 +1652,7 @@ local function scoreboard( ... )
 	
 	local x = stripX
 
-	surface.SetFont("MW2_Scoreboard_Text")
+	surface.SetFont("BO1_Scoreboard_Text")
 
 	for _, fac in ipairs(factionList) do
 		local key = fac.key
@@ -1830,7 +1682,7 @@ local function scoreboard( ... )
 		surface.DrawTexturedRect(x, stripY, iconSize, iconSize)
 
 		-- text (VERTICALLY CENTERED like old system)
-		draw.SimpleTextOutlined( label, "MW2_Scoreboard_Text", x + iconSize + textOffset, stripY + iconSize / 2, Color(255,255,255), 0, 1, outlined and 1 or 0, Color(0,0,0) )
+		draw.SimpleTextOutlined( label, "BO1_Scoreboard_Text", x + iconSize + textOffset, stripY + iconSize / 2, Color(255,255,255), 0, 1, outlined and 1 or 0, Color(0,0,0) )
 
 		-- spacing correction (tightened + consistent)
 		x = x + iconSize + textW + CoDHUD_S(25)
@@ -1877,7 +1729,7 @@ local function friendorfoe( ... )
 	
 	local factionColor = isFriendly and FRIENDLY_COLOR or ENEMY_COLOR
 
-	surface.SetFont("MW2_TargetName_Primary")
+	surface.SetFont("BO1_TargetName_Primary")
 	local tw, th = surface.GetTextSize(displayName)
 	tw, th = tw * finalScale, th * finalScale
 
@@ -1888,7 +1740,7 @@ local function friendorfoe( ... )
 	matrix:Scale(Vector(finalScale, finalScale, 1))
 
 	cam.PushModelMatrix(matrix)
-		draw.SimpleText(displayName, "MW2_TargetName_Primary", 0, 0, Color(factionColor.r, factionColor.g, factionColor.b, alpha), 0, 0)
+		draw.SimpleText(displayName, "BO1_TargetName_Primary", 0, 0, Color(factionColor.r, factionColor.g, factionColor.b, alpha), 0, 0)
 	cam.PopModelMatrix()
 end
 CoDHUD[hudtype].IFF = friendorfoe
@@ -1919,352 +1771,8 @@ local function voice( ... )
 	surface.DrawTexturedRect(VOICE_X, drawY, ICON_SIZE, ICON_SIZE)
 
 	-- Draw Name
-	draw.SimpleText(ply:Nick(), "MW2_VoiceFont", VOICE_X + ICON_SIZE + TEXT_X_OFFSET, drawY, Color(255, 255, 255), 0, 0)
+	draw.SimpleText(ply:Nick(), "BO1_VoiceFont", VOICE_X + ICON_SIZE + TEXT_X_OFFSET, drawY, Color(255, 255, 255), 0, 0)
 
 	yOffset = yOffset + SPACING
 end
 CoDHUD[hudtype].VoiceChat = voice
-
-local function weaponinfo(...)
-	local MASK = select(1, ...)
-	local CFG = select(2, ...)
-	local ply = select(3, ...)
-
-	local AMMO = {
-		["default"] = { mat = "mw2/hud/ammo_counter_bullet_mp.png",      w = 3,  h = 20, gap = 1, y_off = 62, x_start = -294, dim = 75 },
-		["357"]     = { mat = "mw2/hud/ammo_counter_riflebullet_mp.png", w = 4,  h = 14, gap = 1, y_off = 41, x_start = -242, dim = 75 },
-		["rifle"]   = { mat = "mw2/hud/ammo_counter_riflebullet_mp.png", w = 4,  h = 14, gap = 1, y_off = 41, x_start = -242, dim = 75 },
-		["rocket"]  = { mat = "mw2/hud/ammo_counter_rocket_mp.png",      w = 12, h = 24, gap = 1, y_off = 58, x_start = -290, dim = 75 },
-		["sniper"]  = { mat = "mw2/hud/ammo_counter_rocket_mp.png",      w = 4,  h = 14, gap = 1, y_off = 41, x_start = -242, dim = 75 },
-		["shotgun"] = { mat = "mw2/hud/ammo_counter_rocket_mp.png",      w = 10, h = 20, gap = 1, y_off = 64, x_start = -300, dim = 75 },
-		["pistol"]  = { mat = "mw2/hud/ammo_counter_bullet_mp.png",      w = 4,  h = 14, gap = 1, y_off = 41, x_start = -242, dim = 75 },
-		["belt"]    = { row_size = 25, row_gap = 0, mat = "mw2/hud/ammo_counter_beltbullet_mp.png", w = 7, h = 5, gap = 0, y_off = 78, x_start = -298, dim = 75 },
-	}
-
-	local AMMO_MAP = {
-		["ammo_357"]      = "357",
-		["ammo_ar2"]      = "rifle",
-		["ammo_crossbow"] = "sniper",
-		["ammo_pistol"]   = "pistol",
-		["ammo_smg1"]     = "default",
-		["buckshot"]      = "shotgun",
-		["rpg_round"]     = "rocket",
-	}
-
-	local MAT_BAR  = Material(hudtype .. "/hud/hud_weaponbar.png", "smooth")
-	local MAT_ALT  = Material(hudtype .. "/hud/dpad_40mm_grenade.png", "smooth mips")
-	local MAT_GRENADE = Material(hudtype .. "/hud/hud_us_grenade.png", "smooth")
-	local MAT_AMMO = {}
-	for key, data in pairs(AMMO) do
-		MAT_AMMO[key] = Material(data.mat, "smooth")
-	end
-	local MAT_COMPASS_SHADOW  = Material(hudtype .. "/hud/compass_letters_shadow.png", "smooth")
-	local MAT_COMPASS_LETTERS = Material(hudtype .. "/hud/compass_letters.png", "smooth")
-
-	local function GetAmmoConfig(wep, alt)
-		if not IsValid(wep) then return AMMO["default"] end
-		if (alt and wep:GetMaxClip2() or wep:GetMaxClip1()) >= 100 then return AMMO["belt"] end
-		local ammoName = string.lower(game.GetAmmoName(alt and wep:GetSecondaryAmmoType() or wep:GetPrimaryAmmoType()) or "")
-		return AMMO[AMMO_MAP[ammoName]] or AMMO["default"]
-	end
-
-	local function GetAmmoKey(ammoCfg)
-		for key, data in pairs(AMMO) do
-			if data == ammoCfg then return key end
-		end
-		return "default"
-	end
-
-    -- ==========================================
-    -- 1. COMPASS DRAWING
-    -- ==========================================
-    local cX   = ScrW() - CoDHUD_S(104)
-    local cY   = ScrH() - CoDHUD_S(82)
-    local size = CoDHUD_S(274)
-    local yaw  = ply:EyeAngles().y
-    local angle = -(yaw - 0)
-
-    local halfFOV = MASK.FOV / 2.2
-    local fadeDeg = MASK.FADE_DEG
-    local radius  = size * math.sqrt(2) / 2 + 2
-    local steps   = 5
-
-    render.SetStencilEnable(true)
-    render.ClearStencil()
-    render.SetStencilWriteMask(255)
-    render.SetStencilTestMask(255)
-    render.SetStencilReferenceValue(1)
-    render.SetStencilCompareFunction(STENCIL_ALWAYS)
-    render.SetStencilPassOperation(STENCIL_REPLACE)
-    render.SetStencilFailOperation(STENCIL_KEEP)
-    render.SetStencilZFailOperation(STENCIL_KEEP)
-
-    render.OverrideColorWriteEnable(true, false)
-    draw.NoTexture()
-    surface.SetDrawColor(255, 255, 255, 255)
-    
-    for i = 0, steps - 1 do
-        local a0 = math.rad(-halfFOV + (i / steps)       * MASK.FOV)
-        local a1 = math.rad(-halfFOV + ((i + 1) / steps) * MASK.FOV)
-        surface.DrawPoly({
-            { x = cX,                         y = cY },
-            { x = cX + math.sin(a0) * radius, y = cY - math.cos(a0) * radius },
-            { x = cX + math.sin(a1) * radius, y = cY - math.cos(a1) * radius },
-        })
-    end
-    render.OverrideColorWriteEnable(false, false) -- Re-enable color drawing
-
-    render.SetStencilCompareFunction(STENCIL_EQUAL)
-    render.SetStencilPassOperation(STENCIL_KEEP)
-
-    surface.SetMaterial(MAT_COMPASS_SHADOW)
-    surface.SetDrawColor(0, 0, 0, 255)
-    surface.DrawTexturedRectRotated(cX, cY, size, size, angle)
-
-    surface.SetMaterial(MAT_COMPASS_LETTERS)
-    surface.SetDrawColor(255, 255, 255, 165)
-    surface.DrawTexturedRectRotated(cX, cY, size, size, angle)
-
-    render.SetStencilEnable(false)
-
-    -- ==========================================
-    -- 2. GRENADE DRAWING
-    -- ==========================================
-    local grenadeCount = math.Clamp(ply:GetAmmoCount("Grenade") or 0, 0, CFG.GRENADE_MAX)
-    if grenadeCount > 0 then
-        local barW = CoDHUD_SX(CFG.BAR_W)
-        local barH = CoDHUD_SY(CFG.BAR_H)
-        local barX = ScrW() - CoDHUD_SX(CFG.BAR_X_OFF) - barW
-        local barY = ScrH() - CoDHUD_SY(CFG.BAR_Y_OFF) - barH
-
-        local iW = CoDHUD_S(CFG.GRENADE_ICON_W)
-        local iH = CoDHUD_S(CFG.GRENADE_ICON_H)
-        local stackGap = CoDHUD_S(CFG.GRENADE_STACK_GAP)
-
-        local anchorX = (barX + barW) + CoDHUD_SX(CFG.GRENADE_X_OFF)
-        local anchorY = (barY + barH) + CoDHUD_SY(CFG.GRENADE_Y_OFF)
-
-        surface.SetMaterial(MAT_GRENADE)
-
-        for i = (CFG.GRENADE_MAX - 1), 0, -1 do
-            if i < grenadeCount then
-                local colorIndex = i + 1
-                local shade = CFG.GRENADE_SHADES[colorIndex] or CFG.GRENADE_SHADES[#CFG.GRENADE_SHADES]
-                surface.SetDrawColor(shade, shade, shade, 255)
-
-                local xPos = anchorX - (i * stackGap)
-                local yPos = anchorY
-
-                surface.DrawTexturedRect(xPos, yPos, iW, iH)
-            end
-        end
-    end
-
-    -- ==========================================
-    -- 3. WEAPON HUD DRAWING
-    -- ==========================================
-    local wep = ply:GetActiveWeapon()
-    if not IsValid(wep) then return end
-
-    if wep ~= lastWep then
-        lastWep       = wep
-        wepSwitchTime = CurTime()
-    end
-
-    local clip    = wep:Clip1()
-    local clip2    = wep:Clip2()
-    local maxClip = wep:GetMaxClip1()
-    local maxClip2 = wep:GetMaxClip2()
-    local primType = wep:GetPrimaryAmmoType()
-    local altType = wep:GetSecondaryAmmoType()
-    local reserve = ply:GetAmmoCount(primType)
-
-    local barW = CoDHUD_SX(CFG.BAR_W)
-    local barH = CoDHUD_SY(CFG.BAR_H)
-    local barX = ScrW() - CoDHUD_SX(CFG.BAR_X_OFF) - barW
-    local barY = ScrH() - CoDHUD_SY(CFG.BAR_Y_OFF) - barH
-
-    surface.SetMaterial(MAT_BAR)
-    surface.SetDrawColor(255, 255, 255, 125)
-    surface.DrawTexturedRect(barX, barY, barW, barH)
-
-    if primType ~= -1 then
-        local resCol = (reserve == 0 or reserve < maxClip)
-            and Color(255, 120, 120, 255)
-            or  Color(255, 255, 255, 255)
-
-        if reserve >= 1000 then
-            DrawSqueezedText(reserve, "MW2_Res_4D", barX + barW + CoDHUD_SX(CFG.RES4_X), barY + CoDHUD_SY(CFG.RES4_Y), resCol, CoDHUD_S(-6), CoDHUD_S(-12), 1)
-        elseif reserve >= 100 then
-            DrawSqueezedText(reserve, "MW2_Res_3D", barX + barW + CoDHUD_SX(CFG.RES3_X), barY + CoDHUD_SY(CFG.RES3_Y), resCol, CoDHUD_S(-4), CoDHUD_S(-12), 1)
-        else
-            DrawSqueezedText(reserve, "MW2_Res", barX + barW + CoDHUD_SX(CFG.RES_X), barY + CoDHUD_SY(CFG.RES_Y), resCol, CoDHUD_S(-6), CoDHUD_S(-16), 1)
-        end
-    end
-
-    local timeSinceSwitch = CurTime() - wepSwitchTime
-    if timeSinceSwitch < CFG.WEP_NAME_FADE then
-        local alpha = math.Clamp(1 - (timeSinceSwitch / CFG.WEP_NAME_FADE), 0, 1)
-        local name  = (wep:GetPrintName() or wep:GetClass()):upper()
-        draw.SimpleTextOutlined(name, "MW2_Wep_Name", barX + barW + CoDHUD_SX(CFG.WEP_NAME_X_OFF), barY + CoDHUD_SY(CFG.WEP_NAME_Y_OFF), Color(255, 255, 255, 255 * alpha), 2, 0, outlined and 1.5 or 0, Color(0, 0, 0, 255 * alpha))
-    end
-
-    if maxClip > 0 and clip >= 0 then
-        local perc      = clip / maxClip
-        local isLowClip = (perc <= CFG.STAT_LOW_PERC)
-        local reloadSine = isLowClip and ((math.sin(CurTime() * CFG.BULLET_RELOAD_SPD) + 1) / 2) or 0
-
-        local ammoCfg = GetAmmoConfig(wep)
-        local ammoKey = GetAmmoKey(ammoCfg)
-        local iW      = CoDHUD_S(ammoCfg.w)
-        local iH      = CoDHUD_S(ammoCfg.h)
-        local iGap    = CoDHUD_S(ammoCfg.gap)
-        local iYOff   = CoDHUD_SY(ammoCfg.y_off)
-        local iXStart = CoDHUD_SX(ammoCfg.x_start)
-
-        surface.SetMaterial(MAT_AMMO[ammoKey])
-
-        local isBelt  = (ammoCfg.row_size ~= nil)
-        local rowSize = isBelt and ammoCfg.row_size or maxClip
-        local rowGap  = isBelt and CoDHUD_S(ammoCfg.row_gap) or 0
-
-        for i = 0, maxClip - 1 do
-            local isSpent = (i >= clip)
-            local shade   = isSpent and ammoCfg.dim or 255
-
-            local r, g, b
-            if not isSpent and isLowClip then
-                r = math.floor(Lerp(reloadSine, shade, CFG.BULLET_RELOAD_R))
-                g = math.floor(Lerp(reloadSine, shade, CFG.BULLET_RELOAD_G))
-                b = math.floor(Lerp(reloadSine, shade, CFG.BULLET_RELOAD_B))
-            else
-                r = shade
-                g = shade
-                b = shade
-            end
-
-            surface.SetDrawColor(r, g, b, CFG.BULLET_ALPHA)
-
-            local col = i % rowSize
-            local row = math.floor(i / rowSize)
-
-            local xPos = barX + barW + iXStart - (col * (iW + iGap))
-            local yPos = barY + iYOff - (row * (iH + rowGap))
-
-            surface.DrawTexturedRect(xPos, yPos, iW, iH)
-        end
-    end
-
-	local reloading = 
-	wep.IsReloading or reloadingM203 -- CW2
-	or (wep.ARC9 and wep:GetReloading()) -- ARC9
-	or (wep.ArcCW and wep:GetReloading()) -- ArcCW
-	or (wep.IsTFAWeapon and TFA.Enum.ReloadStatus[wep:GetStatus()]) -- TFA
-
-	local glactive = 
-	wep.dt and (wep.dt.AltActive or wep.dt.M203Active) -- CW2
-	or (wep.ARC9 and wep:GetUBGL())
-
-	if glactive then
-		clip = clip2
-		maxClip = maxClip2
-	end
-
-    if altType ~= -1 then
-		if altType ~= primType then
-			local altCount = ply:GetAmmoCount(altType)
-
-			surface.SetMaterial(MAT_ALT)
-			surface.SetDrawColor(255, 255, 255, 255)
-			surface.DrawTexturedRect(barX + barW + CoDHUD_SX(CFG.ALT_ICON_X), barY + CoDHUD_SY(CFG.ALT_ICON_Y), CoDHUD_S(CFG.ALT_ICON_SIZE), CoDHUD_S(CFG.ALT_ICON_SIZE))
-
-			local altCol = (altCount > 0) and Color(255, 255, 255, 255) or Color(255, 120, 120, 255)
-			DrawSqueezedText(altCount, "MW2_Ammo_Alt", barX + barW + CoDHUD_SX(CFG.ALT_TEXT_X), barY + CoDHUD_SY(CFG.ALT_TEXT_Y), altCol, CFG.ALT_TEXT_SQ, CFG.ALT_TEXT_SQ1, 1)
-		end
-    end
-
-	if maxClip2 > 1 and clip2 >= 0 then
-		local perc      = clip2 / maxClip2
-		local isLowClip = (perc <= CFG.STAT_LOW_PERC)
-		local reloadSine = isLowClip and ((math.sin(CurTime() * CFG.BULLET_RELOAD_SPD) + 1) / 2) or 0
-
-		local ammoCfg = GetAmmoConfig(wep, true)
-		local ammoKey = GetAmmoKey(ammoCfg)
-		local iW      = CoDHUD_S(ammoCfg.w)
-		local iH      = CoDHUD_S(ammoCfg.h)
-		local iGap    = CoDHUD_S(ammoCfg.gap)
-		local iYOff   = CoDHUD_SY(ammoCfg.y_off+40)
-		local iXStart = CoDHUD_SX(ammoCfg.x_start)
-
-		surface.SetMaterial(MAT_AMMO[ammoKey])
-
-		local isBelt  = (ammoCfg.row_size ~= nil)
-		local rowSize = isBelt and ammoCfg.row_size or maxClip2
-		local rowGap  = isBelt and CoDHUD_S(ammoCfg.row_gap) or 0
-
-		for i = 0, maxClip2 - 1 do
-			local isSpent = (i >= clip2)
-			local shade   = isSpent and ammoCfg.dim or 255
-
-			local r, g, b
-			if not isSpent and isLowClip then
-				r = math.floor(Lerp(reloadSine, shade, CFG.BULLET_RELOAD_R))
-				g = math.floor(Lerp(reloadSine, shade, CFG.BULLET_RELOAD_G))
-				b = math.floor(Lerp(reloadSine, shade, CFG.BULLET_RELOAD_B))
-			else
-				r = shade
-				g = shade
-				b = shade
-			end
-
-			surface.SetDrawColor(r, g, b, CFG.BULLET_ALPHA)
-
-			local col = i % rowSize
-			local row = math.floor(i / rowSize)
-
-			local xPos = barX + barW + iXStart - (col * (iW + iGap))
-			local yPos = barY + iYOff - (row * (iH + rowGap))
-
-			surface.DrawTexturedRect(xPos, yPos, iW, iH)
-		end
-	end
-
-    if maxClip > 0 and clip >= 0 and not reloading then
-        local perc      = clip / maxClip
-        local statText  = ""
-        local statCol   = Color(255, 255, 255)
-        local isNoAmmo  = false
-        local isLowAmmo = false
-        local isReloadText  = false
-
-        if clip == 0 and reserve == 0 then
-            statText = "#MW2_WEAPON_NO_AMMO"
-            isNoAmmo = true
-        elseif perc <= CFG.STAT_LOW_PERC and reserve == 0 then
-            statText = "#MW2_PLATFORM_LOW_AMMO_NO_RELOAD"
-            statCol  = Color(255, 230, 0)
-            isLowAmmo = true
-        elseif perc <= CFG.STAT_LOW_PERC and reserve > 0 then
-            statText = "#MW2_PLATFORM_RELOAD"
-            isReloadText = true
-        end
-
-        if statText ~= "" then
-            local cx   = ScrW() / 2
-            local cy   = (ScrH() / 2) + CoDHUD_SY(CFG.STAT_Y_OFF)
-            local sine = (math.sin(CurTime() * CFG.STAT_FLASH_SPD) + 1) / 2
-
-            local finalCol = table.Copy(statCol)
-
-            if isNoAmmo then
-                local glow = 225 + (sine * 30)
-                finalCol = Color(glow, 40, 40, glow)
-            elseif isLowAmmo or isReloadText then
-                finalCol.a = 100 + (sine * 155)
-            end
-
-            draw.SimpleTextOutlined(statText, "MW2_Stat_Font", cx + CoDHUD_SX(2), cy + CoDHUD_SY(2), finalCol, 1, 1, 1.5, Color(0, 0, 0, finalCol.a * 0.8))
-        end
-    end
-end
-CoDHUD[hudtype].WeaponInfo = weaponinfo

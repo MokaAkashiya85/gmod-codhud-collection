@@ -235,6 +235,7 @@ local function DrawSqueezedScore(val, x, y, alpha)
 	local shadowCol = Color(0, 0, 0, alpha * 0.8)
 	local s_val     = tostring(val)
 	local partPlus  = "+"
+	local outlined = GetConVar("codhud_enable_outlinedtext"):GetBool()
 
 	surface.SetFont("MW2_Score_Plus")
 	local wP  = surface.GetTextSize(partPlus)
@@ -256,7 +257,7 @@ local function DrawSqueezedScore(val, x, y, alpha)
 	local curX = x - (totalW / 2)
 
 	local function DrawComponent(txt, font, px, py)
-		draw.SimpleTextOutlined(txt, font, px, py, textCol, 0, 1, 0, shadowCol)
+		draw.SimpleTextOutlined(txt, font, px, py, textCol, 0, 1, outlined and 1 or 0, shadowCol)
 		surface.SetFont(font)
 		local w = surface.GetTextSize(txt)
 		return w
@@ -826,7 +827,7 @@ local function medals( ... )
     local colYellow = Color(255, 255, 50, alpha)
 
     -- TEXT
-    local localizedText = language.GetPhrase("MW2_" .. activeMedal.text)
+    local localizedText = language.GetPhrase(activeMedal.text)
 
     draw.SimpleTextOutlined( localizedText, "MW2_Score_Main", cx, y, colYellow, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER, outlined and 1 or 0, colBlack )
 end

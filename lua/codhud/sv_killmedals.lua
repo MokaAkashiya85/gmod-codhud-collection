@@ -85,7 +85,7 @@ if SERVER then
         end
 
 		-- 7. MULTI-KILLS (Delayed evaluation)
-		local delay = 0.75
+		local delay = 1.5
 		attacker.codhud_KillCount = attacker.codhud_KillCount or 0
 
 		-- Increment kills

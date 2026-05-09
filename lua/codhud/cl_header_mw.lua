@@ -8,6 +8,7 @@ CoDHUD_HeaderQueue.Active = CoDHUD_HeaderQueue.Active or {}
 CoDHUD_HeaderQueue.Queue = {}
 
 local GLITCH = { "a", "¶", "Ð", "ق", "§", "ð", "œ", "ش", "Ф" }
+local BO_SCRAMBLE = { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9" }
 
 -- =========================
 -- Constructor
@@ -189,6 +190,21 @@ local function DrawCODText(text, fullText, pri, sec, shd, x, y, glow, align)
 	draw.SimpleText(text, pri, startX, y, Color(255,255,255,glow.a or 255), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 end
 
+local function BuildBOText(realText, revealed)
+    local len = SafeLen(realText)
+    local out = {}
+
+    for i = 1, len do
+        if i <= revealed then
+            out[#out + 1] = utf8_sub(realText, i, i)
+        else
+            out[#out + 1] = BO_SCRAMBLE[math.random(#BO_SCRAMBLE)]
+        end
+    end
+
+    return table.concat(out)
+end
+
 local RE_MATS = {}
 local function GetSpawnMat(id)
     if RE_MATS[id] then return RE_MATS[id] end
@@ -214,14 +230,14 @@ function CoDHUD_Header_MW:Update()
     -- WRITE
 	if self.phase == "write" then
 
-		-- WORLD AT WAR
-		if self.type == "waw" then
+		-- WORLD AT WAR / BLACK OPS
+		if self.type == "waw" or self.type == "bo" then
 
 			local interval = 1 / self.writeSpeed
 
 			self.iconAlpha = math.min(255, self.iconAlpha + FrameTime() * speed)
 			self.subAlpha  = math.min(255, self.subAlpha  + FrameTime() * speed)
-			self.alpha     = math.min(255, self.alpha + FrameTime() * self.fadeSpeed)
+			self.alpha     = self.type == "waw" and math.min(255, self.alpha + FrameTime() * self.fadeSpeed) or 255
 
 			-- play one sound per character
 			if now >= self.nextWrite and self.written < self.longest then
@@ -232,7 +248,13 @@ function CoDHUD_Header_MW:Update()
 				surface.PlaySound(snd)
 			end
 
-			if self.written >= self.longest and self.alpha >= 255 then
+			local finished = self.written >= self.longest
+
+			if self.type == "waw" then
+				finished = finished and self.alpha >= 255
+			end
+
+			if finished then
 				self.phase = "hold"
 				self.holdStart = now
 			end
@@ -284,15 +306,18 @@ function CoDHUD_Header_MW:Update()
 	-- ERASE
 	if self.phase == "erase" then
 
-		-- WORLD AT WAR
-		if self.type == "waw" then
+		-- WORLD AT WAR / BLACK OPS
+		if self.type == "waw" or self.type == "bo" then
 
 			self.iconAlpha = math.max(0, self.iconAlpha - FrameTime() * self.iconFadeOutSpeed)
 			self.subAlpha  = math.max(0, self.subAlpha  - FrameTime() * self.iconFadeOutSpeed)
 
-			-- only fade text once icon is gone
-			if self.iconAlpha <= 0 then
-				-- self.alpha = math.max(0, self.alpha - FrameTime() * self.fadeSpeed)
+			-- BO fades smoothly with the icon
+			if self.type == "bo" then
+				self.alpha = math.max(0, self.alpha - FrameTime() * self.fadeSpeed)
+
+			-- WAW hard-cuts after icon fade
+			elseif self.iconAlpha <= 0 then
 				self.alpha = 0
 			end
 
@@ -348,6 +373,9 @@ function CoDHUD_Header_MW:Draw()
 		if self.type == "waw" then
 			display = line
 
+		elseif self.type == "bo" then
+			display = BuildBOText(line, self.written)
+
 		elseif self.phase == "write" then
 			display = utf8_sub(line, 0, self.written)
 
@@ -371,12 +399,9 @@ function CoDHUD_Header_MW:Draw()
 		if display ~= "" then
 			local y = self.y + ((i - 1) * CoDHUD_S(38))
 
-			local drawCol = Color(
-				self.color.r,
-				self.color.g,
-				self.color.b,
-				self.type == "waw" and self.alpha or 255
-			)
+			local useAlpha = (self.type == "waw" or self.type == "bo")
+
+			local drawCol = Color( self.color.r, self.color.g, self.color.b, useAlpha and self.alpha or 255 )
 
 			DrawCODText( display, line, self.fonts.pri, self.fonts.sec, self.fonts.shd, self.x, y, drawCol, self.align )
 		end

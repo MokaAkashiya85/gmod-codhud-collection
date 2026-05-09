@@ -44,46 +44,88 @@ if CLIENT then
 		return t -- normal
 	end
 
-    -- [[ MEDAL QUEUE LOGIC ]]
-    local function AddMedalToQueue(txt, hasIcon, pts, desc, isSpecial)
-        if _G.CoDHUD_AddScore then _G.CoDHUD_AddScore(pts) end
-        
-        -- Check for the CVar before queuing
+	-- [[ MEDAL QUEUE LOGIC ]]
+	local function AddMedalToQueue(medalID, hasIcon, pts, isSpecial)
+		if _G.CoDHUD_AddScore then
+			_G.CoDHUD_AddScore(pts)
+		end
+
 		if (not GetConVar("codhud_enable_medals"):GetBool()) or GetConVar("codhud_quickdisable_hud"):GetBool() then return end
 
-        table.insert(medalQueue, {
-            text      = txt,
-            hasIcon   = hasIcon,
-            points    = pts,
-            desc      = desc,
-            isSpecial = isSpecial
-        })
-    end
+		local hud = CoDHUD[CoDHUD_GetHUDType()]
+		local medalsTable = (hud and hud.MedalsTable) or (CoDHUD["mw2"] and CoDHUD["mw2"].MedalsTable)
 
-    -- [[ NETWORK RECEIVERS (Communicating with Challenge System) ]]
-    net.Receive("CoDHUD_Medal_Headshot",   function()
-        AddMedalToQueue("SPLASHES_HEADSHOT", true, 50)
-        if _G.CoDHUD_OnMedalReceived then _G.CoDHUD_OnMedalReceived("headshot") end
-    end)
+		if not medalsTable then return end
+		local medalData = medalsTable[medalID]
 
-    net.Receive("CoDHUD_Medal_DoubleKill", function() AddMedalToQueue("SPLASHES_DOUBLEKILL", false, 50)  end)
-    net.Receive("CoDHUD_Medal_TripleKill", function() AddMedalToQueue("SPLASHES_TRIPLEKILL", false, 100) end)
-    net.Receive("CoDHUD_Medal_MultiKill",  function() AddMedalToQueue("SPLASHES_MULTIKILL",  false, 100) end)
+		-- Fallback to MW2
+		if not medalData and CoDHUD["mw2"] and CoDHUD["mw2"].MedalsTable then
+			medalData = CoDHUD["mw2"].MedalsTable[medalID]
+		end
 
-    net.Receive("CoDHUD_Medal_Longshot",   function()
-        AddMedalToQueue("SPLASHES_LONGSHOT", true, 50, "SPLASHES_LONGSHOT_DESC")
-        if _G.CoDHUD_OnMedalReceived then _G.CoDHUD_OnMedalReceived("longshot") end
-    end)
+		if not medalData then return end
 
-    net.Receive("CoDHUD_Medal_OneShot",    function() AddMedalToQueue("SPLASHES_ONE_SHOT_KILL", true, 50, "SPLASHES_ONE_SHOT_KILL_DESC", true) end)
+		local txt = medalData[1]
+		local desc = medalData[2]
 
-    net.Receive("CoDHUD_Medal_FirstBlood", function() AddMedalToQueue("SPLASHES_FIRSTBLOOD", true,  100, "SPLASHES_FIRSTBLOOD_DESC")              end)
-    net.Receive("CoDHUD_Medal_Comeback",   function() AddMedalToQueue("SPLASHES_COMEBACK",    true,  100, "SPLASHES_COMEBACK_DESC") end)
-    net.Receive("CoDHUD_Medal_Payback",    function()
-        AddMedalToQueue("SPLASHES_REVENGE", true, 50, "SPLASHES_REVENGE_DESC")
-        if _G.CoDHUD_OnMedalReceived then _G.CoDHUD_OnMedalReceived("payback") end
-    end)
+		table.insert(medalQueue, {
+			text      = txt,
+			hasIcon   = hasIcon,
+			points    = pts,
+			desc      = desc,
+			isSpecial = isSpecial
+		})
+	end
 
+	-- [[ NETWORK RECEIVERS ]]
+	net.Receive("CoDHUD_Medal_Headshot", function()
+		AddMedalToQueue("headshot", true, 50)
+
+		if _G.CoDHUD_OnMedalReceived then
+			_G.CoDHUD_OnMedalReceived("headshot")
+		end
+	end)
+
+	net.Receive("CoDHUD_Medal_DoubleKill", function()
+		AddMedalToQueue("doublekill", false, 50)
+	end)
+
+	net.Receive("CoDHUD_Medal_TripleKill", function()
+		AddMedalToQueue("triplekill", false, 100)
+	end)
+
+	net.Receive("CoDHUD_Medal_MultiKill", function()
+		AddMedalToQueue("multikill", false, 100)
+	end)
+
+	net.Receive("CoDHUD_Medal_Longshot", function()
+		AddMedalToQueue("longshot", true, 50)
+
+		if _G.CoDHUD_OnMedalReceived then
+			_G.CoDHUD_OnMedalReceived("longshot")
+		end
+	end)
+
+	net.Receive("CoDHUD_Medal_OneShot", function()
+		AddMedalToQueue("oneshot", true, 50, true)
+	end)
+
+	net.Receive("CoDHUD_Medal_FirstBlood", function()
+		AddMedalToQueue("firstblood", true, 100)
+	end)
+
+	net.Receive("CoDHUD_Medal_Comeback", function()
+		AddMedalToQueue("comeback", true, 100)
+	end)
+
+	net.Receive("CoDHUD_Medal_Payback", function()
+		AddMedalToQueue("payback", true, 50)
+
+		if _G.CoDHUD_OnMedalReceived then
+			_G.CoDHUD_OnMedalReceived("payback")
+		end
+	end)
+	
 	-- MEDAL PROGRESS
 	hook.Add("Think", "CoDHUD_Medal_Progress", function()
 		if not activeMedal then return end
