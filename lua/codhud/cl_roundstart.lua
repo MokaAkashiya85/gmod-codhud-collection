@@ -100,6 +100,8 @@ local function CoDHUD_RS_Start(gamemode, timestart)
 
 	local matchtimestart = timestart
 
+	if _G.CoDHUD_MedalSystem then _G.CoDHUD_MedalSystem.Clear() end
+
 	-- prevent suspense music from interfering with spawn theme
 	timer.Remove("CoDHUD_SuspenseTimer")
 

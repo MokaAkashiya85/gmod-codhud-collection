@@ -389,7 +389,7 @@ CoDHUD[hudtype].RoundStart = rs_title
 local function rs_timer( ... )
 	local disp = select(1, ...)
 	
-	local disptext = string.Replace(disp, 0, "O")
+	local disptext = disp
 	
 	local outlined = GetConVar("codhud_enable_outlinedtext"):GetBool()
 
@@ -1655,8 +1655,6 @@ local function scoreboard( ... )
 
 		-- format label (NOW uses SCORE instead of player count)
 		local label = score
-		
-		label = string.Replace(label, 0, "O")
 
 		local textW, textH = surface.GetTextSize(label)
 

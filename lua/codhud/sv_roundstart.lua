@@ -92,7 +92,7 @@ net.Receive("CoDHUD_StartRound", function(len, ply)
 			net.Broadcast()
 		end)
 
-		timer.Create("CoDHUD_RoundStartTime", matchtimer, 1, function()
+		timer.Create("CoDHUD_RoundStartTime", matchtimer > 0 and matchtimer or 0.15, 1, function()
 
 			CoDHUD_RoundStarting = false
 			CoDHUD_RoundStartTimer = nil

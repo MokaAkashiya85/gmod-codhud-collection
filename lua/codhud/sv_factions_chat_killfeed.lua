@@ -34,6 +34,14 @@ CoDHUD.Factions.validfactions = {
 		["arab"]			= "OpFor",
 		["militia"]			= "Militia"
 	},
+	["bo1"] = {
+		["op4"]			= "Op 40",
+		["ops"]			= "Black Ops",
+		["sog"]			= "SOG",
+		["rus"]			= "Spetsnaz",
+		["nva"]			= "NVA",
+		["cub"]			= "Tropas",
+	},
 	["mw3"] = {
 		["sas"]				= "Special Air Service",
 		["delta"]			= "Delta Force",

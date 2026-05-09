@@ -844,14 +844,14 @@ local function medals( ... )
 		end
 
 		-- TEXT
-		local localizedText = language.GetPhrase("MW2_" .. activeMedal.text)
+		local localizedText = language.GetPhrase(activeMedal.text)
 
 		draw.SimpleTextOutlined( localizedText, "MW2_MedalGlow", cx, cy, Color(0,0,0,0), 1, 1, 0.75, colRedGlow )
 		draw.SimpleTextOutlined( localizedText, "MW2_MedalPrimary", cx, cy, colWhite, 1, 1, 0, colRedOutline )
 
 		-- DESC / POINTS
 		if activeMedal.desc then
-			local localizedDesc = language.GetPhrase("MW2_" .. activeMedal.desc)
+			local localizedDesc = language.GetPhrase(activeMedal.desc)
 
 			if activeMedal.isSpecial then
 				draw.SimpleTextOutlined( localizedDesc, "MW2_MedalDesc", cx, cy + CoDHUD_S(35), colWhite, 1, 1, outlined and 1 or 0, colBlack )
@@ -879,6 +879,17 @@ local function medals( ... )
 end
 CoDHUD[hudtype].Medals = medals
 CoDHUD[hudtype].MedalsSound = "hud/hud_medal.mp3"
+CoDHUD[hudtype].MedalsTable = {
+	["headshot"] = { "MW2_SPLASHES_HEADSHOT" },
+	["doublekill"] = { "MW2_SPLASHES_DOUBLEKILL" },
+	["triplekill"] = { "MW2_SPLASHES_TRIPLEKILL" },
+	["multikill"] = { "MW2_SPLASHES_MULTIKILL" },
+	["longshot"] = { "MW2_SPLASHES_LONGSHOT", "MW2_SPLASHES_LONGSHOT_DESC" },
+	["oneshot"] = { "MW2_SPLASHES_ONE_SHOT_KILL", "MW2_SPLASHES_ONE_SHOT_KILL_DESC" },
+	["firstblood"] = { "MW2_SPLASHES_FIRSTBLOOD", "MW2_SPLASHES_FIRSTBLOOD_DESC" },
+	["comeback"] = { "MW2_SPLASHES_COMEBACK", "MW2_SPLASHES_COMEBACK_DESC" },
+	["payback"] = { "MW2_SPLASHES_REVENGE", "MW2_SPLASHES_REVENGE_DESC" },
+}
 
 local function minimap( ... )
 	local ply = select(1, ...)
