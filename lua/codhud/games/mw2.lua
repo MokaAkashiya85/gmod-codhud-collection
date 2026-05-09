@@ -1938,7 +1938,7 @@ local function weaponinfo(...)
 		["sniper"]  = { row_size = 25, row_gap = 0, mat = "mw2/hud/ammo_counter_rocket_mp.png",      w = 8,  h = 20, gap = 1, y_off = 0, x_start = 2, dim = 75 },
 		["shotgun"] = { row_size = 20, row_gap = 0, mat = "mw2/hud/ammo_counter_rocket_mp.png",      w = 12, h = 20, gap = -1, y_off = 0, x_start = 3, dim = 75 },
 		["pistol"]  = { row_size = 50, row_gap = 0, mat = "mw2/hud/ammo_counter_bullet_mp.png",      w = 4,  h = 14, gap = 1, y_off = 2, x_start = 0, dim = 75 },
-		["belt"]    = { row_size = 25, row_gap = 0, mat = "mw2/hud/ammo_counter_beltbullet_mp.png", w = 7, h = 5, gap = 0, y_off = -5, x_start = 0, dim = 75 },
+		["belt"]    = { row_size = 20, row_gap = 0, mat = "mw2/hud/ammo_counter_beltbullet_mp.png", w = 7, h = 5, gap = 0, y_off = -5, x_start = 0, dim = 75 },
 	}
 
 	local AMMO_MAP = {
@@ -2137,7 +2137,7 @@ local function weaponinfo(...)
         local rowSize = isBelt and ammoCfg.row_size or maxClip
         local rowGap  = isBelt and CoDHUD_S(ammoCfg.row_gap) or 0
 
-        for i = 0, maxClip - 1 do
+        for i = 0, math.max(maxClip, clip) - 1 do
             local isSpent = (i >= clip)
             local shade   = isSpent and ammoCfg.dim or 255
 
@@ -2209,7 +2209,7 @@ local function weaponinfo(...)
 		local rowSize = isBelt and ammoCfg.row_size or maxClip2
 		local rowGap  = isBelt and CoDHUD_S(ammoCfg.row_gap) or 0
 
-		for i = 0, maxClip2 - 1 do
+		for i = 0, math.max(maxClip2, clip2) - 1 do
 			local isSpent = (i >= clip2)
 			local shade   = isSpent and ammoCfg.dim or 255
 
