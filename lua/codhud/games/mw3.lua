@@ -1984,10 +1984,10 @@ local function weaponinfo(...)
 		MAT_AMMO[key] = Material(data.mat, "smooth")
 	end
 
-	local function GetAmmoConfig(wep)
+	local function GetAmmoConfig(wep, alt) -- returning true in alt asks for secondary ammo instead of primary
 		if not IsValid(wep) then return AMMO["default"] end
-		if wep:GetMaxClip1() >= 100 then return AMMO["belt"] end
-		local ammoName = string.lower(game.GetAmmoName(wep:GetPrimaryAmmoType()) or "")
+		local ammoName = string.lower(game.GetAmmoName(alt and wep:GetSecondaryAmmoType() or wep:GetPrimaryAmmoType()) or "")
+		if (alt and wep:GetMaxClip2() or wep:GetMaxClip1()) > 50 then return AMMO["belt"] end
 		return AMMO[AMMO_MAP[ammoName]] or AMMO["default"]
 	end
 
@@ -2042,7 +2042,9 @@ local function weaponinfo(...)
     local clip2    = wep:Clip2()
     local maxClip = wep:GetMaxClip1()
     local maxClip2 = wep:GetMaxClip2()
-    local reserve = ply:GetAmmoCount(wep:GetPrimaryAmmoType())
+    local primType = wep:GetPrimaryAmmoType()
+    local altType = wep:GetSecondaryAmmoType()
+    local reserve = ply:GetAmmoCount(primType)
 
     local barW = CoDHUD_SX(CFG.BAR_W)
     local barH = CoDHUD_SY(CFG.BAR_H)
@@ -2096,10 +2098,10 @@ local function weaponinfo(...)
         surface.SetMaterial(MAT_AMMO[ammoKey])
 
         local isBelt  = (ammoCfg.row_size ~= nil)
-        local rowSize = isBelt and ammoCfg.row_size or maxClip
+        local rowSize = isBelt and ammoCfg.row_size > maxClip and ammoCfg.row_size or math.max(maxClip, clip)
         local rowGap  = isBelt and CoDHUD_S(ammoCfg.row_gap) or 0
 
-        for i = 0, maxClip - 1 do
+        for i = 0, math.max(maxClip, clip) - 1 do
             local isSpent = (i >= clip)
             local shade   = isSpent and ammoCfg.dim or 255
 
@@ -2141,8 +2143,6 @@ local function weaponinfo(...)
 		maxClip = maxClip2
 	end
 
-    local primType = wep:GetPrimaryAmmoType()
-    local altType = wep:GetSecondaryAmmoType()
     if altType ~= -1 and altType ~= primType then
         local altCount = ply:GetAmmoCount(altType)
 
