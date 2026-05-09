@@ -2122,6 +2122,52 @@ local function weaponinfo(...)
             local row = math.floor(i / rowSize)
 
             local xPos = barX + barW + iXStart - (col * (iW + iGap))
+            local yPos = barY + iYOff - iH * (maxClip2 > 0 and 1 or 0) - (row * (iH + rowGap))
+
+            surface.DrawTexturedRect(xPos, yPos, iW, iH)
+        end
+    end
+
+    if clip2 >= 0 and maxClip2 > 0 then
+        local perc      = clip2 / maxClip2
+        local isLowClip = (perc <= CFG.STAT_LOW_PERC)
+        local reloadSine = isLowClip and ((math.sin(CurTime() * CFG.BULLET_RELOAD_SPD) + 1) / 2) or 0
+
+        local ammoCfg = GetAmmoConfig(wep, altType ~= game.GetAmmoID("Grenade"))
+        local ammoKey = GetAmmoKey(ammoCfg)
+        local iW      = CoDHUD_S(ammoCfg.w)
+        local iH      = CoDHUD_S(ammoCfg.h)
+        local iGap    = CoDHUD_S(ammoCfg.gap)
+        local iYOff   = CoDHUD_SY(ammoCfg.y_off)
+        local iXStart = CoDHUD_SX(ammoCfg.x_start)
+
+        surface.SetMaterial(MAT_AMMO[ammoKey])
+
+        local isBelt  = (ammoCfg.row_size ~= nil)
+        local rowSize = isBelt and ammoCfg.row_size > maxClip2 and ammoCfg.row_size or math.max(maxClip2, clip2)
+        local rowGap  = isBelt and CoDHUD_S(ammoCfg.row_gap) or 0
+
+        for i = 0, math.max(maxClip2, clip2) - 1 do
+            local isSpent = (i >= clip2)
+            local shade   = isSpent and ammoCfg.dim or 255
+
+            local r, g, b
+            if not isSpent and isLowClip then
+                r = math.floor(Lerp(reloadSine, shade, CFG.BULLET_RELOAD_R))
+                g = math.floor(Lerp(reloadSine, shade, CFG.BULLET_RELOAD_G))
+                b = math.floor(Lerp(reloadSine, shade, CFG.BULLET_RELOAD_B))
+            else
+                r = shade
+                g = shade
+                b = shade
+            end
+
+            surface.SetDrawColor(r, g, b, CFG.BULLET_ALPHA)
+
+            local col = i % rowSize
+            local row = math.floor(i / rowSize)
+
+            local xPos = barX + barW + iXStart - (col * (iW + iGap))
             local yPos = barY + iYOff - (row * (iH + rowGap))
 
             surface.DrawTexturedRect(xPos, yPos, iW, iH)
@@ -2143,7 +2189,7 @@ local function weaponinfo(...)
 		maxClip = maxClip2
 	end
 
-    if altType ~= -1 and altType ~= primType then
+    if altType ~= -1 and altType ~= primType and altType ~= game.GetAmmoID("Grenade") then
         local altCount = ply:GetAmmoCount(altType)
 
         surface.SetMaterial(MAT_ALT)
