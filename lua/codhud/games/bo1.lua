@@ -1134,16 +1134,7 @@ CoDHUD[hudtype].Minimap = minimap
 
 local MAT_GRADIENT = Material("bo1/hud/hud_score_progress.png")
 
-local debugpic = true
-local debugpicture = Material("debugref/bo1_3.png", "smooth")
-
 local function scorebar(data)
-
-	-- if debugpic then
-		-- surface.SetMaterial(debugpicture)
-		-- surface.SetDrawColor(255, 255, 255, 255)
-		-- surface.DrawTexturedRect(0, 0, ScrW(), ScrH())
-	-- end
 
 	local CFG = {
 		-- Base Bar
@@ -1356,14 +1347,7 @@ end
 CoDHUD[hudtype].Scorebar = scorebar
 
 local function scoreboard( ... )
-	-- local KillFeed = select(1, ...)
 	local outlined = GetConVar("codhud_enable_outlinedtext"):GetBool()
-
-	if debugpic then
-		surface.SetMaterial(debugpicture)
-		surface.SetDrawColor(255, 255, 255, 255)
-		-- surface.DrawTexturedRect(0, 0, ScrW(), ScrH())
-	end
 
 	local CFG = {
 		-- Player Row Background
@@ -1678,3 +1662,320 @@ local function voice( ... )
 	yOffset = yOffset + SPACING
 end
 CoDHUD[hudtype].VoiceChat = voice
+
+-- local debugpic = true
+local debugpicture = Material("debugref/bo1.png", "smooth")
+
+local function weaponinfo(...)
+
+	if debugpic then
+		surface.SetMaterial(debugpicture)
+		surface.SetDrawColor(255, 255, 255, 255)
+		surface.DrawTexturedRect(0, 0, ScrW(), ScrH())
+	end
+
+	local MASK = select(1, ...)
+	local ply = select(3, ...)
+
+
+	local CFG = {
+		-- Base Bar
+		BAR_W       = 210,
+		BAR_H       = 210,
+		BAR_X_OFF   = 0,
+		BAR_Y_OFF   = -10,
+
+		-- Lines
+		LINES_W       = 295,
+		LINES_H       = 142.5,
+		LINES_X_OFF   = 131,
+		LINES_Y_OFF   = -20,
+
+		-- Grenades
+		GRENADE_X_OFF     = 242.5,
+		GRENADE_Y_OFF     = 40,
+		GRENADE_ICON_W    = 40,
+		GRENADE_ICON_H    = 40,
+		GRENADE_STACK_GAP = -4,
+		GRENADE_MAX       = 4,
+		GRENADE_SHADES    = { 255, 200, 175, 120 },
+
+		-- Reserve Ammo
+		RES_X       = 200,
+		RES_Y       = 80,
+
+		-- Text kerning
+		SQUEEZE            = -6,
+		SQUEEZE_ONE        = -14,
+		SQUEEZE_ONE_BEFORE = -10,
+
+		-- Weapon Name
+		WEP_NAME_X_OFF = 200,
+		WEP_NAME_Y_OFF = 130,
+		WEP_NAME_FADE  = 2,
+		WEP_NAME_SQ    = -3,
+		WEP_NAME_SQ1   = -8,
+
+		-- Status Indicator
+		STAT_FONT_SIZE = 28,
+		STAT_LOW_PERC  = 0.40,
+		STAT_FLASH_SPD = 8,
+		STAT_Y_OFF     = 62,
+
+		-- Alt Ammo (Underbarrel / Secondary)
+		ALT_ICON_SIZE  = 210,
+		ALT_ICON_X     = 256 + 5,
+		ALT_ICON_Y     = 256 - 64 + 5,
+		ALT_TEXT_X     = 170,
+		ALT_TEXT_Y     = 95,
+		ALT_TEXT_SQ    = -3,
+		ALT_TEXT_SQ1   = -7,
+		
+		ALT_WICON_SIZE  = 64 + 8,
+		ALT_WICON_X     = 256 - 64 + 10,
+		ALT_WICON_Y     = 128 + 5,
+	}
+
+
+	local MAT_FRAME  = Material(hudtype .. "/hud/hud_dpad_outer_frame.png", "smooth")
+	local MAT_LINES  = Material(hudtype .. "/hud/hud_dpad_lines.png", "smooth")
+	local MAT_FADE  = Material(hudtype .. "/hud/hud_dpad_lines_fade.png", "smooth")
+	
+	local MAT_DPAD_LEFT  = Material(hudtype .. "/hud/hud_dpad_outer_frame_highlight_side.png", "smooth")
+
+	local MAT_ALT  = {
+		["grenade"] = Material(hudtype .. "/icons/hud_40mmgrenade.png", "smooth mips"),
+		["buckshot"] = Material(hudtype .. "/icons/hud_mk_generic.png", "smooth mips"),
+		["flame"] = Material(hudtype .. "/icons/hud_flamethrower_dpad.png", "smooth mips")
+	}
+	
+	local MAT_GRENADE = Material(hudtype .. "/hud/grenadeicon.png", "smooth")
+	local MAT_COMPASS = Material(hudtype .. "/hud/hud_border_dpad_compass.png", "smooth")
+
+    -- 1. COMPASS DRAWING
+	local cX = ScrW() - (CoDHUD_SX(CFG.BAR_W) * 0.5)
+    local cY = ScrH() - (CoDHUD_SX(CFG.BAR_H) * 0.425)
+    local size = CoDHUD_S(246)
+    local yaw  = ply:EyeAngles().y
+    local angle = -(yaw - 0)
+
+    local halfFOV = 72.5
+    local radius  = size * math.sqrt(2) / 2 + 2
+    local steps   = 5
+
+    render.SetStencilEnable(true)
+    render.ClearStencil()
+    render.SetStencilWriteMask(255)
+    render.SetStencilTestMask(255)
+    render.SetStencilReferenceValue(1)
+    render.SetStencilCompareFunction(STENCIL_ALWAYS)
+    render.SetStencilPassOperation(STENCIL_REPLACE)
+    render.SetStencilFailOperation(STENCIL_KEEP)
+    render.SetStencilZFailOperation(STENCIL_KEEP)
+
+    render.OverrideColorWriteEnable(true, false)
+    draw.NoTexture()
+    surface.SetDrawColor(255, 255, 255, 255)
+    
+    for i = 0, steps - 1 do
+        local a0 = math.rad(-halfFOV + (i / steps)       * MASK.FOV)
+        local a1 = math.rad(-halfFOV + ((i + 1) / steps) * MASK.FOV)
+        surface.DrawPoly({
+            { x = cX,                         y = cY },
+            { x = cX + math.sin(a0) * radius, y = cY - math.cos(a0) * radius },
+            { x = cX + math.sin(a1) * radius, y = cY - math.cos(a1) * radius },
+        })
+    end
+    render.OverrideColorWriteEnable(false, false) -- Re-enable color drawing
+
+    render.SetStencilCompareFunction(STENCIL_EQUAL)
+    render.SetStencilPassOperation(STENCIL_KEEP)
+
+    surface.SetMaterial(MAT_COMPASS)
+    surface.SetDrawColor(255, 255, 255, 165)
+    surface.DrawTexturedRectRotated(cX, cY, size, size, angle)
+
+    render.SetStencilEnable(false)
+
+    -- 2. GRENADE DRAWING
+    local grenadeCount = math.Clamp(ply:GetAmmoCount("Grenade") or 0, 0, CFG.GRENADE_MAX)
+    if grenadeCount > 0 then
+        local barW = CoDHUD_SX(CFG.BAR_W)
+        local barH = CoDHUD_SY(CFG.BAR_H)
+        local barX = ScrW() - CoDHUD_SX(CFG.BAR_X_OFF) - barW
+        local barY = ScrH() - CoDHUD_SY(CFG.BAR_Y_OFF) - barH
+
+        local iW = CoDHUD_S(CFG.GRENADE_ICON_W)
+        local iH = CoDHUD_S(CFG.GRENADE_ICON_H)
+        local stackGap = CoDHUD_S(CFG.GRENADE_STACK_GAP)
+
+        local anchorX = ScrW() - CoDHUD_SX(CFG.GRENADE_X_OFF)
+        local anchorY = ScrH() - CoDHUD_SY(CFG.GRENADE_Y_OFF)
+
+        surface.SetMaterial(MAT_GRENADE)
+
+        for i = (CFG.GRENADE_MAX - 1), 0, -1 do
+            if i < grenadeCount then
+                local colorIndex = i + 1
+                local shade = CFG.GRENADE_SHADES[colorIndex] or CFG.GRENADE_SHADES[#CFG.GRENADE_SHADES]
+                surface.SetDrawColor(shade, shade, shade, 255)
+
+                local xPos = anchorX - (i * stackGap)
+                local yPos = anchorY
+
+                surface.DrawTexturedRect(xPos, yPos, iW, iH)
+            end
+        end
+    end
+
+    -- 3. WEAPON HUD DRAWING
+    local wep = ply:GetActiveWeapon()
+    if not IsValid(wep) then return end
+
+    if wep ~= lastWep then
+        lastWep       = wep
+        wepSwitchTime = CurTime()
+    end
+
+    local clip    = wep:Clip1()
+    local clip2    = wep:Clip2()
+    local maxClip = wep:GetMaxClip1()
+    local maxClip2 = wep:GetMaxClip2()
+    local primType = wep:GetPrimaryAmmoType()
+    local altType = wep:GetSecondaryAmmoType()
+	local altAmmoName = game.GetAmmoName(altType)
+    local reserve = ply:GetAmmoCount(primType)
+	
+
+    local barW = CoDHUD_SX(CFG.BAR_W)
+    local barH = CoDHUD_SY(CFG.BAR_H)
+    local barX = ScrW() - CoDHUD_SX(CFG.BAR_X_OFF) - barW
+    local barY = ScrH() - CoDHUD_SY(CFG.BAR_Y_OFF) - barH
+
+    surface.SetMaterial(MAT_FRAME)
+    surface.SetDrawColor(255, 255, 255)
+    surface.DrawTexturedRect(barX, barY, barW, barH)
+
+    local lineW = CoDHUD_SX(CFG.LINES_W)
+    local lineH = CoDHUD_SY(CFG.LINES_H)
+    local lineX = ScrW() - CoDHUD_SX(CFG.LINES_X_OFF) - lineW
+    local lineY = ScrH() - CoDHUD_SY(CFG.LINES_Y_OFF) - lineH
+
+    surface.SetDrawColor(255, 255, 255)
+    surface.SetMaterial(MAT_LINES)
+    surface.DrawTexturedRect(lineX + CoDHUD_SX(6), lineY + CoDHUD_SY(3), lineW, lineH)
+    surface.SetMaterial(MAT_FADE)
+    surface.DrawTexturedRect(lineX, lineY, lineW, lineH)
+
+	surface.SetFont("BO1_Res")
+	local restext = "/ " .. reserve
+	local resw, resh = surface.GetTextSize(restext)
+
+	if primType ~= -1 then
+        local resCol = (reserve == 0 or reserve < maxClip) and Color(255, 120, 120, 255) or  Color(255, 255, 255, 255)
+        DrawSqueezedText(restext, "BO1_Res", ScrW() - CoDHUD_SX(CFG.RES_X), ScrH() - CoDHUD_SY(CFG.RES_Y), resCol, CoDHUD_S(-6), CoDHUD_S(-9), 0, CoDHUD_S(-12))
+    end
+
+    local timeSinceSwitch = CurTime() - wepSwitchTime
+    if timeSinceSwitch < CFG.WEP_NAME_FADE then
+        local alpha = math.Clamp(1 - (timeSinceSwitch / CFG.WEP_NAME_FADE), 0, 1)
+        local name  = (wep:GetPrintName() or wep:GetClass())
+        draw.SimpleTextOutlined(name, "BO1_Wep_Name", ScrW() - CoDHUD_SX(CFG.WEP_NAME_X_OFF), ScrH() - CoDHUD_SY(CFG.WEP_NAME_Y_OFF), Color(255, 255, 255, 255 * alpha), 2, 0, outlined and 1.5 or 0, Color(0, 0, 0, 255 * alpha))
+    end
+
+    if maxClip > 0 and clip >= 0 then
+        local perc      = clip / maxClip
+        local isLowClip = (perc <= CFG.STAT_LOW_PERC)
+		local blink = 255 * math.abs(math.sin(RealTime() * 3))
+		
+		local col = Color(255, isLowClip and blink or 255, isLowClip and blink or 255)
+		
+        DrawSqueezedText(clip, "BO1_Res_Large", ScrW() - CoDHUD_SX(CFG.RES_X) - CoDHUD_SX(resw * 0.8), ScrH() - CoDHUD_SY(CFG.RES_Y * 1.15), col, CoDHUD_S(-6), CoDHUD_S(-16), 0)
+    end
+
+	local reloading = 
+	wep.IsReloading or reloadingM203 -- CW2
+	or (wep.ARC9 and wep:GetReloading()) -- ARC9
+	or (wep.ArcCW and wep:GetReloading()) -- ArcCW
+	or (wep.IsTFAWeapon and TFA.Enum.ReloadStatus[wep:GetStatus()]) -- TFA
+
+	local glactive = 
+	wep.dt and (wep.dt.AltActive or wep.dt.M203Active) -- CW2
+	or (wep.ARC9 and wep:GetUBGL())
+
+	if glactive then
+		clip = clip2
+		maxClip = maxClip2
+	end
+
+    if altType ~= -1 then
+		if altType ~= primType then
+			local altCount = ply:GetAmmoCount(altType)
+			surface.SetFont("BO1_Ammo_Alt")
+			local altw, alth = surface.GetTextSize(altCount)
+
+			surface.SetMaterial(MAT_DPAD_LEFT)
+			surface.SetDrawColor(255, 255, 255)
+			surface.DrawTexturedRect(ScrW() - CoDHUD_SX(CFG.ALT_ICON_X), ScrH() - CoDHUD_SY(CFG.ALT_ICON_Y), CoDHUD_S(CFG.ALT_ICON_SIZE), CoDHUD_S(CFG.ALT_ICON_SIZE))
+
+			local alticon = "grenade"
+
+			if altAmmoName == "Buckshot" then alticon = "buckshot" end
+
+			surface.SetMaterial(MAT_ALT[alticon])
+			surface.SetDrawColor(255, 255, 255)
+			surface.DrawTexturedRect(ScrW() - CoDHUD_SX(CFG.ALT_WICON_X), ScrH() - CoDHUD_SY(CFG.ALT_WICON_Y), CoDHUD_S(CFG.ALT_WICON_SIZE), CoDHUD_S(CFG.ALT_WICON_SIZE))
+
+			local altCol = (altCount > 0) and Color(255, 255, 255, 255) or Color(255, 120, 120, 255)
+			
+			draw.RoundedBox( 4, ScrW() -  CoDHUD_SX(CFG.ALT_TEXT_X) - (altw * 0.5), ScrH() - CoDHUD_SY(CFG.ALT_TEXT_Y), CoDHUD_S(altw * 1), CoDHUD_S(alth), Color( 0, 0, 0, 200 ) )
+			
+			DrawSqueezedText(altCount, "BO1_Ammo_Alt", ScrW() -  CoDHUD_SX(CFG.ALT_TEXT_X), ScrH() - CoDHUD_SY(CFG.ALT_TEXT_Y), altCol, CFG.ALT_TEXT_SQ, CFG.ALT_TEXT_SQ1, 1)
+		end
+    end
+
+	if maxClip2 > 1 and clip2 >= 0 then
+		local perc      = clip2 / maxClip2
+		local isLowClip = (perc <= CFG.STAT_LOW_PERC)
+
+	end
+
+    if maxClip > 0 and clip >= 0 and not reloading then
+        local perc      = clip / maxClip
+        local statText  = ""
+        local statCol   = Color(255, 255, 255)
+        local isNoAmmo  = false
+        local isLowAmmo = false
+        local isReloadText  = false
+
+        if clip == 0 and reserve == 0 then
+            statText = "#MW2_WEAPON_NO_AMMO"
+            isNoAmmo = true
+        elseif perc <= CFG.STAT_LOW_PERC and reserve == 0 then
+            statText = "#MW2_PLATFORM_LOW_AMMO_NO_RELOAD"
+            statCol  = Color(255, 230, 0)
+            isLowAmmo = true
+        elseif perc <= CFG.STAT_LOW_PERC and reserve > 0 then
+            statText = "#MW2_PLATFORM_RELOAD"
+            isReloadText = true
+        end
+
+        if statText ~= "" then
+            local cx   = ScrW() / 2
+            local cy   = (ScrH() / 2) + CoDHUD_SY(CFG.STAT_Y_OFF)
+            local sine = (math.sin(CurTime() * CFG.STAT_FLASH_SPD) + 1) / 2
+
+            local finalCol = table.Copy(statCol)
+
+            if isNoAmmo then
+                local glow = 225 + (sine * 30)
+                finalCol = Color(glow, 40, 40, glow)
+            elseif isLowAmmo or isReloadText then
+                finalCol.a = 100 + (sine * 155)
+            end
+
+            draw.SimpleTextOutlined(statText, "BO1_Stat_Font", cx + CoDHUD_SX(2), cy + CoDHUD_SY(2), finalCol, 1, 1, 1.5, Color(0, 0, 0, finalCol.a * 0.8))
+        end
+    end
+end
+CoDHUD[hudtype].WeaponInfo = weaponinfo
