@@ -279,8 +279,8 @@ local function CoDHUD_OpenGameConfirm(newGame)
     local currentGame = GetConVar("codhud_game"):GetString()
     pendingGame = newGame
 	
-	currentGame = string.upper(currentGame)
-	newGame = string.upper(newGame)
+	currentGame = currentGame
+	newGame = newGame
 
     if IsValid(codhud_menu_frame) then
         codhud_menu_frame:SetVisible(false)
@@ -481,11 +481,11 @@ local CoDHUD_SETTINGS = {
 	},
 
     { name = "#CoDHUD.Server", subtabs = {
-            { name = "#CoDHUD.Server", categories = {
+            { name = "#CoDHUD.Server", adminOnly = true, categories = {
                     { name = "#CoDHUD.General", adminOnly = true, controls = {
-                            { type = "checkbox", label = "#CoDHUD.Admin.EndScreen", convar = "codhud_enable_roundend", tooltip = "CoDHUD.Admin.EndScreen.desc" },
-                            { type = "checkbox", label = "#CoDHUD.Admin.EndScreen.StartNext", convar = "codhud_enable_roundend_startnext", tooltip = "CoDHUD.Admin.EndScreen.StartNext.desc" },
-							{ type = "checkbox", label = "#CoDHUD.Admin.FriendlyFire", convar = "codhud_friendly_fire", tooltip = "CoDHUD.Admin.FriendlyFire.desc" },
+                            { type = "checkbox", label = "#CoDHUD.Admin.EndScreen", server = true, convar = "codhud_enable_roundend", tooltip = "CoDHUD.Admin.EndScreen.desc" },
+                            { type = "checkbox", label = "#CoDHUD.Admin.EndScreen.StartNext", server = true, convar = "codhud_enable_roundend_startnext", tooltip = "CoDHUD.Admin.EndScreen.StartNext.desc" },
+							{ type = "checkbox", label = "#CoDHUD.Admin.FriendlyFire", server = true, convar = "codhud_friendly_fire", tooltip = "CoDHUD.Admin.FriendlyFire.desc" },
                             { type = "combobox", label = "#CoDHUD.Autobalance.Amount", tooltip = "CoDHUD.Autobalance.Amount.desc", choices = {
 									{"CoDHUD.Autobalance.Amount.disable", "0"},
 									{"CoDHUD.Autobalance.Amount.2", "2"},
@@ -527,13 +527,13 @@ local CoDHUD_SETTINGS = {
 								end
 							},
 							
-                            { type = "slider", label = "#CoDHUD.Scorelimit", convar = "codhud_score_limit", tooltip = "CoDHUD.Scorelimit.desc", min = 1, max = 150 },
+                            { type = "slider", label = "#CoDHUD.Scorelimit", server = true, convar = "codhud_score_limit", tooltip = "CoDHUD.Scorelimit.desc", min = 1, max = 150 },
 							
-                            { type = "slider", label = "#CoDHUD.Timelimit", convar = "codhud_time_limit", tooltip = "CoDHUD.Timelimit.desc", min = 0, max = 30 },
+                            { type = "slider", label = "#CoDHUD.Timelimit", server = true, convar = "codhud_time_limit", tooltip = "CoDHUD.Timelimit.desc", min = 0, max = 30 },
 							
-                            { type = "slider", label = "#CoDHUD.RoundStart.Timer", convar = "codhud_matchstart_timer", tooltip = "CoDHUD.RoundStart.Timer.desc", min = 0, max = 15 },
+                            { type = "slider", label = "#CoDHUD.RoundStart.Timer", server = true, convar = "codhud_matchstart_timer", tooltip = "CoDHUD.RoundStart.Timer.desc", min = 0, max = 15 },
 							
-							{ type = "checkbox", label = "#CoDHUD.RoundStart.Autobalance", convar = "codhud_autobalance_on_roundstart", tooltip = "CoDHUD.RoundStart.Autobalance.desc" },
+							{ type = "checkbox", label = "#CoDHUD.RoundStart.Autobalance", server = true, convar = "codhud_autobalance_on_roundstart", tooltip = "CoDHUD.RoundStart.Autobalance.desc" },
 							
 							{ type = "button", label = "#CoDHUD.RoundStart.Start", 
 								func = function()
@@ -571,11 +571,27 @@ local CoDHUD_SETTINGS = {
 
 local function CreateCheckbox(parent, data)
     local cb = vgui.Create("DCheckBoxLabel", parent)
+
     cb:SetText(data.label)
-    cb:SetConVar(data.convar)
-	if data.tooltip then
+
+    if data.server then
+        local cv = GetConVar(data.convar)
+
+        if cv then
+            cb:SetValue(cv:GetBool() and 1 or 0)
+        end
+
+        cb.OnChange = function(_, val)
+            CoDHUD_SetServerConVar(data.convar, val and "1" or "0")
+        end
+    else
+        cb:SetConVar(data.convar)
+    end
+
+    if data.tooltip then
         cb:SetTooltip(language.GetPhrase(data.tooltip))
     end
+
     cb:Dock(TOP)
     cb:DockMargin(5, 2, 5, 2)
     cb:SizeToContents()
@@ -603,23 +619,44 @@ end
 
 local function CreateSlider(parent, data)
     local slider = vgui.Create("DNumSlider", parent)
+
     slider:SetText(data.label)
     slider:SetMin(data.min)
     slider:SetMax(data.max)
     slider:SetDecimals(data.decimals or 0)
-    slider:SetConVar(data.convar)
+
+    local cv = GetConVar(data.convar)
+
+    if cv then
+        slider:SetValue(cv:GetFloat())
+    end
+
     slider:Dock(TOP)
-	
-	if data.tooltip then
+
+    if data.tooltip then
         slider:SetTooltip(language.GetPhrase(data.tooltip))
     end
 
-    -- Snap example (optional)
-    slider.OnValueChanged = function(self, val)
-        -- local snapped = math.Round(val / 100) * 100
-        -- if snapped ~= val then
-            self:SetValue(val)
-        -- end
+    local lastSent = nil
+    local timerName = "CoDHUD_SliderCommit_" .. tostring(slider)
+
+    slider.OnValueChanged = function(_, val)
+        val = math.Round(val, data.decimals or 0)
+
+        -- debounce:
+        -- only commit after the user stops changing the value
+        timer.Create(timerName, 0.05, 1, function()
+
+            -- prevent duplicate sends
+            if lastSent == val then return end
+            lastSent = val
+
+            if data.server then
+                CoDHUD_SetServerConVar(data.convar, tostring(val))
+            else
+                RunConsoleCommand(data.convar, tostring(val))
+            end
+        end)
     end
 end
 

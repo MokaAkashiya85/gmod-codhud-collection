@@ -1,4 +1,4 @@
-CoDHUD.RegisterHUD( "cod4", "#CoDHUD.Type.CoD4", true )
+CoDHUD.RegisterHUD( "cod4", "#CoDHUD.Type.cod4", true )
 
 local hudtype = "cod4"
 

@@ -116,11 +116,19 @@ net.Receive("CoDHUD_PlayerAutoBalanced", function()
 	end)
 end)
 
-function CoDHUD_AddKillfeedMessage(textstr)
+function CoDHUD_AddKillfeedMessage(textstr, textstr2, textstr3)
     timer.Simple(0.1, function()
+        local msg = language.GetPhrase(textstr)
+        local textstr2 = language.GetPhrase(textstr2)
+        local textstr3 = language.GetPhrase(textstr3)
+
+        if textstr2 ~= "" or textstr3 ~= "" then
+            msg = string.format(msg, textstr2, textstr3)
+        end
+
         table.insert(KillFeed, {
             type = "meta",
-            msg = language.GetPhrase(textstr),
+            msg = msg,
             spawnTime = CurTime(),
             dieTime = CurTime() + CFG.LIFETIME
         })
@@ -129,7 +137,10 @@ end
 
 net.Receive("CoDHUD_KillfeedMessage", function()
     local textstr = net.ReadString()
-    CoDHUD_AddKillfeedMessage(textstr)
+    local textstr2 = net.ReadString() or ""
+    local textstr3 = net.ReadString() or ""
+	
+    CoDHUD_AddKillfeedMessage(textstr, textstr2, textstr3)
 end)
 
 -- timer.Create("CoDHUD_DebugKillfeedSpam", 2, 0, function()
