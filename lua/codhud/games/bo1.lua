@@ -1,4 +1,4 @@
-CoDHUD.RegisterHUD( "bo1", "#CoDHUD.Type.BO1", true )
+CoDHUD.RegisterHUD( "bo1", "#CoDHUD.Type.bo1", true )
 
 local hudtype = "bo1"
 
@@ -1599,7 +1599,7 @@ local function scoreboard( ... )
 			local sectionY = startY
 
 			-- ICON
-			local iconPath = CoDHUD.Factions[hudtype][facKey].spawnIcon
+			local iconPath = CoDHUD.Factions[hudtype][facKey].scoreIcon
 			local mat = Material(iconPath, "smooth")
 
 			surface.SetMaterial(mat)
@@ -1664,7 +1664,7 @@ local function scoreboard( ... )
 			color = Color(150,150,150)
 		}
 
-		local iconPath = hudtype .. "/factions/faction_128_" .. key .. ".png"
+		local iconPath = CoDHUD.Factions[hudtype][key].scoreIcon
 		local mat = Material(iconPath, "smooth")
 
 		if mat:IsError() then

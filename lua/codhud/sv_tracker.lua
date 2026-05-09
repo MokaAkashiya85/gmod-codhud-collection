@@ -47,7 +47,7 @@ net.Receive("CoDHUD_RequestFactionChange", function(len, ply)
 	if not CoDHUD.Factions.CanPlayerChooseFaction(ply, faction) then
 		print("[CoDHUD] Blocked faction change for", ply:Nick(), "->", faction)
 		net.Start("CoDHUD_KillfeedMessage")
-		net.WriteString("Cannot change factions at this time.")
+		net.WriteString("CoDHUD.System.Faction.NotNow")
 		net.Send(ply)
 		return
 	end

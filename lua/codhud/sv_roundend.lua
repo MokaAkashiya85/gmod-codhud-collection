@@ -13,7 +13,7 @@ local function CoDHUD_DoRoundEnd(winnerFaction, loserFaction, winnerScore, loser
     if RE_Triggered then return end
 	RE_Triggered = true
 
-	timer.Simple( 0.2, function()
+	timer.Simple( 0.05, function()
 		net.Start("CoDHUD_RoundEnd")
 			net.WriteString(winnerFaction or "")
 			net.WriteString(loserFaction or "")
@@ -138,15 +138,8 @@ end
 
 hook.Add("Think", "CoDHUD_RoundEnd_ScoreCheck", function()
 	if not GetConVar("codhud_enable_roundend"):GetBool() then return end
-	
-    if RE_Triggered then
-        -- local allZero = true
-        -- for _, ply in ipairs(player.GetAll()) do
-            -- if ply:Frags() ~= 0 then allZero = false; break end
-        -- end
-        -- if allZero then RE_Triggered = false end
-        return
-    end
+
+    if RE_Triggered then return end
 
     local now = CurTime()
     if now < RE_ThinkThrottle then return end
@@ -154,36 +147,50 @@ hook.Add("Think", "CoDHUD_RoundEnd_ScoreCheck", function()
 
     local limitCV = GetConVar("codhud_score_limit")
     if not limitCV then return end
-    local scoreLimit = limitCV:GetInt()
-    if scoreLimit <= 0 then scoreLimit = 75 end
 
-    local winnerFaction = nil
+    local scoreLimit = limitCV:GetInt()
+    if scoreLimit <= 0 then
+        scoreLimit = 75
+    end
+
+    -- Build faction scores
+    local factionScores = {}
+
     for _, ply in ipairs(player.GetAll()) do
         if not IsValid(ply) then continue end
-        if math.max(0, ply:Frags()) >= scoreLimit then
-            winnerFaction = ply:GetNW2String("CoDHUD_Faction", "rangers")
+
+        local faction = ply:GetNW2String("CoDHUD_Faction", "")
+        if faction == "" then
+            faction = "rangers"
+        end
+
+        local score = math.max(0, ply:Frags())
+
+        factionScores[faction] = (factionScores[faction] or 0) + score
+    end
+
+    -- Determine if any faction reached the score limit
+    local winnerFaction = nil
+    local winnerScore = 0
+
+    for faction, score in pairs(factionScores) do
+        if score >= scoreLimit then
+            winnerFaction = faction
+            winnerScore = score
             break
         end
     end
 
     if not winnerFaction then return end
 
-    local factionScores = {}
-    for _, ply in ipairs(player.GetAll()) do
-        if not IsValid(ply) then continue end
-        local faction = ply:GetNW2String("CoDHUD_Faction", "rangers")
-        local score   = math.max(0, ply:Frags())
-        factionScores[faction] = (factionScores[faction] or 0) + score
-    end
-
-    local winnerScore  = factionScores[winnerFaction] or 0
+    -- Find highest enemy faction
     local loserFaction = ""
-    local loserScore   = 0
+    local loserScore = 0
+
     for faction, score in pairs(factionScores) do
-        if faction ~= winnerFaction then
+        if faction ~= winnerFaction and score > loserScore then
             loserFaction = faction
-            loserScore   = score
-            break
+            loserScore = score
         end
     end
 

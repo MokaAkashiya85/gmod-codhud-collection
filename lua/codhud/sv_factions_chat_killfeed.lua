@@ -15,7 +15,7 @@ CreateConVar("codhud_restrictfactions", "1", {FCVAR_ARCHIVE, FCVAR_NOTIFY, FCVAR
 -- Faction Name Mapping
 CoDHUD.Factions.validfactions = {
 	["cod4"] = {
-		["marines"]			= "Marine First Recon",
+		["marines"]			= "Marine Force Recon",
 		["sas"]				= "S.A.S.",
 		["ussr"]			= "Spetsnaz",
 		["arab"]			= "OpFor",
@@ -69,10 +69,9 @@ end
 cvars.AddChangeCallback("codhud_game", function(convar, oldValue, newValue)
     print("[CoDHUD] Game changed from " .. oldValue .. " to " .. newValue)
 
-	local textstr = "Game changed (" .. oldValue .. " > " .. newValue .. ")"
-
 	net.Start("CoDHUD_KillfeedMessage")
-	net.WriteString(textstr)
+	net.WriteString("CoDHUD.System.RestrictType")
+	net.WriteString("CoDHUD.Type." .. newValue)
 	net.Broadcast()
 
     if not CoDHUD.Factions.validfactions[newValue] then
@@ -252,8 +251,8 @@ function CoDHUD.Factions.RebuildPool()
     
     CoDHUD.Factions.ActivePool = CoDHUD.Factions.BuildFactionPool(factionTable)
 
-    -- print("[CoDHUD] Active faction pool:")
-    -- PrintTable(CoDHUD.Factions.ActivePool)
+    print("[CoDHUD] Active faction pool:")
+    PrintTable(CoDHUD.Factions.ActivePool)
 end
 
 hook.Add("Initialize", "CoDHUD_InitPool", function()
@@ -433,25 +432,26 @@ local function CoDHUD_AssignFaction(ply)
     ply:SetNW2String("CoDHUD_Faction", faction)
 end
 
-hook.Add("PlayerInitialSpawn", "CoDHUD_AssignFactionOnJoin", function(ply)
-    timer.Simple(0.5, function()
-        if not IsValid(ply) then return end
-        CoDHUD_AssignFaction(ply)
-		-- print("Player " .. ply:Nick() .. " assigned to a new faction!")
-    end)
-end)
+gameevent.Listen( "player_activate" )
+hook.Add( "player_activate", "CoDHUD_JoinRoundSync", function(data)
+	local id = data.userid				-- Same as Player:UserID() for the speaker
+	local ply = Player(id)
 
-hook.Add("PlayerInitialSpawn", "CoDHUD_LateJoinRoundSync", function(ply)
+    if not IsValid(ply) then return end
+		
+	print("CoDHUD DEBUG: Player " .. ply:Nick() .. " is in faction " .. ply:GetNW2String("CoDHUD_Faction", "rangers"))
 
-    timer.Simple(1, function()
+	CoDHUD_AssignFaction(ply)
+	
+	print("Player " .. ply:Nick() .. " assigned to a new faction! (" .. ply:GetNW2String("CoDHUD_Faction", "rangers") .. ")")
 
-        if not IsValid(ply) then return end
+    timer.Simple(0.1, function()
 
-        -- print("[CoDHUD] Checking round sync for " .. ply:Nick())
+        print("[CoDHUD] Checking round sync for " .. ply:Nick())
 
         -- No active round
         if not CoDHUD_RoundEndTimeSV and not CoDHUD_RoundStarting then
-            -- print("[CoDHUD] No active round.")
+            print("[CoDHUD] No active round.")
             return
         end
 
@@ -464,9 +464,11 @@ hook.Add("PlayerInitialSpawn", "CoDHUD_LateJoinRoundSync", function(ply)
             remaining = math.max(0, math.ceil(CoDHUD_RoundStartTimer - CurTime()))
         end
 
-        -- print("[CoDHUD] Syncing " .. ply:Nick())
-        -- print("Remaining countdown: " .. remaining)
-        -- print("Faction: " .. tostring(ply.CoDHUD_StoredFaction))
+        print("[CoDHUD] Syncing " .. ply:Nick())
+        print("Remaining countdown: " .. remaining)
+        print("Faction: " .. tostring(ply.CoDHUD_StoredFaction))
+		
+		ply:Spawn() -- Force a respawn, just in case
 
         if remaining > 0 then
             ply:Freeze(true)
