@@ -1973,7 +1973,7 @@ local function weaponinfo(...)
 	local function GetAmmoConfig(wep, alt)
 		if not IsValid(wep) then return AMMO["default"] end
 		local ammoName = string.lower(game.GetAmmoName(alt and wep:GetSecondaryAmmoType() or wep:GetPrimaryAmmoType()) or "")
-		if (alt and wep:GetMaxClip2() or wep:GetMaxClip1()) >= math.min(100, (AMMO[AMMO_MAP[ammoName]] or AMMO["default"]).row_size*2+1) then return AMMO["belt"] end
+		if (alt and wep:GetMaxClip2() or wep:GetMaxClip1()) >= math.min(100, (AMMO[AMMO_MAP[ammoName]] or AMMO["default"]).row_size+1) then return AMMO["belt"] end
 		return AMMO[AMMO_MAP[ammoName]] or AMMO["default"]
 	end
 
