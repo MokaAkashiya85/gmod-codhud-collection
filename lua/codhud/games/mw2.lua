@@ -1934,9 +1934,9 @@ local function weaponinfo(...)
 		["default"] = { row_size = 50, row_gap = 0, mat = "mw2/hud/ammo_counter_bullet_mp.png",      w = 3,  h = 20, gap = 1, y_off = 1, x_start = -1, dim = 75 },
 		["357"]     = { row_size = 50, row_gap = 0, mat = "mw2/hud/ammo_counter_riflebullet_mp.png", w = 4,  h = 14, gap = 1, y_off = 1, x_start = 0, dim = 75 },
 		["rifle"]   = { row_size = 50, row_gap = 0, mat = "mw2/hud/ammo_counter_riflebullet_mp.png", w = 4,  h = 14, gap = 1, y_off = 1, x_start = 0, dim = 75 },
-		["rocket"]  = { row_size = 20, row_gap = 0, mat = "mw2/hud/ammo_counter_rocket_mp.png",      w = 12, h = 24, gap = 1, y_off = -1, x_start = 5, dim = 75 },
-		["sniper"]  = { row_size = 25, row_gap = 0, mat = "mw2/hud/ammo_counter_rocket_mp.png",      w = 8,  h = 20, gap = 1, y_off = 0, x_start = 2, dim = 75 },
-		["shotgun"] = { row_size = 20, row_gap = 0, mat = "mw2/hud/ammo_counter_rocket_mp.png",      w = 12, h = 20, gap = -1, y_off = 0, x_start = 3, dim = 75 },
+		["rocket"]  = { row_size = 30, row_gap = 0, mat = "mw2/hud/ammo_counter_rocket_mp.png",      w = 12, h = 24, gap = 1, y_off = -1, x_start = 5, dim = 75 },
+		["sniper"]  = { row_size = 50, row_gap = 0, mat = "mw2/hud/ammo_counter_rocket_mp.png",      w = 8,  h = 20, gap = 1, y_off = 0, x_start = 2, dim = 75 },
+		["shotgun"] = { row_size = 30, row_gap = 0, mat = "mw2/hud/ammo_counter_rocket_mp.png",      w = 12, h = 20, gap = -1, y_off = 0, x_start = 3, dim = 75 },
 		["pistol"]  = { row_size = 50, row_gap = 0, mat = "mw2/hud/ammo_counter_bullet_mp.png",      w = 4,  h = 14, gap = 1, y_off = 2, x_start = 0, dim = 75 },
 		["belt"]    = { row_size = 20, row_gap = 0, mat = "mw2/hud/ammo_counter_beltbullet_mp.png", w = 7, h = 5, gap = 0, y_off = -5, x_start = 0, dim = 75 },
 	}
@@ -1961,6 +1961,7 @@ local function weaponinfo(...)
 		["slam"]     = "rocket",
 		["gaussenergy"]     = "belt",
 		["ti_sniper"]		= "sniper",
+		["ti_rifle"]		= "sniper",
 	}
 
 	local MAT_BAR  = Material(hudtype .. "/hud/hud_weaponbar.png", "smooth")
