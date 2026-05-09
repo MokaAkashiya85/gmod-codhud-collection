@@ -208,13 +208,8 @@ local function InitiateCoDFonts()
 
 	-- [ BO1 ]
 	-- Challenges
-    surface.CreateFont( "BO1_ChalHeader_Pri",		{ font = "BankGothic Md BT", size = CoDHUD_S(46), weight = 10,  blursize = 0, antialias = true,  outline = false })
-    surface.CreateFont( "BO1_ChalHeader_Sec",		{ font = "BankGothic Md BT", size = CoDHUD_S(46), weight = 10,  blursize = 5, antialias = true,  outline = false })
-    surface.CreateFont( "BO1_ChalHeader_Shd",		{ font = "BankGothic Md BT", size = CoDHUD_S(46), weight = 400, blursize = 2, antialias = false, outline = true  })
-
-    surface.CreateFont( "BO1_ChalHeader",			{ font = "HelveticaNeue MediumCond", size = CoDHUD_S(50), weight = 800,  antialias = true })
-    surface.CreateFont( "BO1_ChalHeader_Glow",		{ font = "HelveticaNeue MediumCond", size = CoDHUD_S(52), weight = 1000, blursize = CoDHUD_S(12), antialias = true })
-    surface.CreateFont( "BO1_ChalSub",				{ font = "HelveticaNeue MediumCond", size = CoDHUD_S(28), weight = 400,  antialias = true })
+    surface.CreateFont( "BO1_ChalHeader",			{ font = "HelveticaNeue MediumCond", size = CoDHUD_S(64), weight = 800,  antialias = true })
+    surface.CreateFont( "BO1_ChalSub",				{ font = "HelveticaNeue MediumCond", size = CoDHUD_S(40), weight = 400,  antialias = true })
 	
 	-- Chat
 	surface.CreateFont( "BO1_ChatFont",				{ font = "HelveticaNeue MediumCond",  size = CoDHUD_S(22),  weight = 400,  antialias = true, shadow = true })
@@ -260,13 +255,14 @@ local function InitiateCoDFonts()
     surface.CreateFont( "BO1_RS_Timer",				{ font = "HelveticaNeue MediumCond", size = CoDHUD_S(64), weight = 400, antialias = true, shadow = true })
 
 	-- Score Bar	
-	surface.CreateFont( "BO1_Timer", 				{ font = "HelveticaNeue MediumCond Light", size = CoDHUD_S(34), weight = 400, antialias = true, shadow = false, })
+	surface.CreateFont( "BO1_Timer", 				{ font = "HelveticaNeue MediumCond", size = CoDHUD_S(34), weight = 400, antialias = true, shadow = false, })
     surface.CreateFont( "BO1_Status",				{ font = "BankGothic Md BT", size = CoDHUD_S(28), weight = 0, antialias = true, shadow = true, })
     surface.CreateFont( "BO1_Font",					{ font = "BankGothic Md BT", size = CoDHUD_S(40), weight = 0, antialias = true, })
     surface.CreateFont( "BO1_Font2",					{ font = "BankGothic Md BT", size = CoDHUD_S(30), weight = 400, antialias = true, })
 		
 	-- Scoreboard
-    surface.CreateFont( "BO1_Scoreboard_Text",		{ font = "HelveticaNeue MediumCond Light", size = CoDHUD_S(34), weight = 400, antialias = true, shadow = true, })
+    surface.CreateFont( "BO1_Scoreboard_Text",		{ font = "HelveticaNeue MediumCond", size = CoDHUD_S(28), weight = 100, antialias = true, shadow = true, })
+    surface.CreateFont( "BO1_Scoreboard_Score",		{ font = "BankGothic Md BT", size = CoDHUD_S(64), weight = 400, antialias = true, shadow = true, })
     surface.CreateFont( "BO1_Scoreboard_Timer",		{ font = "BankGothic Md BT", size = CoDHUD_S(34), weight = 400, antialias = true, })
 	
 	-- IFF

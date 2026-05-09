@@ -487,7 +487,7 @@ CoDHUD[hudtype].RoundEnd = re_teams
 
 local function re_bonus( ... )
 	local re_lock_time = select(1, ...)
-	local re_match_bonus = select(2, ...)
+	local re_match_bonus = math.Round(select(2, ...) * 0.1)
 
 	re_match_bonus = string.Replace(re_match_bonus, "0", "O")
 
@@ -524,7 +524,7 @@ local function xp( ... )
 	local finalAlpha = select(3, ...)
 	local scoreScale = select(4, ...)
 	local currentPulseAlpha = select(5, ...)
-	local scoreVal = select(6, ...)
+	local scoreVal = math.Round(select(6, ...) * 0.1)
 
 	local outlined = GetConVar("codhud_enable_outlinedtext"):GetBool()
 
@@ -538,7 +538,7 @@ local function xp( ... )
 	mat:Translate(Vector(-cx, -drawY, 0))
 
 	cam.PushModelMatrix(mat)
-		DrawSqueezedScore(scoreVal * 0.1, cx, drawY, drawAlpha)
+		DrawSqueezedScore(scoreVal, cx, drawY, drawAlpha)
 	cam.PopModelMatrix()
 end
 CoDHUD[hudtype].XP = xp
@@ -1295,7 +1295,7 @@ local function scorebar(data)
 	-- Enemy bar (red)
 	local enemyFaction = data.enemyFaction
 
-	if enemyFaction then
+	if enemyFaction and CoDHUD.Factions[hudtype] and CoDHUD.Factions[hudtype][enemyFaction].scoremat then
 		enemybar = Material(CoDHUD.Factions[hudtype][enemyFaction].scoremat, "mips smooth")
 	end
 

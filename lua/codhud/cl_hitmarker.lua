@@ -26,6 +26,10 @@ if CLIENT then
 				CoDHUD[CoDHUD_GetHUDType()].Hitmarker(hitTime)
 			end
         end
+    end)
+
+    hook.Add("DrawOverlay", "CoDHUD_DrawXPSystem", function()
+        local ct = CurTime()
 
         -- SCORE POPUP
         if ct < scoreTime then
