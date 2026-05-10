@@ -1303,8 +1303,10 @@ local function scorebar(data)
 	-- Enemy bar (red)
 	local enemyFaction = data.enemyFaction
 
-	if enemyFaction and CoDHUD.Factions[hudtype] and CoDHUD.Factions[hudtype][enemyFaction].scoremat then
+	if enemyFaction and CoDHUD.Factions[hudtype] and CoDHUD.Factions[hudtype][enemyFaction] and CoDHUD.Factions[hudtype][enemyFaction].scoremat then
 		enemybar = Material(CoDHUD.Factions[hudtype][enemyFaction].scoremat, "mips smooth")
+	else
+		enemybar = defaultbar
 	end
 
 	surface.SetMaterial(enemybar)

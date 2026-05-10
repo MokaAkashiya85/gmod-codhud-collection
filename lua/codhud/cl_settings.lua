@@ -112,8 +112,10 @@ local function CoDHUD_OpenFactionConfirm(factionID)
 		surface.SetDrawColor(255, 255, 255)
 		surface.SetMaterial(Material(factionData.scoreIcon, "smooth"))
 		surface.DrawTexturedRect(w - (w * 0.5) - CoDHUD_S(64), CoDHUD_S(64), CoDHUD_S(128), CoDHUD_S(128))
+		
+		local glow = factionData.glow or Color(0,0,0)
 
-		draw.SimpleTextOutlined( "#" .. factionData.name, "MW2_ChalHeader_Pri", w * 0.5, CoDHUD_S(32), Color(255,255,255), 1, 1, 3, Color(factionData.glow.r, factionData.glow.g, factionData.glow.b, 25) )
+		draw.SimpleTextOutlined( "#" .. factionData.name, "MW2_ChalHeader_Pri", w * 0.5, CoDHUD_S(32), Color(255,255,255), 1, 1, 3, Color(glow.r, glow.g, glow.b, 25) )
     end
 
     local root = vgui.Create("DPanel", rs_confirm)
