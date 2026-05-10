@@ -51,6 +51,14 @@ CoDHUD.Factions.validfactions = {
 		["ussr"]			= "Spetsnaz",
 		["pmc"]				= "P.M.C."
 	},
+	["bo2"] = {
+		["seals"]			= "SEALS",
+		["sdc"]				= "SDC",
+		["fbi"]				= "FBI",
+		["pmc"]				= "Mercs",
+		["isa"]				= "ISA",
+		["cd"]				= "Militia",
+	},
 }
 
 function CoDHUD.Factions.GetFactionName(factionID)

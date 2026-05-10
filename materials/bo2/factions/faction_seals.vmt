@@ -1,0 +1,8 @@
+UnLitGeneric
+{
+	$basetexture 			"bo2\factions\faction_seals_128"
+	$additive 				"1"
+
+	$vertexcolor			1
+	$vertexalpha			1
+}

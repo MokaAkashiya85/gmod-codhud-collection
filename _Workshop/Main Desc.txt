@@ -75,6 +75,7 @@ Full HUD functionality, including, but not limited to:
 [h3] Credits [/h3]
 [list]
 [*][b]Moka[/b] - Rewrite, new additions & Swedish translations
+[*][b]chenyakumo[/b] - Coding assistance
 [*][b]landocalrissian[/b] - Original addon author & Turkish translations
 [*][b]cosmicpuppy[/b] - Original addon contributor
 [/list]
