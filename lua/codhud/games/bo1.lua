@@ -1555,7 +1555,7 @@ local function scoreboard( ... )
 			surface.SetFont("BO1_Scoreboard_Score")
 			local scorew, scoreh = surface.GetTextSize(score)
 			
-			draw.SimpleTextOutlined( language.GetPhrase(fData.short) .. " (" .. #players .. ")", "BO1_Scoreboard_Text", barX + CoDHUD_S(CFG.FAC_NAME_X) + CoDHUD_S(scorew), sectionY + CoDHUD_S(CFG.FAC_NAME_Y), Color(255,255,255), 0,0, outlined and 1 or 0, Color(0,0,0) )
+			draw.SimpleTextOutlined( language.GetPhrase(fData.short) .. " ( " .. #players .. " )", "BO1_Scoreboard_Text", barX + CoDHUD_S(CFG.FAC_NAME_X) + CoDHUD_S(scorew), sectionY + CoDHUD_S(CFG.FAC_NAME_Y), Color(255,255,255), 0,0, outlined and 1 or 0, Color(0,0,0) )
 
 			-- rows
 			for i, ply in ipairs(players) do

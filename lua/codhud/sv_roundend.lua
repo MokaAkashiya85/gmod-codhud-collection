@@ -97,6 +97,17 @@ local function CoDHUD_DoRoundEnd(winnerFaction, loserFaction, winnerScore, loser
 			local matchtimer = GetConVar("codhud_matchstart_timer"):GetInt()
 			local maxtimer = GetConVar("codhud_time_limit"):GetFloat()
 
+			CoDHUD_FirstBloodOccurred = false
+
+			CoDHUD_RoundStarting = true
+			CoDHUD_RoundStartTimer = CurTime() + matchtimer
+
+			timer.Remove("CoDHUD_RoundStartTime")
+
+			if maxtimer > 0 then
+				CoDHUD_RoundEndTimeSV = CurTime() + (matchtimer + 1) + (maxtimer * 60)
+			end
+
 			for _, p in ipairs(player.GetAll()) do
 				if IsValid(p) then
 					p:SetFrags(0)
@@ -106,10 +117,6 @@ local function CoDHUD_DoRoundEnd(winnerFaction, loserFaction, winnerScore, loser
 				end
 			end
 
-			if maxtimer > 0 then
-				CoDHUD_RoundEndTimeSV = CurTime() + (matchtimer + 1) + (maxtimer * 60)
-			end
-
 			net.Start("CoDHUD_RoundStart")
 				net.WriteString(gamemode)
 				net.WriteInt(matchtimer, 6)
@@ -117,9 +124,15 @@ local function CoDHUD_DoRoundEnd(winnerFaction, loserFaction, winnerScore, loser
 				net.WriteFloat(CoDHUD_RoundEndTimeSV or 0)
 			net.Broadcast()
 
-			timer.Simple( matchtimer, function()
+			timer.Create("CoDHUD_RoundStartTime", matchtimer, 1, function()
+
+				CoDHUD_RoundStarting = false
+				CoDHUD_RoundStartTimer = nil
+
 				for _, p in ipairs(player.GetAll()) do
-					p:Freeze(false)
+					if IsValid(p) then
+						p:Freeze(false)
+					end
 				end
 			end)
 		else
