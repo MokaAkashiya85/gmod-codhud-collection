@@ -1869,6 +1869,7 @@ local function weaponinfo(...)
 	surface.SetFont("BO1_Res")
 	local restext = "/ " .. reserve
 	local resw, resh = surface.GetTextSize(reserve)
+	local clipw, cliph = surface.GetTextSize(maxClip2 .. "  ")
 
 	if primType ~= -1 then
         local resCol = (reserve == 0 or reserve < maxClip) and Color(255, 120, 120, 255) or  Color(255, 255, 255, 255)
@@ -1889,12 +1890,17 @@ local function weaponinfo(...)
 		
 		local col = Color(255, isLowClip and blink or 255, isLowClip and blink or 255)
 		
-        DrawSqueezedText(clip, "BO1_Res_Large", ScrW() - CoDHUD_SX(CFG.RES_X) - resw, ScrH() - CoDHUD_SY(CFG.RES_Y * 1.15), col, CoDHUD_S(-6), CoDHUD_S(-16), 0)
+        DrawSqueezedText(clip, "BO1_Res_Large", ScrW() - CoDHUD_SX(CFG.RES_X) - resw - (maxClip2 > 0 and clipw or 0), ScrH() - CoDHUD_SY(CFG.RES_Y * 1.15), col, CoDHUD_S(-6), CoDHUD_S(-16), 0)
     end
 
 	if maxClip2 > 0 and clip2 >= 0 then
 		local perc      = clip2 / maxClip2
 		local isLowClip = (perc <= CFG.STAT_LOW_PERC)
+		local blink = 255 * math.abs(math.sin(RealTime() * 3))
+		
+		local col = Color(255, isLowClip and blink or 255, isLowClip and blink or 255)
+		
+        DrawSqueezedText(clip2, "BO1_Res_Large", ScrW() - CoDHUD_SX(CFG.RES_X) - resw, ScrH() - CoDHUD_SY(CFG.RES_Y * 1.15), col, CoDHUD_S(-6), CoDHUD_S(-16), 0)
 	end
 
 	local reloading = 
