@@ -5,6 +5,9 @@ CoDHUD_AnnouncerQueue = CoDHUD_AnnouncerQueue or {}
 CoDHUD_AnnouncerPlaying = CoDHUD_AnnouncerPlaying or false
 CoDHUD_AnnouncerNextTime = CoDHUD_AnnouncerNextTime or 0
 
+-- Cache
+CoDHUD_AnnouncerCache = CoDHUD_AnnouncerCache or {}
+
 -- Music check
 CoDHUD_CurrentMusic = CoDHUD_CurrentMusic or nil
 CoDHUD_MusicVolumeScale = CoDHUD_MusicVolumeScale or 1
@@ -100,35 +103,57 @@ function CoDHUD_GetAnnouncerSound(keys)
 		lang = "en"
 	end
 
-    local function tryLang(l)
-        for _, key in ipairs(keys) do
-		
+	local function tryLang(l)
+		for _, key in ipairs(keys) do
+
 			local filesuffix = ""
-		
-			if CoDHUD[CoDHUD_GetHUDType()].VoiceCallouts and CoDHUD[CoDHUD_GetHUDType()].VoiceCallouts.suffix then
+
+			if CoDHUD[CoDHUD_GetHUDType()].VoiceCallouts
+			and CoDHUD[CoDHUD_GetHUDType()].VoiceCallouts.suffix then
 				filesuffix = CoDHUD[CoDHUD_GetHUDType()].VoiceCallouts.suffix
 			end
 
-            -- suffix search
-            for i = 0, 9 do
-                local suffix = (i < 10 and "0" .. i or tostring(i))
-				local path = "announcer/" .. CoDHUD_GetHUDType() .. "/" .. l .. "/" .. CoDHUD.Factions[CoDHUD_GetHUDType()][faction].voicepath .. key .. "_" .. suffix .. filesuffix .. ".wav"
+			local baseDir = "sound/announcer/" .. CoDHUD_GetHUDType() .. "/" .. l .. "/"
+			local voicePath = CoDHUD.Factions[CoDHUD_GetHUDType()][faction].voicepath
+			local cacheKey = CoDHUD_GetHUDType() .. "|" .. faction .. "|" .. l .. "|" .. key
 
-                if file.Exists("sound/" .. path, "GAME") then
-                    return path
-                end
-            end
+			-- build cache once
+			if not CoDHUD_AnnouncerCache[cacheKey] then
+				local voicePath = CoDHUD.Factions[CoDHUD_GetHUDType()][faction].voicepath
 
-            -- fallback no suffix
-            local path = "announcer/" .. CoDHUD_GetHUDType() .. "/" .. l .. "/" .. CoDHUD.Factions[CoDHUD_GetHUDType()][faction].voicepath .. key .. filesuffix .. ".wav"
+				local folder = "announcer/" .. CoDHUD_GetHUDType() .. "/" .. l .. "/" .. string.GetPathFromFilename(voicePath)
+				local prefix = string.GetFileFromFilename(voicePath) .. key
 
-            if file.Exists("sound/" .. path, "GAME") then
-                return path
-            end
-        end
+				local files = file.Find("sound/" .. folder .. "*.wav", "GAME")
+				local candidates = {}
 
-        return nil
-    end
+				for _, filename in ipairs(files) do
+					local lower = string.lower(filename)
+
+					if string.StartWith(lower, string.lower(prefix)) then
+						table.insert(candidates, folder .. filename)
+					end
+				end
+
+				-- fallback exact file
+				local exactPath = "announcer/" .. CoDHUD_GetHUDType() .. "/" .. l .. "/" .. voicePath .. key .. filesuffix .. ".wav"
+
+				if file.Exists("sound/" .. exactPath, "GAME") then
+					table.insert(candidates, exactPath)
+				end
+
+				CoDHUD_AnnouncerCache[cacheKey] = candidates
+			end
+
+			local candidates = CoDHUD_AnnouncerCache[cacheKey]
+
+			if candidates and #candidates > 0 then
+				return candidates[math.random(#candidates)]
+			end
+		end
+
+		return nil
+	end
 
 	return tryLang(lang) or tryLang("en")
 end

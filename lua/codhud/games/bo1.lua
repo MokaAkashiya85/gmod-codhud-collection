@@ -20,12 +20,12 @@ end
 
 -- [[ SUSPENSE ]]
 CoDHUD[hudtype].SuspenseTracks = {
-	"music/bo1/underscores/arclight_underscore_Ip_b.wav",
+	"music/bo1/underscores/arclight_underscore_lp_b.wav",
 	"music/bo1/underscores/blackbird_underscore_lp_a.wav",
 	"music/bo1/underscores/canyonrock_underscore_lp_a.wav",
 	"music/bo1/underscores/chopperintro_underscore_a.wav",
 	"music/bo1/underscores/commies_underscore_a.wav",
-	"music/bo1/underscores/deviant_underscore_Ip_a.wav",
+	"music/bo1/underscores/deviant_underscore_a.wav",
 	"music/bo1/underscores/eagleclaw_underscore_a.wav",
 	"music/bo1/underscores/eagleclaw_underscore_b.wav",
 	"music/bo1/underscores/foe_underscore_a.wav",
