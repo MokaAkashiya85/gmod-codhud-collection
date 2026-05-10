@@ -1132,7 +1132,8 @@ local function minimap( ... )
 end
 CoDHUD[hudtype].Minimap = minimap
 
-local MAT_GRADIENT = Material("bo1/hud/hud_score_progress.png")
+-- local MAT_GRADIENT = Material("bo1/hud/hud_score_progress.png")
+local MAT_GRADIENT = Material("vgui/gradient-r")
 
 local function scorebar(data)
 
@@ -1149,7 +1150,7 @@ local function scorebar(data)
 		ICON_Y     = -35.5,
 
 		-- Timer
-		TIMER_X          = 145,
+		TIMER_X          = 150,
 		TIMER_Y          = -64,
 		TIMER_SHIFT_2DIG = 0,
 		TIMER_SHIFT_3DIG = 0,
@@ -1160,9 +1161,9 @@ local function scorebar(data)
 		STATUS_Y = 2,
 
 		-- Squeeze Values
-		SQUEEZE            = 2,
-		SQUEEZE_ONE        = 2,
-		SQUEEZE_ONE_BEFORE = 2,
+		SQUEEZE            = 0,
+		SQUEEZE_ONE        = 0,
+		SQUEEZE_ONE_BEFORE = 0,
 	}
 
 	local SCORES_CFG = {
@@ -1170,9 +1171,9 @@ local function scorebar(data)
 		X = 177.5,
 		Y = 87.5,
 		GAP_OFFSET = 44,
-		SQUEEZE = -4,
-		SQUEEZE_ONE = 0,
-		SQUEEZE_ONE_BEFORE = 0,
+		SQUEEZE = -2,
+		SQUEEZE_ONE = -6,
+		SQUEEZE_ONE_BEFORE = -12,
 		OUTLINE_W = 1.5,
 
 		-- Score Limit for Bar Scaling
@@ -1359,7 +1360,7 @@ local function scoreboard( ... )
 
 		-- Spacing & Layout
 		ROW_GAP = 8,
-		TEAM_GAP = 120,
+		TEAM_GAP = 90,
 
 		-- Faction Icon
 		ICON_SIZE = 96,
@@ -1550,12 +1551,12 @@ local function scoreboard( ... )
 			surface.SetDrawColor(255,255,255,255)
 			surface.DrawTexturedRect(barX + CoDHUD_S(CFG.ICON_X_OFF), sectionY + CoDHUD_S(CFG.ICON_Y_OFF), CoDHUD_S(CFG.ICON_SIZE), CoDHUD_S(CFG.ICON_SIZE))
 
-			DrawSqueezedText( score, "BO1_Scoreboard_Score", barX + CoDHUD_SX(CFG.FAC_NAME_X), sectionY + CoDHUD_S(CFG.FAC_NAME_Y) - CoDHUD_S(22), Color(255,255,255), CoDHUD_S(-4), CoDHUD_S(-4), 2, CoDHUD_S(-12), CoDHUD_SX(1) )
+			DrawSqueezedText( score, "BO1_Scoreboard_Score", barX + CoDHUD_SX(CFG.FAC_NAME_X), sectionY + CoDHUD_S(CFG.FAC_NAME_Y) - CoDHUD_S(22), Color(255,255,255), CoDHUD_S(-2), CoDHUD_S(-6), 2, CoDHUD_S(-12), CoDHUD_SX(1) )
 			
 			surface.SetFont("BO1_Scoreboard_Score")
 			local scorew, scoreh = surface.GetTextSize(score)
 			
-			draw.SimpleTextOutlined( language.GetPhrase(fData.short) .. " ( " .. #players .. " )", "BO1_Scoreboard_Text", barX + CoDHUD_S(CFG.FAC_NAME_X) + CoDHUD_S(scorew), sectionY + CoDHUD_S(CFG.FAC_NAME_Y), Color(255,255,255), 0,0, outlined and 1 or 0, Color(0,0,0) )
+			draw.SimpleTextOutlined( language.GetPhrase(fData.short) .. " ( " .. #players .. " )", "BO1_Scoreboard_Text", barX + CoDHUD_S(CFG.FAC_NAME_X) + CoDHUD_S(scorew + 10), sectionY + CoDHUD_S(CFG.FAC_NAME_Y), Color(255,255,255), 0,0, outlined and 1 or 0, Color(0,0,0) )
 
 			-- rows
 			for i, ply in ipairs(players) do
@@ -1728,9 +1729,9 @@ local function weaponinfo(...)
 		ALT_ICON_Y     = 256 - 64 + 5,
 		ALT_TEXT_X     = 170,
 		ALT_TEXT_Y     = 95,
-		ALT_TEXT_SQ    = -3,
-		ALT_TEXT_SQ1   = -7,
-		
+		ALT_TEXT_SQ    = 0,
+		ALT_TEXT_SQ1   = 0,
+
 		ALT_WICON_SIZE  = 64 + 8,
 		ALT_WICON_X     = 256 - 64 + 10,
 		ALT_WICON_Y     = 128 + 5,
@@ -1935,7 +1936,7 @@ local function weaponinfo(...)
 			
 			draw.RoundedBox( 4, ScrW() -  CoDHUD_SX(CFG.ALT_TEXT_X+4) - altPad * 0.5 , ScrH() - CoDHUD_SY(CFG.ALT_TEXT_Y), CoDHUD_S(8) + altPad, CoDHUD_S(alth), Color( 0, 0, 0, 200 ) )
 			
-			DrawSqueezedText(altCount, "BO1_Ammo_Alt", ScrW() -  CoDHUD_SX(CFG.ALT_TEXT_X), ScrH() - CoDHUD_SY(CFG.ALT_TEXT_Y), altCol, CFG.ALT_TEXT_SQ, CFG.ALT_TEXT_SQ, 1)
+			DrawSqueezedText(altCount, "BO1_Ammo_Alt", ScrW() -  CoDHUD_SX(CFG.ALT_TEXT_X), ScrH() - CoDHUD_SY(CFG.ALT_TEXT_Y), altCol, CFG.ALT_TEXT_SQ, CFG.ALT_TEXT_SQ, 1, CoDHUD_S(999))
 		elseif maxClip2 > 0 and clip2 >= 0 then
 			local perc      = clip2 / maxClip2
 			local isLowClip = (perc <= CFG.STAT_LOW_PERC)

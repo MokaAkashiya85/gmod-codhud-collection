@@ -255,7 +255,7 @@ local function InitiateCoDFonts()
     surface.CreateFont( "BO1_RS_Timer",				{ font = "HelveticaNeue MediumCond", size = CoDHUD_S(64), weight = 400, antialias = true, shadow = true })
 
 	-- Score Bar	
-	surface.CreateFont( "BO1_Timer", 				{ font = "HelveticaNeue MediumCond", size = CoDHUD_S(34), weight = 400, antialias = true, shadow = false, })
+	surface.CreateFont( "BO1_Timer", 				{ font = "MorrisSansW04-MediumCond", size = CoDHUD_S(34), weight = 400, antialias = true, shadow = false, })
     surface.CreateFont( "BO1_Status",				{ font = "MorrisSansW04-MediumCond", size = CoDHUD_S(28), weight = 0, antialias = true, shadow = true, })
     surface.CreateFont( "BO1_Font",					{ font = "MorrisSansW04-MediumCond", size = CoDHUD_S(40), weight = 0, antialias = true, })
     surface.CreateFont( "BO1_Font2",					{ font = "MorrisSansW04-MediumCond", size = CoDHUD_S(30), weight = 400, antialias = true, })

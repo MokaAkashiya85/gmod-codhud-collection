@@ -18,10 +18,11 @@ You can get them here: [url=https://steamcommunity.com/sharedfiles/filedetails/?
 [list]
 	[*] Customizable HUD Types; Switch to another game's HUD and its factions!
 		[list]
-			[*] Call of Duty 4: Modern Warfare
-			[*] Call of Duty: World at War
-			[*] Call of Duty: Modern Warfare 2
-			[*] Call of Duty: Modern Warfare 3
+			[*] Modern Warfare 1
+			[*] World at War
+			[*] Modern Warfare 2
+			[*] Black Ops
+			[*] Modern Warfare 3
 		[/list]
 	[*] Round End now supports Time Limits:
 	[list]
@@ -67,7 +68,7 @@ Full HUD functionality, including, but not limited to:
 		[/tr]
 	[/table]
 	*Unofficial
-	**Only in some Games
+	**Only in MW2
 [/list]
 
 [hr][/hr]

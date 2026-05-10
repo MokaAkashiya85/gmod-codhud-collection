@@ -10,6 +10,7 @@ This addon exclusively adds additional language voicelines for [url=https://stea
 		[th]CoD4[/th]
 		[th]WaW[/th]
 		[th]MW2[/th]
+		[th]BO1[/th]
 		[th]MW3[/th]
 	[/tr]
 	[tr]
@@ -33,6 +34,13 @@ This addon exclusively adds additional language voicelines for [url=https://stea
 		Français
 		Italiano
 		日本語
+		Русский
+		[/td]
+		[td]
+		Deutsch
+		Español
+		Français
+		Italiano
 		Русский
 		[/td]
 		[td]
