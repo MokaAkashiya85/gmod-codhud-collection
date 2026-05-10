@@ -1845,7 +1845,6 @@ local function weaponinfo(...)
     local altType = wep:GetSecondaryAmmoType()
 	local altAmmoName = game.GetAmmoName(altType)
     local reserve = ply:GetAmmoCount(primType)
-	
 
     local barW = CoDHUD_SX(CFG.BAR_W)
     local barH = CoDHUD_SY(CFG.BAR_H)
@@ -1893,6 +1892,11 @@ local function weaponinfo(...)
         DrawSqueezedText(clip, "BO1_Res_Large", ScrW() - CoDHUD_SX(CFG.RES_X) - CoDHUD_SX(resw * 0.8), ScrH() - CoDHUD_SY(CFG.RES_Y * 1.15), col, CoDHUD_S(-6), CoDHUD_S(-16), 0)
     end
 
+	if maxClip2 > 0 and clip2 >= 0 then
+		local perc      = clip2 / maxClip2
+		local isLowClip = (perc <= CFG.STAT_LOW_PERC)
+	end
+
 	local reloading = 
 	wep.IsReloading or reloadingM203 -- CW2
 	or (wep.ARC9 and wep:GetReloading()) -- ARC9
@@ -1908,37 +1912,29 @@ local function weaponinfo(...)
 		maxClip = maxClip2
 	end
 
-    if altType ~= -1 then
-		if altType ~= primType then
-			local altCount = ply:GetAmmoCount(altType)
-			surface.SetFont("BO1_Ammo_Alt")
-			local altw, alth = surface.GetTextSize(altCount)
+    if altType ~= -1 and altType ~= primType and altType ~= game.GetAmmoID("Grenade") then
+		local altCount = ply:GetAmmoCount(altType)
+		surface.SetFont("BO1_Ammo_Alt")
+		local altw, alth = surface.GetTextSize(altCount)
 
-			surface.SetMaterial(MAT_DPAD_LEFT)
-			surface.SetDrawColor(255, 255, 255)
-			surface.DrawTexturedRect(ScrW() - CoDHUD_SX(CFG.ALT_ICON_X), ScrH() - CoDHUD_SY(CFG.ALT_ICON_Y), CoDHUD_S(CFG.ALT_ICON_SIZE), CoDHUD_S(CFG.ALT_ICON_SIZE))
+		surface.SetMaterial(MAT_DPAD_LEFT)
+		surface.SetDrawColor(255, 255, 255)
+		surface.DrawTexturedRect(ScrW() - CoDHUD_SX(CFG.ALT_ICON_X), ScrH() - CoDHUD_SY(CFG.ALT_ICON_Y), CoDHUD_S(CFG.ALT_ICON_SIZE), CoDHUD_S(CFG.ALT_ICON_SIZE))
 
-			local alticon = "grenade"
+		local alticon = "grenade"
 
-			if altAmmoName == "Buckshot" then alticon = "buckshot" end
+		if altAmmoName == "Buckshot" then alticon = "buckshot" end
 
-			surface.SetMaterial(MAT_ALT[alticon])
-			surface.SetDrawColor(255, 255, 255)
-			surface.DrawTexturedRect(ScrW() - CoDHUD_SX(CFG.ALT_WICON_X), ScrH() - CoDHUD_SY(CFG.ALT_WICON_Y), CoDHUD_S(CFG.ALT_WICON_SIZE), CoDHUD_S(CFG.ALT_WICON_SIZE))
+		surface.SetMaterial(MAT_ALT[alticon])
+		surface.SetDrawColor(255, 255, 255)
+		surface.DrawTexturedRect(ScrW() - CoDHUD_SX(CFG.ALT_WICON_X), ScrH() - CoDHUD_SY(CFG.ALT_WICON_Y), CoDHUD_S(CFG.ALT_WICON_SIZE), CoDHUD_S(CFG.ALT_WICON_SIZE))
 
-			local altCol = (altCount > 0) and Color(255, 255, 255, 255) or Color(255, 120, 120, 255)
-			
-			draw.RoundedBox( 4, ScrW() -  CoDHUD_SX(CFG.ALT_TEXT_X) - (altw * 0.5), ScrH() - CoDHUD_SY(CFG.ALT_TEXT_Y), CoDHUD_S(altw * 1), CoDHUD_S(alth), Color( 0, 0, 0, 200 ) )
-			
-			DrawSqueezedText(altCount, "BO1_Ammo_Alt", ScrW() -  CoDHUD_SX(CFG.ALT_TEXT_X), ScrH() - CoDHUD_SY(CFG.ALT_TEXT_Y), altCol, CFG.ALT_TEXT_SQ, CFG.ALT_TEXT_SQ1, 1)
-		end
+		local altCol = (altCount > 0) and Color(255, 255, 255, 255) or Color(255, 120, 120, 255)
+		
+		draw.RoundedBox( 4, ScrW() -  CoDHUD_SX(CFG.ALT_TEXT_X) - (altw * 0.5), ScrH() - CoDHUD_SY(CFG.ALT_TEXT_Y), CoDHUD_S(altw * 1), CoDHUD_S(alth), Color( 0, 0, 0, 200 ) )
+		
+		DrawSqueezedText(altCount, "BO1_Ammo_Alt", ScrW() -  CoDHUD_SX(CFG.ALT_TEXT_X), ScrH() - CoDHUD_SY(CFG.ALT_TEXT_Y), altCol, CFG.ALT_TEXT_SQ, CFG.ALT_TEXT_SQ1, 1)
     end
-
-	if maxClip2 > 1 and clip2 >= 0 then
-		local perc      = clip2 / maxClip2
-		local isLowClip = (perc <= CFG.STAT_LOW_PERC)
-
-	end
 
     if maxClip > 0 and clip >= 0 and not reloading then
         local perc      = clip / maxClip
