@@ -8,3 +8,29 @@
 - Players joining while a round is beginning will be put into the same "round starting" phase
 - When a round is starting or ending, you cannot change factions
 - When a round is ending, you cannot start a new round until the current one has concluded fully
+
+[ Update 3 ]
+?
+
+[ Update 4 ]
+- CoD4: Fixed minimap background when not using GMinimap
+- MW3: Fixed performance issue due to missing material
+
+[ Update 5 ]
+- Fixed certain elements being misaligned or squished on non-1080p resolutions across all HUDs
+
+[ Update 6 ]
+- Added World at War HUD
+
+[ Update 7 ]
+- Added Black Ops HUD
+- All HUDs: GL icon is replaced with a shotgun icon if the weapon's secondary ammo is "Buckshot".
+- All HUDs: Added support for dual-wielding ammo counters.
+
+- Fixed that certain killfeed entries were not sent properly.
+- Fixed that "One Shot Kill" medals were sent when they shouldn't have.
+- Fixed that the "low health" effect would apply when it shouldn't.
+- Fixed that server convars were not treated properly on dedicated servers.
+- Fixed that the score check only checked for individual player's kills rather than the whole faction.
+- Fixed inconsistency regarding faction auto-join when players join the server.
+- CoD4, WaW HUDs: Fixed that the end-of-round match bonus was too high.
