@@ -1550,7 +1550,7 @@ local function scoreboard( ... )
 			surface.SetDrawColor(255,255,255,255)
 			surface.DrawTexturedRect(barX + CoDHUD_S(CFG.ICON_X_OFF), sectionY + CoDHUD_S(CFG.ICON_Y_OFF), CoDHUD_S(CFG.ICON_SIZE), CoDHUD_S(CFG.ICON_SIZE))
 
-			DrawSqueezedText( score, "BO1_Scoreboard_Score", barX + CoDHUD_SX(CFG.FAC_NAME_X), sectionY + CoDHUD_S(CFG.FAC_NAME_Y) - CoDHUD_S(22), Color(255,255,255), CoDHUD_S(-4), CoDHUD_S(-12), 2, CoDHUD_S(-12), CoDHUD_SX(1) )
+			DrawSqueezedText( score, "BO1_Scoreboard_Score", barX + CoDHUD_SX(CFG.FAC_NAME_X), sectionY + CoDHUD_S(CFG.FAC_NAME_Y) - CoDHUD_S(22), Color(255,255,255), CoDHUD_S(-4), CoDHUD_S(-4), 2, CoDHUD_S(-12), CoDHUD_SX(1) )
 			
 			surface.SetFont("BO1_Scoreboard_Score")
 			local scorew, scoreh = surface.GetTextSize(score)
@@ -1868,12 +1868,20 @@ local function weaponinfo(...)
 
 	surface.SetFont("BO1_Res")
 	local restext = "/ " .. reserve
-	local resw, resh = surface.GetTextSize(reserve)
+	local resw, resh = surface.GetTextSize(restext)
 	local clipw, cliph = surface.GetTextSize(maxClip2 .. "  ")
+	local resoff = 6*(#restext)
 
 	if primType ~= -1 then
         local resCol = (reserve == 0 or reserve < maxClip) and Color(255, 120, 120, 255) or  Color(255, 255, 255, 255)
-        DrawSqueezedText(restext, "BO1_Res", ScrW() - CoDHUD_SX(CFG.RES_X) - resw, ScrH() - CoDHUD_SY(CFG.RES_Y), resCol, CoDHUD_S(-6), CoDHUD_S(-9), 2, CoDHUD_S(-12))
+		if maxClip > 0 then
+			DrawSqueezedText(restext, "BO1_Res", ScrW() - CoDHUD_SX(CFG.RES_X-resoff) - resw, ScrH() - CoDHUD_SY(CFG.RES_Y), resCol, CoDHUD_S(-6), CoDHUD_S(-6), 2, CoDHUD_S(-12))
+		else
+			surface.SetFont("BO1_Res_Large")
+			local restext, resw = tostring(reserve), surface.GetTextSize(reserve)
+			DrawSqueezedText(reserve, "BO1_Res_Large", ScrW() - CoDHUD_SX(CFG.RES_X-6*(#restext)) - resw, ScrH() - CoDHUD_SY(CFG.RES_Y * 1.15), resCol, CoDHUD_S(-6), CoDHUD_S(-6), 2)
+			surface.SetFont("BO1_Res")
+		end
     end
 
     local timeSinceSwitch = CurTime() - wepSwitchTime
@@ -1890,7 +1898,7 @@ local function weaponinfo(...)
 		
 		local col = Color(255, isLowClip and blink or 255, isLowClip and blink or 255)
 		
-        DrawSqueezedText(clip, "BO1_Res_Large", ScrW() - CoDHUD_SX(CFG.RES_X) - resw - (maxClip2 > 0 and clipw or 0), ScrH() - CoDHUD_SY(CFG.RES_Y * 1.15), col, CoDHUD_S(-6), CoDHUD_S(-16), 0)
+        DrawSqueezedText(clip, "BO1_Res_Large", ScrW() - CoDHUD_SX(CFG.RES_X-resoff) - resw - (maxClip2 > 0 and clipw or 0), ScrH() - CoDHUD_SY(CFG.RES_Y * 1.15), col, CoDHUD_S(-6), CoDHUD_S(-6), 0)
     end
 
 	if maxClip2 > 0 and clip2 >= 0 then
@@ -1900,7 +1908,7 @@ local function weaponinfo(...)
 		
 		local col = Color(255, isLowClip and blink or 255, isLowClip and blink or 255)
 		
-        DrawSqueezedText(clip2, "BO1_Res_Large", ScrW() - CoDHUD_SX(CFG.RES_X) - resw, ScrH() - CoDHUD_SY(CFG.RES_Y * 1.15), col, CoDHUD_S(-6), CoDHUD_S(-16), 0)
+        DrawSqueezedText(clip2, "BO1_Res_Large", ScrW() - CoDHUD_SX(CFG.RES_X-resoff) - resw, ScrH() - CoDHUD_SY(CFG.RES_Y * 1.15), col, CoDHUD_S(-6), CoDHUD_S(-6), 0)
 	end
 
 	local reloading = 
@@ -1921,6 +1929,7 @@ local function weaponinfo(...)
     if altType ~= -1 and altType ~= primType and altType ~= game.GetAmmoID("Grenade") then
 		local altCount = ply:GetAmmoCount(altType)
 		surface.SetFont("BO1_Ammo_Alt")
+		local altLen = #tostring(altCount)
 		local altw, alth = surface.GetTextSize(altCount)
 
 		surface.SetMaterial(MAT_DPAD_LEFT)
@@ -1937,9 +1946,9 @@ local function weaponinfo(...)
 
 		local altCol = (altCount > 0) and Color(255, 255, 255, 255) or Color(255, 120, 120, 255)
 		
-		draw.RoundedBox( 4, ScrW() -  CoDHUD_SX(CFG.ALT_TEXT_X) - (altw * 0.5), ScrH() - CoDHUD_SY(CFG.ALT_TEXT_Y), CoDHUD_S(altw * 1), CoDHUD_S(alth), Color( 0, 0, 0, 200 ) )
+		draw.RoundedBox( 4, ScrW() -  CoDHUD_SX(CFG.ALT_TEXT_X) - (altw - (altLen * CFG.ALT_TEXT_SQ) * 0.5) * 0.5 , ScrH() - CoDHUD_SY(CFG.ALT_TEXT_Y), CoDHUD_S(altw + (altLen * CFG.ALT_TEXT_SQ) * 0.5), CoDHUD_S(alth), Color( 0, 0, 0, 200 ) )
 		
-		DrawSqueezedText(altCount, "BO1_Ammo_Alt", ScrW() -  CoDHUD_SX(CFG.ALT_TEXT_X), ScrH() - CoDHUD_SY(CFG.ALT_TEXT_Y), altCol, CFG.ALT_TEXT_SQ, CFG.ALT_TEXT_SQ1, 1)
+		DrawSqueezedText(altCount, "BO1_Ammo_Alt", ScrW() -  CoDHUD_SX(CFG.ALT_TEXT_X), ScrH() - CoDHUD_SY(CFG.ALT_TEXT_Y), altCol, CFG.ALT_TEXT_SQ, CFG.ALT_TEXT_SQ, 1)
     end
 
     if maxClip > 0 and clip >= 0 and not reloading then
