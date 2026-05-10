@@ -1844,7 +1844,8 @@ local function weaponinfo(...)
     local primType = wep:GetPrimaryAmmoType()
     local altType = wep:GetSecondaryAmmoType()
 	local altAmmoName = game.GetAmmoName(altType)
-    local reserve = ply:GetAmmoCount(primType)
+    local primCount = ply:GetAmmoCount(primType)
+	local altCount = ply:GetAmmoCount(altType)
 
     local barW = CoDHUD_SX(CFG.BAR_W)
     local barH = CoDHUD_SY(CFG.BAR_H)
@@ -1867,49 +1868,6 @@ local function weaponinfo(...)
     surface.DrawTexturedRect(lineX, lineY, lineW, lineH)
 
 	surface.SetFont("BO1_Res")
-	local restext = "/ " .. reserve
-	local resw, resh = surface.GetTextSize(restext)
-	local clipw, cliph = surface.GetTextSize(maxClip2 .. "  ")
-	local resoff = 6*(#restext)
-
-	if primType ~= -1 then
-        local resCol = (reserve == 0 or reserve < maxClip) and Color(255, 120, 120, 255) or  Color(255, 255, 255, 255)
-		if maxClip > 0 then
-			DrawSqueezedText(restext, "BO1_Res", ScrW() - CoDHUD_SX(CFG.RES_X-resoff) - resw, ScrH() - CoDHUD_SY(CFG.RES_Y), resCol, CoDHUD_S(-6), CoDHUD_S(-6), 2, CoDHUD_S(-12))
-		else
-			surface.SetFont("BO1_Res_Large")
-			local restext, resw = tostring(reserve), surface.GetTextSize(reserve)
-			DrawSqueezedText(reserve, "BO1_Res_Large", ScrW() - CoDHUD_SX(CFG.RES_X-6*(#restext)) - resw, ScrH() - CoDHUD_SY(CFG.RES_Y * 1.15), resCol, CoDHUD_S(-6), CoDHUD_S(-6), 2)
-			surface.SetFont("BO1_Res")
-		end
-    end
-
-    local timeSinceSwitch = CurTime() - wepSwitchTime
-    if timeSinceSwitch < CFG.WEP_NAME_FADE then
-        local alpha = math.Clamp(1 - (timeSinceSwitch / CFG.WEP_NAME_FADE), 0, 1)
-        local name  = (wep:GetPrintName() or wep:GetClass())
-        draw.SimpleTextOutlined(name, "BO1_Wep_Name", ScrW() - CoDHUD_SX(CFG.WEP_NAME_X_OFF), ScrH() - CoDHUD_SY(CFG.WEP_NAME_Y_OFF), Color(255, 255, 255, 255 * alpha), 2, 0, outlined and 1.5 or 0, Color(0, 0, 0, 255 * alpha))
-    end
-
-    if maxClip > 0 and clip >= 0 then
-        local perc      = clip / maxClip
-        local isLowClip = (perc <= CFG.STAT_LOW_PERC)
-		local blink = 255 * math.abs(math.sin(RealTime() * 3))
-		
-		local col = Color(255, isLowClip and blink or 255, isLowClip and blink or 255)
-		
-        DrawSqueezedText(clip, "BO1_Res_Large", ScrW() - CoDHUD_SX(CFG.RES_X-resoff) - resw - (maxClip2 > 0 and clipw or 0), ScrH() - CoDHUD_SY(CFG.RES_Y * 1.15), col, CoDHUD_S(-6), CoDHUD_S(-6), 0)
-    end
-
-	if maxClip2 > 0 and clip2 >= 0 then
-		local perc      = clip2 / maxClip2
-		local isLowClip = (perc <= CFG.STAT_LOW_PERC)
-		local blink = 255 * math.abs(math.sin(RealTime() * 3))
-		
-		local col = Color(255, isLowClip and blink or 255, isLowClip and blink or 255)
-		
-        DrawSqueezedText(clip2, "BO1_Res_Large", ScrW() - CoDHUD_SX(CFG.RES_X-resoff) - resw, ScrH() - CoDHUD_SY(CFG.RES_Y * 1.15), col, CoDHUD_S(-6), CoDHUD_S(-6), 0)
-	end
 
 	local reloading = 
 	wep.IsReloading or reloadingM203 -- CW2
@@ -1924,31 +1882,76 @@ local function weaponinfo(...)
 	if glactive then
 		clip = clip2
 		maxClip = maxClip2
+		primCount = altCount
 	end
 
-    if altType ~= -1 and altType ~= primType and altType ~= game.GetAmmoID("Grenade") then
-		local altCount = ply:GetAmmoCount(altType)
-		surface.SetFont("BO1_Ammo_Alt")
-		local altLen = #tostring(altCount)
-		local altw, alth = surface.GetTextSize(altCount)
+	local restext = "/ " .. primCount
+	local resw, resh = surface.GetTextSize(restext)
+	local clipw, cliph = surface.GetTextSize(maxClip2 .. "  ")
+	local resoff = 6*(#restext)
 
-		surface.SetMaterial(MAT_DPAD_LEFT)
-		surface.SetDrawColor(255, 255, 255)
-		surface.DrawTexturedRect(ScrW() - CoDHUD_SX(CFG.ALT_ICON_X), ScrH() - CoDHUD_SY(CFG.ALT_ICON_Y), CoDHUD_S(CFG.ALT_ICON_SIZE), CoDHUD_S(CFG.ALT_ICON_SIZE))
+	if primType ~= -1 then
+        local resCol = (primCount == 0 or primCount < maxClip) and Color(255, 120, 120, 255) or  Color(255, 255, 255, 255)
+		if maxClip > 0 then
+			DrawSqueezedText(restext, "BO1_Res", ScrW() - CoDHUD_SX(CFG.RES_X-resoff) - resw, ScrH() - CoDHUD_SY(CFG.RES_Y), resCol, CoDHUD_S(-6), CoDHUD_S(-6), 2, CoDHUD_S(-12))
+		else
+			surface.SetFont("BO1_Res_Large")
+			local restext, resw = tostring(primCount), surface.GetTextSize(primCount)
+			DrawSqueezedText(primCount, "BO1_Res_Large", ScrW() - CoDHUD_SX(CFG.RES_X-6*(#restext)) - resw, ScrH() - CoDHUD_SY(CFG.RES_Y * 1.15), resCol, CoDHUD_S(-6), CoDHUD_S(-6), 2)
+			surface.SetFont("BO1_Res")
+		end
+    end
 
-		local alticon = "grenade"
+    local timeSinceSwitch = CurTime() - wepSwitchTime
+    if timeSinceSwitch < CFG.WEP_NAME_FADE then
+        local alpha = math.Clamp(1 - (timeSinceSwitch / CFG.WEP_NAME_FADE), 0, 1)
+        local name  = (wep:GetPrintName() or wep:GetClass())
+        draw.SimpleTextOutlined(name, "BO1_Wep_Name", ScrW() - CoDHUD_SX(CFG.WEP_NAME_X_OFF), ScrH() - CoDHUD_SY(CFG.WEP_NAME_Y_OFF), Color(255, 255, 255, 255 * alpha), 2, 0, outlined and 1.5 or 0, Color(0, 0, 0, 255 * alpha))
+    end
 
-		if altAmmoName == "Buckshot" then alticon = "buckshot" end
+    if altType ~= -1 then
+		if altType ~= primType and altType ~= game.GetAmmoID("Grenade") then
+			surface.SetFont("BO1_Ammo_Alt")
+			local altLen = #tostring(altCount)
+			local altw, alth = surface.GetTextSize(altCount)
+			local altPad = (altw + (altLen * CFG.ALT_TEXT_SQ))
 
-		surface.SetMaterial(MAT_ALT[alticon])
-		surface.SetDrawColor(255, 255, 255)
-		surface.DrawTexturedRect(ScrW() - CoDHUD_SX(CFG.ALT_WICON_X), ScrH() - CoDHUD_SY(CFG.ALT_WICON_Y), CoDHUD_S(CFG.ALT_WICON_SIZE), CoDHUD_S(CFG.ALT_WICON_SIZE))
+			surface.SetMaterial(MAT_DPAD_LEFT)
+			surface.SetDrawColor(255, 255, 255)
+			surface.DrawTexturedRect(ScrW() - CoDHUD_SX(CFG.ALT_ICON_X), ScrH() - CoDHUD_SY(CFG.ALT_ICON_Y), CoDHUD_S(CFG.ALT_ICON_SIZE), CoDHUD_S(CFG.ALT_ICON_SIZE))
 
-		local altCol = (altCount > 0) and Color(255, 255, 255, 255) or Color(255, 120, 120, 255)
+			local alticon = "grenade"
+
+			if altAmmoName == "Buckshot" then alticon = "buckshot" end
+
+			surface.SetMaterial(MAT_ALT[alticon])
+			surface.SetDrawColor(255, 255, 255)
+			surface.DrawTexturedRect(ScrW() - CoDHUD_SX(CFG.ALT_WICON_X), ScrH() - CoDHUD_SY(CFG.ALT_WICON_Y), CoDHUD_S(CFG.ALT_WICON_SIZE), CoDHUD_S(CFG.ALT_WICON_SIZE))
+
+			local altCol = (altCount > 0) and Color(255, 255, 255, 255) or Color(255, 120, 120, 255)
+			
+			draw.RoundedBox( 4, ScrW() -  CoDHUD_SX(CFG.ALT_TEXT_X+4) - altPad * 0.5 , ScrH() - CoDHUD_SY(CFG.ALT_TEXT_Y), CoDHUD_S(8) + altPad, CoDHUD_S(alth), Color( 0, 0, 0, 200 ) )
+			
+			DrawSqueezedText(altCount, "BO1_Ammo_Alt", ScrW() -  CoDHUD_SX(CFG.ALT_TEXT_X), ScrH() - CoDHUD_SY(CFG.ALT_TEXT_Y), altCol, CFG.ALT_TEXT_SQ, CFG.ALT_TEXT_SQ, 1)
+		elseif maxClip2 > 0 and clip2 >= 0 then
+			local perc      = clip2 / maxClip2
+			local isLowClip = (perc <= CFG.STAT_LOW_PERC)
+			local blink = 255 * math.abs(math.sin(RealTime() * 3))
+			
+			local col = Color(255, isLowClip and blink or 255, isLowClip and blink or 255)
+			
+			DrawSqueezedText(clip2, "BO1_Res_Large", ScrW() - CoDHUD_SX(CFG.RES_X-resoff) - resw, ScrH() - CoDHUD_SY(CFG.RES_Y * 1.15), col, CoDHUD_S(-6), CoDHUD_S(-6), 0)
+		end
+    end
+
+    if maxClip > 0 and clip >= 0 then
+        local perc      = clip / maxClip
+        local isLowClip = (perc <= CFG.STAT_LOW_PERC)
+		local blink = 255 * math.abs(math.sin(RealTime() * 3))
 		
-		draw.RoundedBox( 4, ScrW() -  CoDHUD_SX(CFG.ALT_TEXT_X) - (altw - (altLen * CFG.ALT_TEXT_SQ) * 0.5) * 0.5 , ScrH() - CoDHUD_SY(CFG.ALT_TEXT_Y), CoDHUD_S(altw + (altLen * CFG.ALT_TEXT_SQ) * 0.5), CoDHUD_S(alth), Color( 0, 0, 0, 200 ) )
+		local col = Color(255, isLowClip and blink or 255, isLowClip and blink or 255)
 		
-		DrawSqueezedText(altCount, "BO1_Ammo_Alt", ScrW() -  CoDHUD_SX(CFG.ALT_TEXT_X), ScrH() - CoDHUD_SY(CFG.ALT_TEXT_Y), altCol, CFG.ALT_TEXT_SQ, CFG.ALT_TEXT_SQ, 1)
+        DrawSqueezedText(clip, "BO1_Res_Large", ScrW() - CoDHUD_SX(CFG.RES_X-resoff) - resw - ((altType == primType or altType == game.GetAmmoID("Grenade") and maxClip2 > 0) and clipw or 0), ScrH() - CoDHUD_SY(CFG.RES_Y * 1.15), col, CoDHUD_S(-6), CoDHUD_S(-6), 0)
     end
 
     if maxClip > 0 and clip >= 0 and not reloading then
@@ -1959,14 +1962,14 @@ local function weaponinfo(...)
         local isLowAmmo = false
         local isReloadText  = false
 
-        if clip == 0 and reserve == 0 then
+        if clip == 0 and primCount == 0 then
             statText = "#MW2_WEAPON_NO_AMMO"
             isNoAmmo = true
-        elseif perc <= CFG.STAT_LOW_PERC and reserve == 0 then
+        elseif perc <= CFG.STAT_LOW_PERC and primCount == 0 then
             statText = "#MW2_PLATFORM_LOW_AMMO_NO_RELOAD"
             statCol  = Color(255, 230, 0)
             isLowAmmo = true
-        elseif perc <= CFG.STAT_LOW_PERC and reserve > 0 then
+        elseif perc <= CFG.STAT_LOW_PERC and primCount > 0 then
             statText = "#MW2_PLATFORM_RELOAD"
             isReloadText = true
         end
