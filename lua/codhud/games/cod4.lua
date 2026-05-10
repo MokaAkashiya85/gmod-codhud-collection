@@ -1824,21 +1824,33 @@ local function weaponinfo(...)
 	}
 
 	local AMMO = {
-		["default"] = { mat = "cod4/hud/ammo_counter_bullet.png",     		 w = 3,  h = 14, gap = 0, y_off = 117.5, x_start = -80, dim = 75 },
-		["rocket"]  = { mat = "cod4/hud/ammo_counter_rocket.png",     		 w = 48, h = 24, gap = 0, y_off = 112.5, x_start = -125, dim = 75 },
-		["sniper"]  = { mat = "cod4/hud/ammo_counter_riflebullet.png",     	 w = 32,  h = 8, gap = 5, y_off = 122, x_start = -105, dim = 75 },
-		["shotgun"] = { mat = "cod4/hud/ammo_counter_shotgunshell.png",      w = 25, h = 12.5, gap = 5, y_off = 118, x_start = -100, dim = 75 },
+		["default"] = { row_size = 50, row_gap = 0, mat = "cod4/hud/ammo_counter_bullet.png",     		 w = 3,  h = 14, gap = 0, y_off = 117.5, x_start = -80, dim = 75 },
+		["rocket"]  = { row_size = 20, row_gap = 0, mat = "cod4/hud/ammo_counter_rocket.png",     		 w = 48, h = 24, gap = 0, y_off = 112.5, x_start = -125, dim = 75 },
+		["sniper"]  = { row_size = 20, row_gap = 0, mat = "cod4/hud/ammo_counter_riflebullet.png",     	 w = 32,  h = 8, gap = 5, y_off = 122, x_start = -105, dim = 75 },
+		["shotgun"] = { row_size = 25, row_gap = 0, mat = "cod4/hud/ammo_counter_shotgunshell.png",      w = 25, h = 12.5, gap = 5, y_off = 118, x_start = -100, dim = 75 },
 		["belt"]    = { row_size = 25, row_gap = 0, mat = "cod4/hud/ammo_counter_beltbullet.png", w = 7, h = 2.5, gap = 0, y_off = 126.5, x_start = -80, dim = 75 },
 	}
 
 	local AMMO_MAP = {
-		["ammo_357"]      = "default",
-		["ammo_ar2"]      = "default",
-		["ammo_crossbow"] = "sniper",
-		["ammo_pistol"]   = "default",
-		["ammo_smg1"]     = "default",
+		["357"]      = "default",
+		["ar2"]      = "default",
+		["xbowbolt"] = "sniper",
+		["xbowbolthl1"] = "sniper",
+		["sniperround"] = "sniper",
+		["sniperpenetratedround"] = "sniper",
+		["pistol"]   = "default",
+		["smg1"]     = "default",
 		["buckshot"]      = "shotgun",
+		["buckshothl1"]      = "shotgun",
 		["rpg_round"]     = "rocket",
+		["smg1_grenade"]     = "rocket",
+		["mp5_grenade"]     = "rocket",
+		["rpg_rocket"]     = "rocket",
+		["smg1_grenade"]     = "rocket",
+		["ar2altfire"]     = "rocket",
+		["slam"]     = "rocket",
+		["gaussenergy"]     = "belt",
+		["ti_sniper"]		= "sniper",
 	}
 
 	local MAT_ALT  = {
@@ -1852,10 +1864,10 @@ local function weaponinfo(...)
 		MAT_AMMO[key] = Material(data.mat, "smooth")
 	end
 
-	local function GetAmmoConfig(wep)
+	local function GetAmmoConfig(wep, alt) -- returning true in alt asks for secondary ammo instead of primary
 		if not IsValid(wep) then return AMMO["default"] end
-		if wep:GetMaxClip1() >= 100 then return AMMO["belt"] end
-		local ammoName = string.lower(game.GetAmmoName(wep:GetPrimaryAmmoType()) or "")
+		local ammoName = string.lower(game.GetAmmoName(alt and wep:GetSecondaryAmmoType() or wep:GetPrimaryAmmoType()) or "")
+		if (alt and wep:GetMaxClip2() or wep:GetMaxClip1()) > 50 then return AMMO["belt"] end
 		return AMMO[AMMO_MAP[ammoName]] or AMMO["default"]
 	end
 
@@ -1890,6 +1902,9 @@ local function weaponinfo(...)
 
     if grenadeCount > 0 then
 		textcol = Color(255,255,255)
+		if grenadeCount > 9 then
+			grenadeCount = "9+"
+		end
     end
 
 	DrawSqueezedText(grenadeCount, "CoD4_Res_4D", anchorX + iH, anchorY + (iW * 0.35), textcol, 0, 0, 2)
@@ -1909,7 +1924,9 @@ local function weaponinfo(...)
     local clip2    = wep:Clip2()
     local maxClip = wep:GetMaxClip1()
     local maxClip2 = wep:GetMaxClip2()
-    local reserve = ply:GetAmmoCount(wep:GetPrimaryAmmoType())
+    local primType = wep:GetPrimaryAmmoType()
+    local altType = wep:GetSecondaryAmmoType()
+    local reserve = ply:GetAmmoCount(primType)
 
     local barW = CoDHUD_SX(CFG.BAR_W)
     local barH = CoDHUD_SY(CFG.BAR_H)
@@ -1933,7 +1950,7 @@ local function weaponinfo(...)
     local timeSinceSwitch = CurTime() - wepSwitchTime
     if timeSinceSwitch < CFG.WEP_NAME_FADE then
         local alpha = math.Clamp(1 - (timeSinceSwitch / CFG.WEP_NAME_FADE), 0, 1)
-        local name  = (wep:GetPrintName() or wep:GetClass())
+        local name  = language.GetPhrase(wep:GetPrintName() or wep:GetClass())
         draw.SimpleTextOutlined(name, "CoD4_Wep_Name", barX + barW + CoDHUD_SX(CFG.WEP_NAME_X_OFF), barY + CoDHUD_SY(CFG.WEP_NAME_Y_OFF), Color(255, 255, 255, 255 * alpha), 2, 0, outlined and 1.5 or 0, Color(0, 0, 0, 255 * alpha))
     end
 
@@ -1953,10 +1970,10 @@ local function weaponinfo(...)
         surface.SetMaterial(MAT_AMMO[ammoKey])
 
         local isBelt  = (ammoCfg.row_size ~= nil)
-        local rowSize = isBelt and ammoCfg.row_size or maxClip
+        local rowSize = isBelt and ammoCfg.row_size or math.max(maxClip, clip)
         local rowGap  = isBelt and CoDHUD_S(ammoCfg.row_gap) or 0
 
-        for i = 0, maxClip - 1 do
+        for i = 0, math.max(maxClip, clip) - 1 do
             local isSpent = (i >= clip)
             local shade   = isSpent and ammoCfg.dim or 255
 
@@ -1977,7 +1994,53 @@ local function weaponinfo(...)
             local row = math.floor(i / rowSize)
 
             local xPos = barX + barW + iXStart - (col * (iW + iGap))
-            local yPos = barY + iYOff - (row * (iH + rowGap))
+            local yPos = barY + iYOff - iH * (maxClip2 > 0 and 0.5 or 0)  - (row * (iH + rowGap))
+
+            surface.DrawTexturedRect(xPos, yPos, iW, iH)
+        end
+    end
+
+    if clip2 >= 0 and maxClip2 > 0 then
+        local perc      = clip2 / maxClip2
+        local isLowClip = (perc <= CFG.STAT_LOW_PERC)
+        local reloadSine = isLowClip and ((math.sin(CurTime() * CFG.BULLET_RELOAD_SPD) + 1) / 2) or 0
+
+        local ammoCfg = GetAmmoConfig(wep, altType ~= game.GetAmmoID("Grenade"))
+        local ammoKey = GetAmmoKey(ammoCfg)
+        local iW      = CoDHUD_S(ammoCfg.w)
+        local iH      = CoDHUD_S(ammoCfg.h)
+        local iGap    = CoDHUD_S(ammoCfg.gap)
+        local iYOff   = CoDHUD_SY(ammoCfg.y_off)
+        local iXStart = CoDHUD_SX(ammoCfg.x_start)
+
+        surface.SetMaterial(MAT_AMMO[ammoKey])
+
+        local isBelt  = (ammoCfg.row_size ~= nil)
+        local rowSize = isBelt and ammoCfg.row_size or math.max(maxClip2, clip2)
+        local rowGap  = isBelt and CoDHUD_S(ammoCfg.row_gap) or 0
+
+        for i = 0, math.max(maxClip2, clip2) - 1 do
+            local isSpent = (i >= clip2)
+            local shade   = isSpent and ammoCfg.dim or 255
+
+            local r, g, b
+            if not isSpent and isLowClip then
+                r = math.floor(Lerp(reloadSine, shade, CFG.BULLET_RELOAD_R))
+                g = math.floor(Lerp(reloadSine, shade, CFG.BULLET_RELOAD_G))
+                b = math.floor(Lerp(reloadSine, shade, CFG.BULLET_RELOAD_B))
+            else
+                r = shade
+                g = shade
+                b = shade
+            end
+
+            surface.SetDrawColor(r, g, b, CFG.BULLET_ALPHA)
+
+            local col = i % rowSize
+            local row = math.floor(i / rowSize)
+
+            local xPos = barX + barW + iXStart - (col * (iW + iGap))
+            local yPos = barY + iYOff + iH * 0.5 + (row * (iH + rowGap))
 
             surface.DrawTexturedRect(xPos, yPos, iW, iH)
         end
@@ -1998,11 +2061,9 @@ local function weaponinfo(...)
 		maxClip = maxClip2
 	end
 
-    local primType = wep:GetPrimaryAmmoType()
-    local altType = wep:GetSecondaryAmmoType()
 	local altAmmoName = game.GetAmmoName(altType)
 	
-    if altType ~= -1 and altType ~= primType then
+    if altType ~= -1 and altType ~= primType and altType ~= game.GetAmmoID("Grenade") then
         local altCount = ply:GetAmmoCount(altType)
 
 		local alticon = "grenade"
