@@ -276,7 +276,7 @@ local function InitiateCoDFonts()
     surface.CreateFont("BO1_Res_Large",				{ font = "BankGothic Md BT", size = CoDHUD_S(56), weight = 400, antialias = true, shadow = true, extended = true })
     surface.CreateFont("BO1_Wep_Name",				{ font = "BankGothic Md BT", size = CoDHUD_S(38), weight = 400, antialias = true, shadow = true, extended = true })
     surface.CreateFont("BO1_Stat_Font",				{ font = "BankGothic Md BT", size = CoDHUD_S(28), weight = 400, antialias = true, shadow = true, extended = true })
-    surface.CreateFont("BO1_Ammo_Alt",				{ font = "BankGothic Md BT", size = CoDHUD_S(20), weight = 400, antialias = true, shadow = true, extended = true })
+    surface.CreateFont("BO1_Ammo_Alt",				{ font = "HelveticaNeue MediumCond", size = CoDHUD_S(20), weight = 400, antialias = true, shadow = true, extended = true })
 end
 
 InitiateCoDFonts()
