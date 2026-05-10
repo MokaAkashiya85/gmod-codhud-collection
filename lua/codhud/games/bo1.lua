@@ -1867,7 +1867,6 @@ local function weaponinfo(...)
     surface.SetMaterial(MAT_FADE)
     surface.DrawTexturedRect(lineX, lineY, lineW, lineH)
 
-	surface.SetFont("BO1_Res")
 
 	local reloading = 
 	wep.IsReloading or reloadingM203 -- CW2
@@ -1885,19 +1884,21 @@ local function weaponinfo(...)
 		primCount = altCount
 	end
 
-	local restext = "/ " .. primCount
+	surface.SetFont("BO1_Res")
+	local restext = " / " .. primCount
 	local resw, resh = surface.GetTextSize(restext)
-	local clipw, cliph = surface.GetTextSize(maxClip2 .. "  ")
-	local resoff = 6*(#restext)
+	surface.SetFont("BO1_Res_Large")
+	local clipw, cliph = surface.GetTextSize(maxClip)
+	surface.SetFont("BO1_Res")
 
 	if primType ~= -1 then
         local resCol = (primCount == 0 or primCount < maxClip) and Color(255, 120, 120, 255) or  Color(255, 255, 255, 255)
 		if maxClip > 0 then
-			DrawSqueezedText(restext, "BO1_Res", ScrW() - CoDHUD_SX(CFG.RES_X-resoff) - resw, ScrH() - CoDHUD_SY(CFG.RES_Y), resCol, CoDHUD_S(-6), CoDHUD_S(-6), 2, CoDHUD_S(-12))
+			DrawSqueezedText(restext, "BO1_Res", ScrW() - CoDHUD_SX(CFG.RES_X) - resw, ScrH() - CoDHUD_SY(CFG.RES_Y), resCol, 0, 0, 2, 0)
 		else
 			surface.SetFont("BO1_Res_Large")
 			local restext, resw = tostring(primCount), surface.GetTextSize(primCount)
-			DrawSqueezedText(primCount, "BO1_Res_Large", ScrW() - CoDHUD_SX(CFG.RES_X-6*(#restext)) - resw, ScrH() - CoDHUD_SY(CFG.RES_Y * 1.15), resCol, CoDHUD_S(-6), CoDHUD_S(-6), 2)
+			DrawSqueezedText(primCount, "BO1_Res_Large", ScrW() - CoDHUD_SX(CFG.RES_X) - resw, ScrH() - CoDHUD_SY(CFG.RES_Y * 1.15), resCol, 0, 0, 2)
 			surface.SetFont("BO1_Res")
 		end
     end
@@ -1905,9 +1906,11 @@ local function weaponinfo(...)
     local timeSinceSwitch = CurTime() - wepSwitchTime
     if timeSinceSwitch < CFG.WEP_NAME_FADE then
         local alpha = math.Clamp(1 - (timeSinceSwitch / CFG.WEP_NAME_FADE), 0, 1)
-        local name  = (wep:GetPrintName() or wep:GetClass())
+        local name  = language.GetPhrase(wep:GetPrintName() or wep:GetClass())
         draw.SimpleTextOutlined(name, "BO1_Wep_Name", ScrW() - CoDHUD_SX(CFG.WEP_NAME_X_OFF), ScrH() - CoDHUD_SY(CFG.WEP_NAME_Y_OFF), Color(255, 255, 255, 255 * alpha), 2, 0, outlined and 1.5 or 0, Color(0, 0, 0, 255 * alpha))
     end
+
+	local altCache = (altType == primType or altType == game.GetAmmoID("Grenade") and maxClip2 > 0)
 
     if altType ~= -1 then
 		if altType ~= primType and altType ~= game.GetAmmoID("Grenade") then
@@ -1940,7 +1943,8 @@ local function weaponinfo(...)
 			
 			local col = Color(255, isLowClip and blink or 255, isLowClip and blink or 255)
 			
-			DrawSqueezedText(clip2, "BO1_Res_Large", ScrW() - CoDHUD_SX(CFG.RES_X-resoff) - resw, ScrH() - CoDHUD_SY(CFG.RES_Y * 1.15), col, CoDHUD_S(-6), CoDHUD_S(-6), 0)
+			draw.RoundedBox( CoDHUD_S(14), ScrW() - CoDHUD_SX(CFG.RES_X+8) - resw - clipw, ScrH() - CoDHUD_SY(CFG.RES_Y), CoDHUD_S(4), CoDHUD_S(36), Color( 255, 255, 255, 24 ) )
+			DrawSqueezedText(clip2, "BO1_Res_Large", ScrW() - CoDHUD_SX(CFG.RES_X) - resw, ScrH() - CoDHUD_SY(CFG.RES_Y * 1.15), col, 0, 0, 0)
 		end
     end
 
@@ -1951,7 +1955,7 @@ local function weaponinfo(...)
 		
 		local col = Color(255, isLowClip and blink or 255, isLowClip and blink or 255)
 		
-        DrawSqueezedText(clip, "BO1_Res_Large", ScrW() - CoDHUD_SX(CFG.RES_X-resoff) - resw - ((altType == primType or altType == game.GetAmmoID("Grenade") and maxClip2 > 0) and clipw or 0), ScrH() - CoDHUD_SY(CFG.RES_Y * 1.15), col, CoDHUD_S(-6), CoDHUD_S(-6), 0)
+        DrawSqueezedText(clip, "BO1_Res_Large", ScrW() - CoDHUD_SX(CFG.RES_X+(altCache and 12 or 0)) - resw - (altCache and clipw or 0), ScrH() - CoDHUD_SY(CFG.RES_Y * 1.15), col, 0, 0, 0)
     end
 
     if maxClip > 0 and clip >= 0 and not reloading then
