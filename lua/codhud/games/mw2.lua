@@ -955,33 +955,45 @@ local function minimap( ... )
     render.SetStencilCompareFunction(STENCIL_EQUAL)
     render.SetStencilPassOperation(STENCIL_KEEP)
 
-		-- 2. LAYER: RADAR BACKGROUND
-		if radar then -- If GMinimap exists
-			radar:SetDimensions(x, y, w, h)
-			radar.origin = ply:GetPos()
-			radar.rotation = Angle(0, ply:EyeAngles().y, 0)
-
-			radar.ratio = 10
-
+	-- 2. LAYER: RADAR BACKGROUND
+	if radar then -- If GMinimap exists
+		local rx = x + CoDHUD_S(2)
+		local ry = y + CoDHUD_S(2)
+		local rw = w - CoDHUD_S(4)
+		local rh = h - CoDHUD_S(4)
+		
+		radar.origin = ply:GetPos()
+		radar.rotation = Angle(0, ply:EyeAngles().y, 0)
+		radar.ratio = 10
+		
+		if radar._rx ~= rx or radar._ry ~= ry or radar._rw ~= rw or radar._rh ~= rh then
+			radar:SetDimensions(rx, ry, rw, rh)
 			radar:UpdateLayout()
-			radar:Draw()
-		else -- fallback if GMinimap missing
-			surface.SetMaterial(MAT_MAP_BG)
-			surface.SetDrawColor(255, 255, 255, MAP_CFG.ALPHA_MAP_BG)
-			surface.DrawTexturedRect(x, y, w, h)
-		end
-        
-        -- 3. LAYER: STATIC SCANLINES
-        surface.SetMaterial(MAT_STATIC_SCAN)
-        surface.SetDrawColor(255, 255, 255, MAP_CFG.ALPHA_STATIC_S)
-        surface.DrawTexturedRect(x, y, w, h)
 
-        -- 4. LAYER: REPETITIVE MOVING SCANLINES
-        surface.SetMaterial(MAT_MOVING_SCAN)
-        surface.SetDrawColor(255, 255, 255, MAP_CFG.ALPHA_MOVING_S)
-        local moveOffset = (CurTime() * MAP_CFG.SCAN_SPEED) % h
-        surface.DrawTexturedRect(x, y - moveOffset, w, h)
-        surface.DrawTexturedRect(x, y - moveOffset + h, w, h)
+			radar._rx = rx
+			radar._ry = ry
+			radar._rw = rw
+			radar._rh = rh
+		end
+
+		radar:Draw()
+	else -- fallback if GMinimap missing
+		surface.SetMaterial(MAT_MAP_BG)
+		surface.SetDrawColor(255, 255, 255, MAP_CFG.ALPHA_MAP_BG)
+		surface.DrawTexturedRect(x, y, w, h)
+	end
+	
+	-- 3. LAYER: STATIC SCANLINES
+	surface.SetMaterial(MAT_STATIC_SCAN)
+	surface.SetDrawColor(255, 255, 255, MAP_CFG.ALPHA_STATIC_S)
+	surface.DrawTexturedRect(x, y, w, h)
+
+	-- 4. LAYER: REPETITIVE MOVING SCANLINES
+	surface.SetMaterial(MAT_MOVING_SCAN)
+	surface.SetDrawColor(255, 255, 255, MAP_CFG.ALPHA_MOVING_S)
+	local moveOffset = (CurTime() * MAP_CFG.SCAN_SPEED) % h
+	surface.DrawTexturedRect(x, y - moveOffset, w, h)
+	surface.DrawTexturedRect(x, y - moveOffset + h, w, h)
 
     render.SetStencilEnable(false)
     -- [[ STENCIL END ]]

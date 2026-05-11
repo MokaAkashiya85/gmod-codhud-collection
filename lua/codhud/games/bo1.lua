@@ -949,21 +949,33 @@ local function minimap( ... )
     render.SetStencilCompareFunction(STENCIL_EQUAL)
     render.SetStencilPassOperation(STENCIL_KEEP)
 
-		-- 2. LAYER: RADAR BACKGROUND
-		if radar then -- If GMinimap exists
-			radar:SetDimensions(x + CoDHUD_S(2), y + CoDHUD_S(2), w - CoDHUD_S(4), h - CoDHUD_S(4))
-			radar.origin = ply:GetPos()
-			radar.rotation = Angle(0, ply:EyeAngles().y, 0)
-
-			radar.ratio = 10
-
+	-- 2. LAYER: RADAR BACKGROUND
+	if radar then -- If GMinimap exists
+		local rx = x + CoDHUD_S(2)
+		local ry = y + CoDHUD_S(2)
+		local rw = w - CoDHUD_S(4)
+		local rh = h - CoDHUD_S(4)
+		
+		radar.origin = ply:GetPos()
+		radar.rotation = Angle(0, ply:EyeAngles().y, 0)
+		radar.ratio = 10
+		
+		if radar._rx ~= rx or radar._ry ~= ry or radar._rw ~= rw or radar._rh ~= rh then
+			radar:SetDimensions(rx, ry, rw, rh)
 			radar:UpdateLayout()
-			radar:Draw()
-		else -- fallback if GMinimap missing
-			surface.SetMaterial(MAT_MAP_BG)
-			surface.SetDrawColor(255, 255, 255, MAP_CFG.ALPHA_MAP_BG)
-			surface.DrawTexturedRect(x + CoDHUD_S(2), y + CoDHUD_S(2), w - CoDHUD_S(4), h - CoDHUD_S(4))
+
+			radar._rx = rx
+			radar._ry = ry
+			radar._rw = rw
+			radar._rh = rh
 		end
+
+		radar:Draw()
+	else -- fallback if GMinimap missing
+		surface.SetMaterial(MAT_MAP_BG)
+		surface.SetDrawColor(255, 255, 255, MAP_CFG.ALPHA_MAP_BG)
+		surface.DrawTexturedRect(x + CoDHUD_S(2), y + CoDHUD_S(2), w - CoDHUD_S(4), h - CoDHUD_S(4))
+	end
 
     render.SetStencilEnable(false)
     -- [[ STENCIL END ]]
