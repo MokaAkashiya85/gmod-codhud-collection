@@ -1944,7 +1944,7 @@ local function weaponinfo(...)
 
 			local altCol = (altCount > 0) and Color(255, 255, 255, 255) or Color(255, 120, 120, 255)
 			
-			draw.RoundedBox( 4, ScrW() -  CoDHUD_SX(CFG.ALT_TEXT_X+4) - altPad * 0.5 , ScrH() - CoDHUD_SY(CFG.ALT_TEXT_Y), CoDHUD_S(8) + altPad, CoDHUD_S(alth), Color( 0, 0, 0, 200 ) )
+			draw.RoundedBox( 4, ScrW() -  CoDHUD_SX(CFG.ALT_TEXT_X+4) - altPad * 0.5 , ScrH() - CoDHUD_SY(CFG.ALT_TEXT_Y), CoDHUD_S(8) + altPad, alth + CoDHUD_S(2), Color( 0, 0, 0, 200 ) )
 			
 			DrawSqueezedText(altCount, "BO1_Ammo_Alt", ScrW() -  CoDHUD_SX(CFG.ALT_TEXT_X), ScrH() - CoDHUD_SY(CFG.ALT_TEXT_Y), altCol, CFG.ALT_TEXT_SQ, CFG.ALT_TEXT_SQ, 1, CoDHUD_S(999))
 		elseif maxClip2 > 0 and clip2 >= 0 then
@@ -1954,7 +1954,7 @@ local function weaponinfo(...)
 			
 			local col = Color(255, isLowClip and blink or 255, isLowClip and blink or 255)
 			
-			draw.RoundedBox( CoDHUD_S(14), ScrW() - CoDHUD_SX(CFG.RES_X+8) - resw - clipw, ScrH() - CoDHUD_SY(CFG.RES_Y), CoDHUD_S(4), CoDHUD_S(36), Color( 255, 255, 255, 24 ) )
+			draw.RoundedBox( CoDHUD_S(14), ScrW() - CoDHUD_SX(CFG.RES_X+6) - resw - clipw, ScrH() - CoDHUD_SY(CFG.RES_Y), CoDHUD_S(2), CoDHUD_S(36), Color( 255, 255, 255, 24 ) )
 			DrawSqueezedText(clip2, "BO1_Res_Large", ScrW() - CoDHUD_SX(CFG.RES_X) - resw, ScrH() - CoDHUD_SY(CFG.RES_Y * 1.15), col, 0, 0, 0)
 		end
     end
