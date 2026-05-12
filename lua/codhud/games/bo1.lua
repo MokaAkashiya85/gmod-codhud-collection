@@ -585,10 +585,9 @@ local function dmg_dir( ... )
 
 		-- Live Tracking: If they are still alive, grab their new position
 		local targetWorldPos = v.trackPos
-		if IsValid(v.ent) then
-			-- Re-apply stability offset
-			targetWorldPos = v.ent:GetPos() + (ply:GetPos() - v.ent:GetPos()) * -33000
-		end
+		-- if IsValid(v.ent) then -- Re-apply stability offset
+			-- targetWorldPos = v.ent:GetPos() + (ply:GetPos() - v.ent:GetPos()) * -33000
+		-- end
 
 		-- === DIRECTION MATH (Grenade Pointer Logic) ===
 		-- 1. Get relative position

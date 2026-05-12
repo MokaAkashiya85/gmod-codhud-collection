@@ -56,7 +56,7 @@ if CLIENT then
                 end
 
 				if CoDHUD[CoDHUD_GetHUDType()] and CoDHUD[CoDHUD_GetHUDType()].XP then
-					CoDHUD[CoDHUD_GetHUDType()].XP(animtime, scoreTime, finalAlpha, scoreScale, currentPulseAlpha, scoreVal)
+					CoDHUD[CoDHUD_GetHUDType()].XP(animTime, scoreTime, finalAlpha, scoreScale, currentPulseAlpha, scoreVal)
 				end
             end
         else

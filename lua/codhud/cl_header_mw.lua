@@ -10,9 +10,7 @@ CoDHUD_HeaderQueue.Queue = {}
 local GLITCH = { "a", "¶", "Ð", "ق", "§", "ð", "œ", "ش", "Ф" }
 local BO_SCRAMBLE = { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9" }
 
--- =========================
 -- Constructor
--- =========================
 local function SafeLen(str)
     if not str then return 0 end
 
@@ -67,6 +65,8 @@ function CoDHUD_Header_MW:New(cfg)
 
     o.eraseBlanks = {}
     o.nextErase   = 0
+	o.writeSoundOnce = cfg.writeSoundOnce or false
+	o.writeSoundPlayed = nil
 	o.eraseSoundPlayed = nil
 	o.fadeOutStart = nil
 	o.skipErase = cfg.skipErase or false
@@ -110,6 +110,77 @@ function CoDHUD_Header_MW:New(cfg)
 		o.fadeOutStart = o.holdTime - o.exitDuration
 	end
 
+	if o.type == "bo2_challenge" then
+		o.holdTime = cfg.holdTime or 1.75
+
+		o.enterTime     = cfg.enterTime or 0.15
+		o.exitTime      = cfg.exitTime or 0.20
+		o.beamTime      = cfg.beamTime or 0.4
+		o.beamDelay     = cfg.beamDelay or 0.1
+
+		o.startY        = cfg.startY or -200
+		o.targetY       = cfg.y or 205
+
+		o.startScale    = cfg.startScale or 0
+		o.targetScale   = cfg.targetScale or 1
+
+		o.y             = o.startY
+		o.scale         = o.startScale
+
+		o.alpha         = 0
+		o.iconAlpha     = 0
+		o.subAlpha      = 0
+
+		o.beamProgress  = 0
+		o.beamAlpha     = 0
+		o.beamPlayed    = false
+	end
+
+	if o.type == "bo2_teamheader" then
+		o.holdTime = cfg.holdTime or 1.6
+
+		-- COLORS
+		o.flashColor = cfg.flashColor or Color(140, 220, 255)
+
+		-- ICON
+		o.iconSize = cfg.iconSize or 128
+		o.iconAlpha = 0
+
+		o.iconBgAlpha = 255
+		o.iconBgColorLerp = 0
+
+		-- TEXT
+		o.textAlpha = 0
+
+		o.textBgAlpha = 255
+		o.textBgColorLerp = 0
+
+		-- TIMINGS
+		o.iconIntroTime = 0.24
+		o.textIntroTime = 0.22
+
+		o.textDelay = 0.04
+
+		o.textExitTime = 0.18
+		o.iconExitTime = 0.18
+
+		-- NEW:
+		o.postDelay = 1.5
+
+		-- STATE
+		o.alpha = 255
+
+		-- phase timings
+		o.iconIntroEnd = o.iconIntroTime
+		o.textIntroStart = o.iconIntroEnd + o.textDelay
+		o.textIntroEnd = o.textIntroStart + o.textIntroTime
+		o.holdEnd = o.textIntroEnd + o.holdTime
+		o.textExitEnd = o.holdEnd + o.textExitTime
+		o.iconExitStart = o.textExitEnd
+		o.iconExitEnd = o.iconExitStart + o.iconExitTime
+		o.finalEnd = o.iconExitEnd + o.postDelay
+	end
+
     return o
 end
 
@@ -119,9 +190,7 @@ function CoDHUD_HeaderQueue.Push(cfg)
     table.insert(CoDHUD_HeaderQueue.Queue, cfg)
 end
 
--- =========================
 -- Helpers
--- =========================
 local function utf8_sub(str, startChar, endChar)
     local ok, result = pcall(function()
         local chars = {}
@@ -231,9 +300,7 @@ local function GetSafeColor(col)
     return Color(col.r or 255, col.g or 255, col.b or 255, col.a or 255)
 end
 
--- =========================
 -- Update
--- =========================
 function CoDHUD_Header_MW:Update()
     local now = CurTime()
 
@@ -273,6 +340,191 @@ function CoDHUD_Header_MW:Update()
 		return
 	end
 
+	-- BLACK OPS 2 CHALLENGE
+	if self.type == "bo2_challenge" then
+		local age = CurTime() - self.startTime
+
+		local enterTime = self.enterTime or 0.35
+		local exitTime  = self.exitTime or 0.20
+
+		-- ENTER
+		if age < enterTime then
+			local p = math.Clamp(age / enterTime, 0, 1)
+
+			-- smooth easing
+			local ease = 1 - math.pow(1 - p, 3)
+
+			self.y = Lerp(ease, self.startY, self.targetY)
+			self.scale = Lerp(ease, self.startScale, self.targetScale)
+
+			self.alpha = Lerp(ease, 0, 255)
+
+		-- HOLD
+		elseif age < self.holdTime then
+			self.y = self.targetY
+			self.scale = self.targetScale
+			self.alpha = 255
+
+		-- ERASE
+		else
+			local p = math.Clamp((age - self.holdTime) / exitTime, 0, 1)
+
+			self.alpha = Lerp(p, 255, 0)
+
+			if p >= 1 then
+				self.phase = "done"
+			end
+		end
+
+		self.iconAlpha = self.alpha
+		self.subAlpha  = self.alpha
+
+		-- BEAM
+		local beamStart = self.beamDelay or 0.26
+		local beamDur   = self.beamTime or 0.10
+
+		if age >= beamStart and age <= beamStart + beamDur then
+			local p = (age - beamStart) / beamDur
+
+			self.beamProgress = p
+			self.beamAlpha = (1 - math.abs((p - 0.5) * 2)) * 255
+		else
+			self.beamAlpha = 0
+		end
+
+		return
+	end
+
+	-- BLACK OPS 2 TEAM HEADER
+	if self.type == "bo2_teamheader" then
+
+		local age = CurTime() - self.startTime
+
+		-- =========================
+		-- ICON INTRO
+		-- =========================
+		if age <= self.iconIntroEnd then
+
+			local p = math.Clamp(
+				age / self.iconIntroTime,
+				0,
+				1
+			)
+
+			self.iconBgAlpha = Lerp(p, 255, 150)
+			self.iconBgColorLerp = p
+			self.iconAlpha = Lerp(p, 0, 255)
+
+			self.textAlpha = 0
+			self.textBgAlpha = 0
+
+			return
+		end
+
+		-- =========================
+		-- TEXT INTRO
+		-- =========================
+		if age <= self.textIntroEnd then
+
+			-- icon locked finished
+			self.iconBgAlpha = 150
+			self.iconBgColorLerp = 1
+			self.iconAlpha = 255
+
+			local p = math.Clamp(
+				(age - self.textIntroStart) / self.textIntroTime,
+				0,
+				1
+			)
+
+			self.textBgAlpha = Lerp(p, 255, 150)
+			self.textBgColorLerp = p
+			self.textAlpha = Lerp(p, 0, 255)
+
+			return
+		end
+
+		-- =========================
+		-- HOLD
+		-- =========================
+		if age <= self.holdEnd then
+
+			self.iconBgAlpha = 150
+			self.iconBgColorLerp = 1
+			self.iconAlpha = 255
+
+			self.textBgAlpha = 150
+			self.textBgColorLerp = 1
+			self.textAlpha = 255
+
+			return
+		end
+
+		-- =========================
+		-- TEXT EXIT
+		-- =========================
+		if age <= self.textExitEnd then
+
+			-- icon stays alive
+			self.iconBgAlpha = 150
+			self.iconBgColorLerp = 1
+			self.iconAlpha = 255
+
+			-- text instantly vanishes
+			self.textAlpha = 0
+
+			-- bg instantly white
+			self.textBgColorLerp = 0
+
+			local p = math.Clamp(
+				(age - self.holdEnd) / self.textExitTime,
+				0,
+				1
+			)
+
+			self.textBgAlpha = Lerp(p, 255, 0)
+
+			return
+		end
+
+		-- =========================
+		-- ICON EXIT
+		-- =========================
+		if age <= self.iconExitEnd then
+
+			-- text fully dead
+			self.textAlpha = 0
+			self.textBgAlpha = 0
+
+			-- icon instantly disappears
+			self.iconAlpha = 0
+
+			-- bg instantly white
+			self.iconBgColorLerp = 0
+
+			local p = math.Clamp(
+				(age - self.iconExitStart) / self.iconExitTime,
+				0,
+				1
+			)
+
+			self.iconBgAlpha = Lerp(p, 255, 0)
+
+			return
+		end
+
+		-- =========================
+		-- LIMBO DELAY
+		-- =========================
+		if age <= self.finalEnd then
+			return
+		end
+
+		self.phase = "done"
+
+		return
+	end
+
     -- WRITE
 	if self.phase == "write" then
 
@@ -291,7 +543,14 @@ function CoDHUD_Header_MW:Update()
 				self.nextWrite = now + interval
 
 				local snd = self.writeSounds[math.random(#self.writeSounds)]
-				surface.PlaySound(snd)
+				if self.writeSoundOnce then
+					if not self.writeSoundPlayed then
+						surface.PlaySound(snd)
+						self.writeSoundPlayed = true
+					end
+				else
+					surface.PlaySound(snd)
+				end
 			end
 
 			local finished = self.written >= self.longest
@@ -405,9 +664,7 @@ function CoDHUD_Header_MW:Update()
 	end
 end
 
--- =========================
 -- Draw
--- =========================
 function CoDHUD_Header_MW:Draw()
     if self.phase == "done" then return end
 	
@@ -483,6 +740,152 @@ function CoDHUD_Header_MW:Draw()
 		return
 	end
 
+	if self.type == "bo2_challenge" then
+		local cx = self.x
+		local cy = self.y
+
+		local alpha = self.alpha or 255
+		local scale = self.scale or 1
+
+		local outlined = GetConVar("codhud_enable_outlinedtext"):GetBool()
+
+		local bgmat = Material(CoDHUD_GetHUDType() .. "/medals/hud_medals_challenge.png", "smooth")
+
+		local bgW = CoDHUD_S(240)
+		local bgH = CoDHUD_S(240)
+
+		local beamW = CoDHUD_S(48)
+
+		local mat = Matrix()
+		mat:Translate(Vector(cx, cy, 0))
+		mat:Scale(Vector(scale, scale, 1))
+		mat:Translate(Vector(-cx, -cy, 0))
+
+		cam.PushModelMatrix(mat)
+
+			-- BACKGROUND
+			surface.SetMaterial(bgmat)
+			surface.SetDrawColor(255,255,255,alpha*0.8)
+			surface.DrawTexturedRect( cx - bgW * 0.5, cy - bgH * 0.5, bgW, bgH )
+
+			-- SWEEP OVERLAY
+			if self.beamAlpha > 0 then
+
+				local beamX = Lerp( self.beamProgress, cx - bgW * 0.5, cx + bgW * 0.5 )
+
+				local left   = beamX - beamW * 0.5
+				local right  = beamX + beamW * 0.5
+				local top    = cy - bgH * 0.5
+				local bottom = cy + bgH * 0.5
+
+				-- clip beam region
+				render.SetScissorRect( left, top, right, bottom, true )
+
+					-- additive overlay pass
+					render.OverrideBlend( true, BLEND_SRC_ALPHA, BLEND_ONE, BLENDFUNC_ADD )
+						surface.SetMaterial(bgmat)
+						surface.SetDrawColor( 255, 255, 255, self.beamAlpha )
+						surface.DrawTexturedRect( cx - bgW * 0.5, cy - bgH * 0.5, bgW, bgH )
+					render.OverrideBlend(false)
+
+				render.SetScissorRect(0,0,0,0,false)
+			end
+
+			-- MAIN TEXT
+			for i, line in ipairs(self.lines) do
+				draw.SimpleTextOutlined( line, self.fonts.pri, cx, cy - CoDHUD_S(18) + ((i - 1) * CoDHUD_S(34)), Color(255,255,255,alpha), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, outlined and 2 or 0, Color(0,0,0,alpha) )
+			end
+
+			-- SUBTEXT
+			if self.subtext and self.subtext ~= "" then
+				local lines = string.Split(self.subtext, "\n")
+
+				for i, line in ipairs(lines) do
+					draw.SimpleTextOutlined( line, self.fonts.sub, cx, cy + CoDHUD_S(0) + ((i - 1) * CoDHUD_S(40)), Color( self.subcolor.r, self.subcolor.g, self.subcolor.b, alpha ), TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP, outlined and 1 or 0, Color(0,0,0,alpha) )
+				end
+			end
+
+			-- OPTIONAL ICON
+			if self.icon then
+				local size = self.iconSize or 96
+
+				surface.SetMaterial(self.icon)
+				surface.SetDrawColor(255,255,255,alpha)
+
+				surface.DrawTexturedRect( cx - size * 0.5, cy - CoDHUD_S(110), size, size )
+			end
+
+		cam.PopModelMatrix()
+
+		return
+	end
+	
+	if self.type == "bo2_teamheader" then
+
+		local cx = self.x
+		local cy = self.y
+
+		local flash = self.flashColor
+
+		-- ICON
+		if self.icon then
+
+			local size = 96
+
+			local bgCol = Color(
+				Lerp(self.iconBgColorLerp, 255, flash.r),
+				Lerp(self.iconBgColorLerp, 255, flash.g),
+				Lerp(self.iconBgColorLerp, 255, flash.b),
+				self.iconBgAlpha
+			)
+
+			-- backing square
+			surface.SetMaterial( Material( CoDHUD_GetHUDType() .. "/hud/fade_team.vmt" ) )
+			-- surface.SetMaterial( Material( CoDHUD_GetHUDType() .. "/hud/black_box_faded.png" ) )
+			surface.SetDrawColor(bgCol)
+			surface.DrawTexturedRect( cx - size * 1.5, cy - size * 1.5, size * 3, size * 4 )
+
+			-- icon behind square
+			surface.SetMaterial(self.icon)
+			surface.SetDrawColor(255,255,255,self.iconAlpha)
+			surface.DrawTexturedRect( cx - size, cy - size, size * 2, size * 2 )
+			surface.DrawTexturedRect( cx - size, cy - size, size * 2, size * 2 )
+
+			cy = cy + size + CoDHUD_S(14)
+		end
+
+		-- TEXT
+		local text = self.lines[1] or ""
+
+		surface.SetFont(self.fonts.pri)
+
+		local tw, th = surface.GetTextSize(text)
+
+		local padX = CoDHUD_S(18)
+		local padY = CoDHUD_S(10)
+
+		local bw = tw + padX * 2
+		local bh = th + padY * 2
+
+		local bgCol = Color(
+			Lerp(self.textBgColorLerp, 255, flash.r),
+			Lerp(self.textBgColorLerp, 255, flash.g),
+			Lerp(self.textBgColorLerp, 255, flash.b),
+			self.textBgAlpha
+		)
+
+		-- text backing
+		surface.SetMaterial( Material( CoDHUD_GetHUDType() .. "/hud/fade_team.vmt" ) )
+		-- surface.SetMaterial( Material( CoDHUD_GetHUDType() .. "/hud/black_box_faded.png" ) )
+		surface.SetDrawColor(bgCol)
+		surface.DrawTexturedRect( cx - bw * 0.5, cy - bh * 0.5, bw, bh )
+
+		-- text
+		draw.SimpleText( text, self.fonts.pri, cx, cy, Color(255,255,255,self.textAlpha), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )
+
+		return
+	end
+	
 	for i, line in ipairs(self.lines) do
 		local display = ""
 

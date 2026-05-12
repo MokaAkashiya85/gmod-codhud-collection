@@ -1,0 +1,8 @@
+UnLitGeneric
+{
+	$basetexture 			"bo2\hud\lui_score_feed_glow"
+	$additive 				"1"
+
+	$vertexcolor			1
+	$vertexalpha			1
+}

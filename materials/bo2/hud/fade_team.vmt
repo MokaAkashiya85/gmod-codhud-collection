@@ -1,0 +1,8 @@
+UnLitGeneric
+{
+	$basetexture 			"bo2\hud\fxt_lensflare_stripe_white_bright"
+	$additive 				"1"
+
+	$vertexcolor			1
+	$vertexalpha			1
+}
