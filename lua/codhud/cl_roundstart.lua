@@ -130,7 +130,7 @@ local function CoDHUD_RS_Start(gamemode, timestart)
     rs_bw = 1
 
 	if CoDHUD[CoDHUD_GetHUDType()] and CoDHUD[CoDHUD_GetHUDType()].RoundStart then
-		CoDHUD[CoDHUD_GetHUDType()].RoundStart(fdata.name, rs_glow, rs_icon_mat)
+		CoDHUD[CoDHUD_GetHUDType()].RoundStart(fdata.name, rs_glow, rs_icon_mat, fdata.short)
 	end
 
 	timer.Simple( 0.1, function() -- Tiny delay for round restart

@@ -1,0 +1,8 @@
+UnLitGeneric
+{
+	$basetexture 			"bo2\hud\hud_mp_vis_left_lower"
+	$additive 				"1"
+
+	$vertexcolor			1
+	$vertexalpha			1
+}
