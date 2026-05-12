@@ -1764,6 +1764,26 @@ local function weaponinfo(...)
 	local MAT_GRENADE = Material(hudtype .. "/hud/grenadeicon.png", "smooth")
 	local MAT_COMPASS = Material(hudtype .. "/hud/hud_border_dpad_compass.png", "smooth")
 
+    local barW = CoDHUD_SX(CFG.BAR_W)
+    local barH = CoDHUD_SY(CFG.BAR_H)
+    local barX = ScrW() - CoDHUD_SX(CFG.BAR_X_OFF) - barW
+    local barY = ScrH() - CoDHUD_SY(CFG.BAR_Y_OFF) - barH
+
+    surface.SetMaterial(MAT_FRAME)
+    surface.SetDrawColor(255, 255, 255)
+    surface.DrawTexturedRect(barX, barY, barW, barH)
+
+    local lineW = CoDHUD_SX(CFG.LINES_W)
+    local lineH = CoDHUD_SY(CFG.LINES_H)
+    local lineX = ScrW() - CoDHUD_SX(CFG.LINES_X_OFF) - lineW
+    local lineY = ScrH() - CoDHUD_SY(CFG.LINES_Y_OFF) - lineH
+
+    surface.SetDrawColor(255, 255, 255)
+    surface.SetMaterial(MAT_LINES)
+    surface.DrawTexturedRect(lineX + CoDHUD_SX(6), lineY + CoDHUD_SY(3), lineW, lineH)
+    surface.SetMaterial(MAT_FADE)
+    surface.DrawTexturedRect(lineX, lineY, lineW, lineH)
+
     -- 1. COMPASS DRAWING
 	local cX = ScrW() - (CoDHUD_SX(CFG.BAR_W) * 0.5)
     local cY = ScrH() - (CoDHUD_SX(CFG.BAR_H) * 0.425)
@@ -1858,27 +1878,6 @@ local function weaponinfo(...)
 	local altAmmoName = game.GetAmmoName(altType)
     local primCount = ply:GetAmmoCount(primType)
 	local altCount = ply:GetAmmoCount(altType)
-
-    local barW = CoDHUD_SX(CFG.BAR_W)
-    local barH = CoDHUD_SY(CFG.BAR_H)
-    local barX = ScrW() - CoDHUD_SX(CFG.BAR_X_OFF) - barW
-    local barY = ScrH() - CoDHUD_SY(CFG.BAR_Y_OFF) - barH
-
-    surface.SetMaterial(MAT_FRAME)
-    surface.SetDrawColor(255, 255, 255)
-    surface.DrawTexturedRect(barX, barY, barW, barH)
-
-    local lineW = CoDHUD_SX(CFG.LINES_W)
-    local lineH = CoDHUD_SY(CFG.LINES_H)
-    local lineX = ScrW() - CoDHUD_SX(CFG.LINES_X_OFF) - lineW
-    local lineY = ScrH() - CoDHUD_SY(CFG.LINES_Y_OFF) - lineH
-
-    surface.SetDrawColor(255, 255, 255)
-    surface.SetMaterial(MAT_LINES)
-    surface.DrawTexturedRect(lineX + CoDHUD_SX(6), lineY + CoDHUD_SY(3), lineW, lineH)
-    surface.SetMaterial(MAT_FADE)
-    surface.DrawTexturedRect(lineX, lineY, lineW, lineH)
-
 
 	local reloading = 
 	wep.IsReloading or reloadingM203 -- CW2
