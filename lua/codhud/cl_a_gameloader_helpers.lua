@@ -8,10 +8,12 @@ local BASE_W, BASE_H = 1920, 1080
 
 local scale = CreateClientConVar("codhud_scale", "1", true, false, "Scale to multiply the size of UI elements by.", 0.5, 2)
 
+function CoDHUD_GetUIScaleMultiplier() return scale:GetFloat() end -- EXPERIMENTAL
+
 function CoDHUD_GetUIScale()
-    local scaleX = ScrW() / BASE_W
-    local scaleY = ScrH() / BASE_H
-    return math.min(scaleX, scaleY) * scale:GetFloat()
+    local scaleX = ScrW() / BASE_W * CoDHUD_GetUIScaleMultiplier()
+    local scaleY = ScrH() / BASE_H * CoDHUD_GetUIScaleMultiplier()
+    return math.min(scaleX, scaleY) 
 end
 
 function CoDHUD_S(x)  return math.Round(x * CoDHUD_GetUIScale()) end
@@ -282,75 +284,72 @@ local function InitiateCoDFonts()
 	
 	-- [ BO2 ]
 	-- Challenges
-    surface.CreateFont( "BO2_ChalHeader",			{ font = "HelveticaNeue MediumCond", size = CoDHUD_S(64), weight = 800,  antialias = true })
-    surface.CreateFont( "BO2_ChalSub",				{ font = "HelveticaNeue MediumCond", size = CoDHUD_S(40), weight = 400,  antialias = true })
+    surface.CreateFont( "BO2_ChalHeader",			{ font = "AgencyFB", size = CoDHUD_S(48), weight = 800,  antialias = true })
+    surface.CreateFont( "BO2_ChalSub",				{ font = "AgencyFB", size = CoDHUD_S(48), weight = 400,  antialias = true })
 	
 	-- Chat
-	surface.CreateFont( "BO2_ChatFont",				{ font = "HelveticaNeue MediumCond",  size = CoDHUD_S(22),  weight = 400,  antialias = true, shadow = true })
+	surface.CreateFont( "BO2_ChatFont",				{ font = "AgencyFB",  size = CoDHUD_S(22),  weight = 400,  antialias = true, shadow = true })
 	
 	-- Hitmarker / XP
-	surface.CreateFont( "BO2_Score_Main",			{ font = "HelveticaNeue MediumCond", size = CoDHUD_S(46), weight = 400, antialias = true, shadow = true })
-	surface.CreateFont( "BO2_Score_Plus",			{ font = "HelveticaNeue MediumCond", size = CoDHUD_S(42), weight = 800, antialias = true, shadow = true })
+	surface.CreateFont( "BO2_Score_Main",			{ font = "AgencyFB", size = CoDHUD_S(46), weight = 400, antialias = true, shadow = true })
+	surface.CreateFont( "BO2_Score_Plus",			{ font = "AgencyFB", size = CoDHUD_S(42), weight = 800, antialias = true, shadow = true })
 	
 	-- Killfeed
-    surface.CreateFont( "BO2_KillfeedFont",			{ font = "HelveticaNeue MediumCond", size = CoDHUD_S(34), weight = 400, antialias = true, shadow = true, outline = false, })
+    surface.CreateFont( "BO2_KillfeedFont",			{ font = "AgencyFB", size = CoDHUD_S(34), weight = 400, antialias = true, shadow = true, outline = false, })
 	
 	-- Medals
-	surface.CreateFont( "BO2_MedalPrimary",			{ font = "HelveticaNeue MediumCond", size = CoDHUD_S(72), weight = 100,  antialias = true })
-	surface.CreateFont( "BO2_MedalPoints",			{ font = "HelveticaNeue MediumCond", size = CoDHUD_S(28), weight = 400,  antialias = true })
-	surface.CreateFont( "BO2_MedalDesc",			{ font = "HelveticaNeue MediumCond", size = CoDHUD_S(32), weight = 500,  antialias = true })
+	surface.CreateFont( "BO2_MedalPrimary",			{ font = "AgencyFB", size = CoDHUD_S(32), weight = 100,  antialias = true })
 	
 	-- Round End
-	surface.CreateFont( "BO2_RE_Sc_Pri",			{ font = "MorrisSansW04-MediumCond", size = CoDHUD_S(54),  weight = 400, blursize = 0, antialias = true,  outline = false })
-    surface.CreateFont( "BO2_RE_Sc_Sec",			{ font = "MorrisSansW04-MediumCond", size = CoDHUD_S(54),  weight = 400, blursize = 5, antialias = true,  outline = false })
-    surface.CreateFont( "BO2_RE_Sc_Shd",			{ font = "MorrisSansW04-MediumCond", size = CoDHUD_S(54),  weight = 400, blursize = 2, antialias = false, outline = true  })
+	surface.CreateFont( "BO2_RE_Sc_Pri",			{ font = "AgencyFB", size = CoDHUD_S(54),  weight = 400, blursize = 0, antialias = true,  outline = false })
+    surface.CreateFont( "BO2_RE_Sc_Sec",			{ font = "AgencyFB", size = CoDHUD_S(54),  weight = 400, blursize = 5, antialias = true,  outline = false })
+    surface.CreateFont( "BO2_RE_Sc_Shd",			{ font = "AgencyFB", size = CoDHUD_S(54),  weight = 400, blursize = 2, antialias = false, outline = true  })
     
-    surface.CreateFont( "BO2_RE_Re_Pri",			{ font = "MorrisSansW04-MediumCond", size = CoDHUD_S(72), weight = 400, blursize = 0, antialias = true,  outline = false })
-    surface.CreateFont( "BO2_RE_Re_Sec",			{ font = "MorrisSansW04-MediumCond", size = CoDHUD_S(72), weight = 400, blursize = 5, antialias = true,  outline = false })
-    surface.CreateFont( "BO2_RE_Re_Shd",			{ font = "MorrisSansW04-MediumCond", size = CoDHUD_S(72), weight = 400, blursize = 2, antialias = false, outline = true  })
+    surface.CreateFont( "BO2_RE_Re_Pri",			{ font = "AgencyFB", size = CoDHUD_S(72), weight = 400, blursize = 0, antialias = true,  outline = false })
+    surface.CreateFont( "BO2_RE_Re_Sec",			{ font = "AgencyFB", size = CoDHUD_S(72), weight = 400, blursize = 5, antialias = true,  outline = false })
+    surface.CreateFont( "BO2_RE_Re_Shd",			{ font = "AgencyFB", size = CoDHUD_S(72), weight = 400, blursize = 2, antialias = false, outline = true  })
     
-    surface.CreateFont( "BO2_RE_Li_Pri",			{ font = "HelveticaNeue MediumCond", size = CoDHUD_S(48),  weight = 400, blursize = 0, antialias = true,  outline = false })
-    surface.CreateFont( "BO2_RE_Li_Sec",			{ font = "HelveticaNeue MediumCond", size = CoDHUD_S(48),  weight = 400, blursize = 5, antialias = true,  outline = false })
-    surface.CreateFont( "BO2_RE_Li_Shd",			{ font = "HelveticaNeue MediumCond", size = CoDHUD_S(48),  weight = 400, blursize = 2, antialias = false, outline = true  })
+    surface.CreateFont( "BO2_RE_Li_Pri",			{ font = "AgencyFB", size = CoDHUD_S(48),  weight = 400, blursize = 0, antialias = true,  outline = false })
+    surface.CreateFont( "BO2_RE_Li_Sec",			{ font = "AgencyFB", size = CoDHUD_S(48),  weight = 400, blursize = 5, antialias = true,  outline = false })
+    surface.CreateFont( "BO2_RE_Li_Shd",			{ font = "AgencyFB", size = CoDHUD_S(48),  weight = 400, blursize = 2, antialias = false, outline = true  })
 
-    surface.CreateFont( "BO2_RE_Bonus",				{ font = "HelveticaNeue MediumCond", size = CoDHUD_S(48),  weight = 400, blursize = 0, antialias = true,  outline = false })
+    surface.CreateFont( "BO2_RE_Bonus",				{ font = "AgencyFB", size = CoDHUD_S(48),  weight = 400, blursize = 0, antialias = true,  outline = false })
 		
 	-- Round Start	
-	surface.CreateFont( "BO2_RS_H_Pri",				{ font = "MorrisSansW04-MediumCond", size = CoDHUD_S(64), weight = 10,  blursize = 0, antialias = true,  outline = false })
-    surface.CreateFont( "BO2_RS_H_Sec",				{ font = "MorrisSansW04-MediumCond", size = CoDHUD_S(64), weight = 10,  blursize = 5, antialias = true,  outline = false })
-    surface.CreateFont( "BO2_RS_H_Shd",				{ font = "MorrisSansW04-MediumCond", size = CoDHUD_S(64), weight = 10, blursize = 2, antialias = false, outline = true  })
+	surface.CreateFont( "BO2_RS_H_Pri",				{ font = "AgencyFB", size = CoDHUD_S(48), weight = 10,  blursize = 0, antialias = true,  outline = false })
+    surface.CreateFont( "BO2_RS_H_Sec",				{ font = "AgencyFB", size = CoDHUD_S(48), weight = 10,  blursize = 5, antialias = true,  outline = false })
+    surface.CreateFont( "BO2_RS_H_Shd",				{ font = "AgencyFB", size = CoDHUD_S(48), weight = 10, blursize = 2, antialias = false, outline = true  })
 
-    surface.CreateFont( "BO2_RS_O_Pri",				{ font = "HelveticaNeue MediumCond", size = CoDHUD_S(46), weight = 10,  blursize = 0, antialias = true,  outline = false })
-    surface.CreateFont( "BO2_RS_O_Sec",				{ font = "HelveticaNeue MediumCond", size = CoDHUD_S(46), weight = 10,  blursize = 5, antialias = true,  outline = false })
-    surface.CreateFont( "BO2_RS_O_Shd",				{ font = "HelveticaNeue MediumCond", size = CoDHUD_S(46), weight = 400, blursize = 2, antialias = false, outline = true  })
+    surface.CreateFont( "BO2_RS_O_Pri",				{ font = "AgencyFB", size = CoDHUD_S(46), weight = 10,  blursize = 0, antialias = true,  outline = false })
+    surface.CreateFont( "BO2_RS_O_Sec",				{ font = "AgencyFB", size = CoDHUD_S(46), weight = 10,  blursize = 5, antialias = true,  outline = false })
+    surface.CreateFont( "BO2_RS_O_Shd",				{ font = "AgencyFB", size = CoDHUD_S(46), weight = 400, blursize = 2, antialias = false, outline = true  })
 
-    surface.CreateFont( "BO2_RS_S_Pri",				{ font = "MorrisSansW04-MediumCond", size = CoDHUD_S(28), weight = 1, antialias = true, shadow = true })
+    surface.CreateFont( "BO2_RS_S_Pri",				{ font = "AgencyFB", size = CoDHUD_S(36), weight = 1, antialias = true, shadow = true })
+    surface.CreateFont( "BO2_RS_Timer",				{ font = "AgencyFB", size = CoDHUD_S(48), weight = 400, antialias = true, shadow = true })
 
-    surface.CreateFont( "BO2_RS_Timer",				{ font = "HelveticaNeue MediumCond", size = CoDHUD_S(64), weight = 400, antialias = true, shadow = true })
-
-	-- Score Bar	
-	surface.CreateFont( "BO2_Timer", 				{ font = "MorrisSansW04-MediumCond", size = CoDHUD_S(34), weight = 400, antialias = true, shadow = false, })
-    surface.CreateFont( "BO2_Status",				{ font = "MorrisSansW04-MediumCond", size = CoDHUD_S(28), weight = 0, antialias = true, shadow = true, })
-    surface.CreateFont( "BO2_Font",					{ font = "MorrisSansW04-MediumCond", size = CoDHUD_S(40), weight = 0, antialias = true, })
-    surface.CreateFont( "BO2_Font2",					{ font = "MorrisSansW04-MediumCond", size = CoDHUD_S(30), weight = 400, antialias = true, })
+	-- Score Bar
+	surface.CreateFont( "BO2_Timer", 				{ font = "AgencyFB", size = CoDHUD_S(34), weight = 400, antialias = true, shadow = false, })
+    surface.CreateFont( "BO2_Status",				{ font = "AgencyFB", size = CoDHUD_S(28), weight = 0, antialias = true, shadow = true, })
+    surface.CreateFont( "BO2_Font",					{ font = "AgencyFB", size = CoDHUD_S(40), weight = 0, antialias = true, })
+    surface.CreateFont( "BO2_Font2",				{ font = "AgencyFB", size = CoDHUD_S(30), weight = 400, antialias = true, })
 		
 	-- Scoreboard
-    surface.CreateFont( "BO2_Scoreboard_Text",		{ font = "HelveticaNeue MediumCond", size = CoDHUD_S(28), weight = 100, antialias = true, shadow = true, })
-    surface.CreateFont( "BO2_Scoreboard_Score",		{ font = "MorrisSansW04-MediumCond", size = CoDHUD_S(64), weight = 400, antialias = true, shadow = true, })
-    surface.CreateFont( "BO2_Scoreboard_Timer",		{ font = "MorrisSansW04-MediumCond", size = CoDHUD_S(34), weight = 400, antialias = true, })
+    surface.CreateFont( "BO2_Scoreboard_Text",		{ font = "AgencyFB", size = CoDHUD_S(28), weight = 100, antialias = true, shadow = true, })
+    surface.CreateFont( "BO2_Scoreboard_Score",		{ font = "AgencyFB", size = CoDHUD_S(64), weight = 400, antialias = true, shadow = true, })
+    surface.CreateFont( "BO2_Scoreboard_Timer",		{ font = "AgencyFB", size = CoDHUD_S(34), weight = 400, antialias = true, })
 	
 	-- IFF
-    surface.CreateFont("BO2_TargetName_Primary",	{ font = "HelveticaNeue MediumCond",  size = CoDHUD_S(32), weight = 400, antialias = true, shadow = true })
+    surface.CreateFont("BO2_TargetName_Primary",	{ font = "AgencyFB",  size = CoDHUD_S(32), weight = 400, antialias = true, shadow = true })
 
 	-- Voice Chat
-	surface.CreateFont("BO2_VoiceFont",				{ font = "HelveticaNeue MediumCond",  size = CoDHUD_S(30),  weight = 600,  antialias = true, shadow = true })
+	surface.CreateFont("BO2_VoiceFont",				{ font = "AgencyFB",  size = CoDHUD_S(30),  weight = 600,  antialias = true, shadow = true })
 	
 	-- Weapon HUD
-    surface.CreateFont("BO2_Res",					{ font = "MorrisSansW04-MediumCond", size = CoDHUD_S(38), weight = 400, antialias = true, shadow = true, extended = true })
-    surface.CreateFont("BO2_Res_Large",				{ font = "MorrisSansW04-MediumCond", size = CoDHUD_S(56), weight = 400, antialias = true, shadow = true, extended = true })
-    surface.CreateFont("BO2_Wep_Name",				{ font = "MorrisSansW04-MediumCond", size = CoDHUD_S(38), weight = 400, antialias = true, shadow = true, extended = true })
-    surface.CreateFont("BO2_Stat_Font",				{ font = "MorrisSansW04-MediumCond", size = CoDHUD_S(28), weight = 400, antialias = true, shadow = true, extended = true })
-    surface.CreateFont("BO2_Ammo_Alt",				{ font = "HelveticaNeue MediumCond", size = CoDHUD_S(20), weight = 400, antialias = true, shadow = true, extended = true })
+    surface.CreateFont("BO2_Res",					{ font = "AgencyFB", size = CoDHUD_S(38), weight = 400, antialias = true, shadow = true, extended = true })
+    surface.CreateFont("BO2_Res_Large",				{ font = "AgencyFB", size = CoDHUD_S(56), weight = 400, antialias = true, shadow = true, extended = true })
+    surface.CreateFont("BO2_Wep_Name",				{ font = "AgencyFB", size = CoDHUD_S(38), weight = 400, antialias = true, shadow = true, extended = true })
+    surface.CreateFont("BO2_Stat_Font",				{ font = "AgencyFB", size = CoDHUD_S(28), weight = 400, antialias = true, shadow = true, extended = true })
+    surface.CreateFont("BO2_Ammo_Alt",				{ font = "AgencyFB", size = CoDHUD_S(20), weight = 400, antialias = true, shadow = true, extended = true })
 end
 
 InitiateCoDFonts()
