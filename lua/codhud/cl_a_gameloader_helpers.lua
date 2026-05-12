@@ -359,5 +359,5 @@ hook.Add("OnScreenSizeChanged", "CoDHUD_ReinitChallengeFonts", function()
 end)
 
 cvars.AddChangeCallback("codhud_scale", function()
-    InitiateCoDFonts()
+    timer.Create("CoDHUD_ScaleFonts", 0.2, 1, InitiateCoDFonts)
 end, "CoDHUD_Scale")
