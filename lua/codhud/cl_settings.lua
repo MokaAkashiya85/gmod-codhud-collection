@@ -399,6 +399,10 @@ local CoDHUD_SETTINGS = {
 							{ type = "checkbox",	label = "#CoDHUD.HUD.Outline",					convar = "codhud_enable_outlinedtext",		tooltip = "CoDHUD.HUD.Outline.desc" }, -- TEMP
 						}
 					},
+					{ name = "#CoDHUD.HUD.Scale", controls = {
+							{ type = "slider",	label = "#CoDHUD.HUD.Scale.Number",		convar = "codhud_scale",		tooltip = "CoDHUD.HUD.Scale.Number.desc", min = 0.5, max = 2, decimals = 2 },
+						}
+					},
 					{ name = "#CoDHUD.HUD.Scoreboard", controls = {
 							{ type = "checkbox",	label = "#CoDHUD.HUD.Scoreboard.Enable",		convar = "codhud_enable_scoreboard",		tooltip = "CoDHUD.HUD.Scoreboard.Enable.desc" },
 						}

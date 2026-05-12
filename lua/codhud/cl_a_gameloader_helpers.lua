@@ -6,10 +6,12 @@ CoDHUD.Gamemodes = CoDHUD.Gamemodes or {}
 -- [[ RESOLUTION SCALING ]]
 local BASE_W, BASE_H = 1920, 1080
 
+local scale = CreateClientConVar("codhud_scale", "1", true, false, "Scale to multiply the size of UI elements by.", 0.5, 2)
+
 function CoDHUD_GetUIScale()
     local scaleX = ScrW() / BASE_W
     local scaleY = ScrH() / BASE_H
-    return math.min(scaleX, scaleY)
+    return math.min(scaleX, scaleY) * scale:GetFloat()
 end
 
 function CoDHUD_S(x)  return math.Round(x * CoDHUD_GetUIScale()) end
@@ -356,3 +358,7 @@ InitiateCoDFonts()
 hook.Add("OnScreenSizeChanged", "CoDHUD_ReinitChallengeFonts", function()
     InitiateCoDFonts()
 end)
+
+cvars.AddChangeCallback("codhud_scale", function()
+    InitiateCoDFonts()
+end, "CoDHUD_Scale")
