@@ -1,6 +1,6 @@
 UnLitGeneric
 {
-	$basetexture 			"bo2\hud\lui_score_feed_glow"
+	$basetexture 			"bo2\hud\hud_mp_vis_right_lower"
 	$additive 				"1"
 
 	$vertexcolor			1
