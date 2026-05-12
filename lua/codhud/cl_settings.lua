@@ -400,7 +400,7 @@ local CoDHUD_SETTINGS = {
 						}
 					},
 					{ name = "#CoDHUD.HUD.Scale", controls = {
-							{ type = "slider",	label = "#CoDHUD.HUD.Scale.Enable",		convar = "codhud_scale",		tooltip = "CoDHUD.HUD.Scale.Enable.desc", min = 0.5, max = 2, decimals = 2 },
+							{ type = "slider",	label = "#CoDHUD.HUD.Scale.Enable",		convar = "codhud_scale",		tooltip = "CoDHUD.HUD.Scale.Enable.desc", min = 0.5, max = 1.5, decimals = 2 },
 						}
 					},
 					{ name = "#CoDHUD.HUD.Scoreboard", controls = {
