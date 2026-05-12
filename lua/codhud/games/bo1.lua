@@ -399,12 +399,14 @@ CoDHUD[hudtype].RoundStart = rs_title
 local function rs_timer( ... )
 	local disp = select(1, ...)
 	
+	local scale = 1 / CoDHUD_GetUIScaleMultiplier()
+	
 	local outlined = GetConVar("codhud_enable_outlinedtext"):GetBool()
 
-    local tx  = CoDHUD_SX(960)
-    -- local ty  = CoDHUD_SY(540)
-    local ty  = ScrH() * 0.5
-    local syo = CoDHUD_SY(-85)
+    local tx  = CoDHUD_SX(960) * scale
+    local ty  = CoDHUD_SY(540) * scale
+    -- local ty  = ScrH() * 0.5
+    local syo = CoDHUD_SY(-85) * scale
 
 	if disp ~= rs_last_dig then
 		rs_last_dig  = disp
@@ -950,6 +952,7 @@ local function minimap( ... )
 
 	-- 2. LAYER: RADAR BACKGROUND
 	if radar then -- If GMinimap exists
+		local scale = 1 / CoDHUD_GetUIScaleMultiplier()
 		local rx = x + CoDHUD_S(2)
 		local ry = y + CoDHUD_S(2)
 		local rw = w - CoDHUD_S(4)
@@ -957,7 +960,7 @@ local function minimap( ... )
 		
 		radar.origin = ply:GetPos()
 		radar.rotation = Angle(0, ply:EyeAngles().y, 0)
-		radar.ratio = 10
+		radar.ratio = 10 * scale
 		
 		if radar._rx ~= rx or radar._ry ~= ry or radar._rw ~= rw or radar._rh ~= rh then
 			radar:SetDimensions(rx, ry, rw, rh)

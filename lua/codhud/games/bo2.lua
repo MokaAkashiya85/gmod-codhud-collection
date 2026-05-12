@@ -399,13 +399,15 @@ CoDHUD[hudtype].RoundStart = rs_title
 
 local function rs_timer( ... )
 	local disp = select(1, ...)
-	
+
+	local scale = 1 / CoDHUD_GetUIScaleMultiplier()
+
 	local outlined = GetConVar("codhud_enable_outlinedtext"):GetBool()
 
-    local tx  = CoDHUD_SX(960)
-    -- local ty  = CoDHUD_SY(540)
-    local ty  = ScrH() * 0.5
-    local syo = CoDHUD_SY(-85)
+    local tx  = CoDHUD_SX(960) * scale
+    local ty  = CoDHUD_SY(540) * scale
+    -- local ty  = ScrH() * 0.5
+    local syo = CoDHUD_SY(-85) * scale
 
 	if disp ~= rs_last_dig then
 		rs_last_dig  = disp

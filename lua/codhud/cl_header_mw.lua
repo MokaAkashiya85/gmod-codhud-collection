@@ -24,6 +24,7 @@ end
 
 function CoDHUD_Header_MW:New(cfg)
     local o = setmetatable({}, self)
+	local scale = 1 / CoDHUD_GetUIScaleMultiplier()
 
 	o.type = cfg.type or "mw"
 	
@@ -44,8 +45,8 @@ function CoDHUD_Header_MW:New(cfg)
 	o.alpha = 0
 	o.fadeSpeed = cfg.fadeSpeed or 400
 
-    o.x          = cfg.x or 960
-    o.y          = cfg.y or 205
+    o.x          = (cfg.x or 960) * scale
+    o.y          = (cfg.y or 205) * scale
 
     o.fonts      = cfg.fonts or {
 		pri = "MW2_RE_Sc_Pri",
@@ -86,8 +87,8 @@ function CoDHUD_Header_MW:New(cfg)
 
 	o.iconPos   = cfg.iconPos or "below" -- "above" | "below"
 	
-	o.iconX		= cfg.iconX or cfg.x
-	o.iconY		= cfg.iconY or cfg.y
+	o.iconX		= (cfg.iconX or cfg.x) * scale
+	o.iconY		= (cfg.iconY or cfg.y) * scale
 	o.iconSize  = cfg.iconSize or 128
 	o.iconGap   = cfg.iconGap or 16
     o.iconAlpha   = 0

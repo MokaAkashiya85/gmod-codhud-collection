@@ -6,7 +6,7 @@ CoDHUD.Gamemodes = CoDHUD.Gamemodes or {}
 -- [[ RESOLUTION SCALING ]]
 local BASE_W, BASE_H = 1920, 1080
 
-local scale = CreateClientConVar("codhud_scale", "1", true, false, "Scale to multiply the size of UI elements by.", 0.5, 2)
+local scale = CreateClientConVar("codhud_scale", "1", true, false, "Scale to multiply the size of UI elements by.", 0.5, 1.5)
 
 function CoDHUD_GetUIScaleMultiplier() return scale:GetFloat() end -- EXPERIMENTAL
 
