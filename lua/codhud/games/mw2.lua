@@ -2005,6 +2005,16 @@ local function weaponinfo(...)
 		end
 		return "default"
 	end
+	
+    local barW = CoDHUD_SX(CFG.BAR_W)
+    local barH = CoDHUD_SY(CFG.BAR_H)
+    local barX = ScrW() - CoDHUD_SX(CFG.BAR_X_OFF) - barW
+    local barY = ScrH() - CoDHUD_SY(CFG.BAR_Y_OFF) - barH
+
+    surface.SetMaterial(MAT_BAR)
+    surface.SetDrawColor(255, 255, 255, 125)
+    surface.DrawTexturedRect(barX, barY, barW, barH)
+
 
     -- ==========================================
     -- 1. COMPASS DRAWING
@@ -2111,15 +2121,6 @@ local function weaponinfo(...)
     local primCount = ply:GetAmmoCount(primType)
 	local altAmmoName = game.GetAmmoName(altType)
 	local altCount = ply:GetAmmoCount(altType)
-
-    local barW = CoDHUD_SX(CFG.BAR_W)
-    local barH = CoDHUD_SY(CFG.BAR_H)
-    local barX = ScrW() - CoDHUD_SX(CFG.BAR_X_OFF) - barW
-    local barY = ScrH() - CoDHUD_SY(CFG.BAR_Y_OFF) - barH
-
-    surface.SetMaterial(MAT_BAR)
-    surface.SetDrawColor(255, 255, 255, 125)
-    surface.DrawTexturedRect(barX, barY, barW, barH)
 
 	local reloading = 
 	wep.IsReloading or reloadingM203 -- CW2
