@@ -1955,6 +1955,22 @@ local function weaponinfo(...)
     local barX = ScrW() - CoDHUD_SX(CFG.BAR_X_OFF) - barW
     local barY = ScrH() - CoDHUD_SY(CFG.BAR_Y_OFF) - barH
 
+	local reloading = 
+	wep.IsReloading or reloadingM203 -- CW2
+	or (wep.ARC9 and wep:GetReloading()) -- ARC9
+	or (wep.ArcCW and wep:GetReloading()) -- ArcCW
+	or (wep.IsTFAWeapon and TFA.Enum.ReloadStatus[wep:GetStatus()]) -- TFA
+
+	local glactive = 
+	wep.dt and (wep.dt.AltActive or wep.dt.M203Active) -- CW2
+	or (wep.ARC9 and wep:GetUBGL())
+
+	if glactive then
+		clip = clip2
+		maxClip = maxClip2
+		primCount = altCount
+	end
+
     if clip >= 0 then
         local resCol = (primCount == 0 or primCount < maxClip)
             and Color(255, 120, 120, 255)
@@ -1976,12 +1992,75 @@ local function weaponinfo(...)
         draw.SimpleTextOutlined(name, "WaW_Wep_Name", barX + barW + CoDHUD_SX(CFG.WEP_NAME_X_OFF), barY + CoDHUD_SY(CFG.WEP_NAME_Y_OFF), Color(255, 255, 255, 255 * alpha), 2, 0, outlined and 1.5 or 0, Color(0, 0, 0, 255 * alpha))
     end
 
+	local altCache = (altType == primType or altType == game.GetAmmoID("Grenade") and maxClip2 > 0)
+
+    if altType ~= -1 then
+		if altType ~= primType and altType ~= game.GetAmmoID("Grenade") then
+			local altAdd = altCount + math.max(clip2, 0)
+
+			local alticon = "grenade"
+
+			if altAmmoName == "Buckshot" then alticon = "buckshot" end
+
+			surface.SetMaterial(MAT_ALT[alticon])
+			surface.SetDrawColor(255, 255, 255, 255)
+			surface.DrawTexturedRect(CoDHUD_SX(CFG.ALT_ICON_X), CoDHUD_SY(CFG.ALT_ICON_Y), CoDHUD_S(CFG.ALT_ICON_SIZE), CoDHUD_S(CFG.ALT_ICON_SIZE))
+
+			local altCol = (altCount > 0) and Color(255, 255, 255, 255) or Color(255, 120, 120, 255)
+			DrawSqueezedText(altAdd, "WaW_Ammo_Alt", CoDHUD_SX(CFG.ALT_TEXT_X), CoDHUD_SY(CFG.ALT_TEXT_Y), altCol, CFG.ALT_TEXT_SQ, CFG.ALT_TEXT_SQ1, 2)
+		elseif clip2 >= 0 and maxClip2 > 0 then
+			local perc      = clip2 / maxClip2
+			local isLowClip = (perc <= CFG.STAT_LOW_PERC)
+			local reloadSine = isLowClip and ((math.sin(CurTime() * CFG.BULLET_RELOAD_SPD) + 1) / 2) or 0
+
+			local ammoCfg = GetAmmoConfig(wep, altType ~= game.GetAmmoID("Grenade"))
+			local ammoKey = GetAmmoKey(ammoCfg)
+			local iW      = CoDHUD_S(ammoCfg.w)
+			local iH      = CoDHUD_S(ammoCfg.h)
+			local iGap    = CoDHUD_S(ammoCfg.gap)
+			local iYOff   = CoDHUD_SY(ammoCfg.y_off)
+			local iXStart = CoDHUD_SX(ammoCfg.x_start)
+
+			surface.SetMaterial(MAT_AMMO[ammoKey])
+
+			local isBelt  = (ammoCfg.row_size ~= nil)
+			local rowSize = isBelt and ammoCfg.row_size or math.max(maxClip2, clip2)
+			local rowGap  = isBelt and CoDHUD_S(ammoCfg.row_gap) or 0
+
+			for i = 0, math.max(maxClip2, clip2) - 1 do
+				local isSpent = (i >= clip2)
+				local shade   = isSpent and ammoCfg.dim or 255
+
+				local r, g, b
+				if not isSpent and isLowClip then
+					r = math.floor(Lerp(reloadSine, shade, CFG.BULLET_RELOAD_R))
+					g = math.floor(Lerp(reloadSine, shade, CFG.BULLET_RELOAD_G))
+					b = math.floor(Lerp(reloadSine, shade, CFG.BULLET_RELOAD_B))
+				else
+					r = shade
+					g = shade
+					b = shade
+				end
+
+				surface.SetDrawColor(r, g, b, CFG.BULLET_ALPHA)
+
+				local col = i % rowSize
+				local row = math.floor(i / rowSize)
+
+				local xPos = barX + barW + iXStart - (col * (iW + iGap))
+				local yPos = barY + iYOff + iH * 0.5 + (row * (iH + rowGap))
+
+				surface.DrawTexturedRect(xPos, yPos, iW, iH)
+			end
+		end
+    end
+
     if clip >= 0 and maxClip > 0 then
         local perc      = clip / maxClip
         local isLowClip = (perc <= CFG.STAT_LOW_PERC)
         local reloadSine = isLowClip and ((math.sin(CurTime() * CFG.BULLET_RELOAD_SPD) + 1) / 2) or 0
 
-        local ammoCfg = GetAmmoConfig(wep)
+        local ammoCfg = GetAmmoConfig(wep, glactive)
         local ammoKey = GetAmmoKey(ammoCfg)
         local iW      = CoDHUD_S(ammoCfg.w)
         local iH      = CoDHUD_S(ammoCfg.h)
@@ -2016,88 +2095,10 @@ local function weaponinfo(...)
             local row = math.floor(i / rowSize)
 
             local xPos = barX + barW + iXStart - (col * (iW + iGap))
-            local yPos = barY + iYOff - iH * (maxClip2 > 0 and 0.5 or 0) - (row * (iH + rowGap))
+            local yPos = barY + iYOff - iH * (altCache and 0.5 or 0) - (row * (iH + rowGap))
 
             surface.DrawTexturedRect(xPos, yPos, iW, iH)
         end
-    end
-
-    if clip2 >= 0 and maxClip2 > 0 then
-        local perc      = clip2 / maxClip2
-        local isLowClip = (perc <= CFG.STAT_LOW_PERC)
-        local reloadSine = isLowClip and ((math.sin(CurTime() * CFG.BULLET_RELOAD_SPD) + 1) / 2) or 0
-
-        local ammoCfg = GetAmmoConfig(wep, altType ~= game.GetAmmoID("Grenade"))
-        local ammoKey = GetAmmoKey(ammoCfg)
-        local iW      = CoDHUD_S(ammoCfg.w)
-        local iH      = CoDHUD_S(ammoCfg.h)
-        local iGap    = CoDHUD_S(ammoCfg.gap)
-        local iYOff   = CoDHUD_SY(ammoCfg.y_off)
-        local iXStart = CoDHUD_SX(ammoCfg.x_start)
-
-        surface.SetMaterial(MAT_AMMO[ammoKey])
-
-        local isBelt  = (ammoCfg.row_size ~= nil)
-        local rowSize = isBelt and ammoCfg.row_size or math.max(maxClip2, clip2)
-        local rowGap  = isBelt and CoDHUD_S(ammoCfg.row_gap) or 0
-
-        for i = 0, math.max(maxClip2, clip2) - 1 do
-            local isSpent = (i >= clip2)
-            local shade   = isSpent and ammoCfg.dim or 255
-
-            local r, g, b
-            if not isSpent and isLowClip then
-                r = math.floor(Lerp(reloadSine, shade, CFG.BULLET_RELOAD_R))
-                g = math.floor(Lerp(reloadSine, shade, CFG.BULLET_RELOAD_G))
-                b = math.floor(Lerp(reloadSine, shade, CFG.BULLET_RELOAD_B))
-            else
-                r = shade
-                g = shade
-                b = shade
-            end
-
-            surface.SetDrawColor(r, g, b, CFG.BULLET_ALPHA)
-
-            local col = i % rowSize
-            local row = math.floor(i / rowSize)
-
-            local xPos = barX + barW + iXStart - (col * (iW + iGap))
-            local yPos = barY + iYOff + iH * 0.5 + (row * (iH + rowGap))
-
-            surface.DrawTexturedRect(xPos, yPos, iW, iH)
-        end
-    end
-
-	local reloading = 
-	wep.IsReloading or reloadingM203 -- CW2
-	or (wep.ARC9 and wep:GetReloading()) -- ARC9
-	or (wep.ArcCW and wep:GetReloading()) -- ArcCW
-	or (wep.IsTFAWeapon and TFA.Enum.ReloadStatus[wep:GetStatus()]) -- TFA
-
-	local glactive = 
-	wep.dt and (wep.dt.AltActive or wep.dt.M203Active) -- CW2
-	or (wep.ARC9 and wep:GetUBGL())
-
-	if glactive then
-		clip = clip2
-		maxClip = maxClip2
-	end
-
-	local altAmmoName = game.GetAmmoName(altType)
-	
-    if altType ~= -1 and altType ~= primType and altType ~= game.GetAmmoID("Grenade") then
-		local altAdd = altCount + math.max(clip2, 0)
-
-		local alticon = "grenade"
-
-		if altAmmoName == "Buckshot" then alticon = "buckshot" end
-
-		surface.SetMaterial(MAT_ALT[alticon])
-        surface.SetDrawColor(255, 255, 255, 255)
-        surface.DrawTexturedRect(CoDHUD_SX(CFG.ALT_ICON_X), CoDHUD_SY(CFG.ALT_ICON_Y), CoDHUD_S(CFG.ALT_ICON_SIZE), CoDHUD_S(CFG.ALT_ICON_SIZE))
-
-        local altCol = (altCount > 0) and Color(255, 255, 255, 255) or Color(255, 120, 120, 255)
-        DrawSqueezedText(altAdd, "WaW_Ammo_Alt", CoDHUD_SX(CFG.ALT_TEXT_X), CoDHUD_SY(CFG.ALT_TEXT_Y), altCol, CFG.ALT_TEXT_SQ, CFG.ALT_TEXT_SQ1, 2)
     end
 
     if clip >= 0 and maxClip > 0 and not reloading then
