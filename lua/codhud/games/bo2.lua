@@ -2074,7 +2074,7 @@ local function weaponinfo(...)
     end
 
 	surface.SetFont("BO2_Wep_Name")
-	local name  = string.upper(language.GetPhrase(wep:GetPrintName() or wep:GetClass()))
+	local name  = CoDHUD_UpperText(language.GetPhrase(wep:GetPrintName() or wep:GetClass()))
 	local namew, nameh = surface.GetTextSize(name)
 
 	draw.RoundedBox( 4, ScrW() - CoDHUD_SX(CFG.WEP_NAME_X_OFF) - CoDHUD_S(namew), ScrH() - CoDHUD_SY(CFG.WEP_NAME_Y_OFF), CoDHUD_S(namew) + CoDHUD_S(8), CoDHUD_S(nameh), Color( 255, 255, 255, 100 ) )
