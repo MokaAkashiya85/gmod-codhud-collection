@@ -1930,7 +1930,6 @@ local function weaponinfo(...)
 			local altLen = #tostring(altAdd)
 			local altw, alth = surface.GetTextSize(altAdd)
 			local altPad = (altw + (altLen * CFG.ALT_TEXT_SQ))
-			print(altw)
 
 			surface.SetMaterial(MAT_DPAD_LEFT)
 			surface.SetDrawColor(255, 255, 255)
