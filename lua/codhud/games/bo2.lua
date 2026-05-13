@@ -2048,7 +2048,7 @@ local function weaponinfo(...)
 	local name  = string.upper(language.GetPhrase(wep:GetPrintName() or wep:GetClass()))
 	local namew, nameh = surface.GetTextSize(name)
 
-	draw.RoundedBox( 4, ScrW() - CoDHUD_SX(CFG.WEP_NAME_X_OFF+2) - namew, ScrH() - CoDHUD_SY(CFG.WEP_NAME_Y_OFF), namew + CoDHUD_S(12), nameh, Color( 255, 255, 255, 100 ) )
+	draw.RoundedBox( 4, ScrW() - CoDHUD_SX(CFG.WEP_NAME_X_OFF+2) - namew, ScrH() - CoDHUD_SY(CFG.WEP_NAME_Y_OFF), namew + CoDHUD_S(11), nameh, Color( 255, 255, 255, 100 ) )
 	draw.SimpleTextOutlined(name, "BO2_Wep_Name", ScrW() - CoDHUD_SX(CFG.WEP_NAME_X_OFF), ScrH() - CoDHUD_SY(CFG.WEP_NAME_Y_OFF), Color(0, 0, 0,175), 2, 0, 1, Color(0, 0, 0, 10))
 
 	local altCache = (altType == primType or altType == game.GetAmmoID("Grenade") and maxClip2 > 0)
