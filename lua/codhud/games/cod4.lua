@@ -1937,7 +1937,9 @@ local function weaponinfo(...)
     local maxClip2 = wep:GetMaxClip2()
     local primType = wep:GetPrimaryAmmoType()
     local altType = wep:GetSecondaryAmmoType()
-    local reserve = ply:GetAmmoCount(primType)
+    local primCount = ply:GetAmmoCount(primType)
+	local altAmmoName = game.GetAmmoName(altType)
+	local altCount = ply:GetAmmoCount(altType)
 
     local barW = CoDHUD_SX(CFG.BAR_W)
     local barH = CoDHUD_SY(CFG.BAR_H)
@@ -1945,16 +1947,16 @@ local function weaponinfo(...)
     local barY = ScrH() - CoDHUD_SY(CFG.BAR_Y_OFF) - barH
 
     if clip >= 0 then
-        local resCol = (reserve == 0 or reserve < maxClip)
+        local resCol = (primCount == 0 or primCount < maxClip)
             and Color(255, 120, 120, 255)
             or  Color(255, 255, 255, 255)
 
-        if reserve >= 1000 then
-            DrawSqueezedText(reserve, "CoD4_Res_4D", barX + barW + CoDHUD_SX(CFG.RES4_X), barY + CoDHUD_SY(CFG.RES4_Y), resCol, CoDHUD_S(-5), CoDHUD_S(0), 2)
-        elseif reserve >= 100 then
-            DrawSqueezedText(reserve, "CoD4_Res_3D", barX + barW + CoDHUD_SX(CFG.RES3_X), barY + CoDHUD_SY(CFG.RES3_Y), resCol, CoDHUD_S(-5), CoDHUD_S(-2.5), 2)
+        if primCount >= 1000 then
+            DrawSqueezedText(primCount, "CoD4_Res_4D", barX + barW + CoDHUD_SX(CFG.RES4_X), barY + CoDHUD_SY(CFG.RES4_Y), resCol, CoDHUD_S(-5), CoDHUD_S(0), 2)
+        elseif primCount >= 100 then
+            DrawSqueezedText(primCount, "CoD4_Res_3D", barX + barW + CoDHUD_SX(CFG.RES3_X), barY + CoDHUD_SY(CFG.RES3_Y), resCol, CoDHUD_S(-5), CoDHUD_S(-2.5), 2)
         else
-            DrawSqueezedText(reserve, "CoD4_Res_3D", barX + barW + CoDHUD_SX(CFG.RES_X), barY + CoDHUD_SY(CFG.RES_Y), resCol, CoDHUD_S(0), CoDHUD_S(0), 2)
+            DrawSqueezedText(primCount, "CoD4_Res_3D", barX + barW + CoDHUD_SX(CFG.RES_X), barY + CoDHUD_SY(CFG.RES_Y), resCol, CoDHUD_S(0), CoDHUD_S(0), 2)
         end
     end
 
@@ -2075,7 +2077,7 @@ local function weaponinfo(...)
 	local altAmmoName = game.GetAmmoName(altType)
 	
     if altType ~= -1 and altType ~= primType and altType ~= game.GetAmmoID("Grenade") then
-        local altCount = ply:GetAmmoCount(altType)
+		local altAdd = altCount + math.max(clip2, 0)
 
 		local alticon = "grenade"
 
@@ -2086,7 +2088,7 @@ local function weaponinfo(...)
         surface.DrawTexturedRect(CoDHUD_SX(CFG.ALT_ICON_X), CoDHUD_SY(CFG.ALT_ICON_Y), CoDHUD_S(CFG.ALT_ICON_SIZE), CoDHUD_S(CFG.ALT_ICON_SIZE))
 
         local altCol = (altCount > 0) and Color(255, 255, 255, 255) or Color(255, 120, 120, 255)
-        DrawSqueezedText(altCount, "CoD4_Ammo_Alt", CoDHUD_SX(CFG.ALT_TEXT_X), CoDHUD_SY(CFG.ALT_TEXT_Y), altCol, CFG.ALT_TEXT_SQ, CFG.ALT_TEXT_SQ1, 2)
+        DrawSqueezedText(altAdd, "CoD4_Ammo_Alt", CoDHUD_SX(CFG.ALT_TEXT_X), CoDHUD_SY(CFG.ALT_TEXT_Y), altCol, CFG.ALT_TEXT_SQ, CFG.ALT_TEXT_SQ1, 2)
     end
 
     if clip >= 0 and maxClip > 0 and not reloading then
@@ -2097,14 +2099,14 @@ local function weaponinfo(...)
         local isLowAmmo = false
         local isReloadText  = false
 
-        if clip == 0 and reserve == 0 then
+        if clip == 0 and primCount == 0 then
             statText = "#MW2_WEAPON_NO_AMMO"
             isNoAmmo = true
-        elseif perc <= CFG.STAT_LOW_PERC and reserve == 0 then
+        elseif perc <= CFG.STAT_LOW_PERC and primCount == 0 then
             statText = "#MW2_PLATFORM_LOW_AMMO_NO_RELOAD"
             statCol  = Color(255, 230, 0)
             isLowAmmo = true
-        elseif perc <= CFG.STAT_LOW_PERC and reserve > 0 then
+        elseif perc <= CFG.STAT_LOW_PERC and primCount > 0 then
             statText = "#MW2_PLATFORM_RELOAD"
             isReloadText = true
         end

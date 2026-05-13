@@ -2020,7 +2020,7 @@ local function weaponinfo(...)
 	if glactive then
 		clip = clip2
 		maxClip = maxClip2
-		primCount = altCount - clip
+		primCount = altCount
 	end
 
 	surface.SetFont("BO2_Res")
@@ -2046,7 +2046,7 @@ local function weaponinfo(...)
 	local name  = string.upper(language.GetPhrase(wep:GetPrintName() or wep:GetClass()))
 	local namew, nameh = surface.GetTextSize(name)
 
-	draw.RoundedBox( 4, ScrW() - CoDHUD_SX(CFG.WEP_NAME_X_OFF) - CoDHUD_S(namew), ScrH() - CoDHUD_SY(CFG.WEP_NAME_Y_OFF), CoDHUD_S(namew) + CoDHUD_S(8), CoDHUD_S(nameh), Color( 255, 255, 255, 100 ) )
+	draw.RoundedBox( 4, ScrW() - CoDHUD_SX(CFG.WEP_NAME_X_OFF) - namew, ScrH() - CoDHUD_SY(CFG.WEP_NAME_Y_OFF), namew + CoDHUD_S(8), nameh, Color( 255, 255, 255, 100 ) )
 	draw.SimpleTextOutlined(name, "BO2_Wep_Name", ScrW() - CoDHUD_SX(CFG.WEP_NAME_X_OFF), ScrH() - CoDHUD_SY(CFG.WEP_NAME_Y_OFF), Color(0, 0, 0,175), 2, 0, 1, Color(0, 0, 0, 10))
 
 	local altCache = (altType == primType or altType == game.GetAmmoID("Grenade") and maxClip2 > 0)
@@ -2054,8 +2054,9 @@ local function weaponinfo(...)
     if altType ~= -1 then
 		if altType ~= primType and altType ~= game.GetAmmoID("Grenade") then
 			surface.SetFont("BO2_Ammo_Alt")
-			local altLen = #tostring(altCount)
-			local altw, alth = surface.GetTextSize(altCount)
+			local altAdd = altCount+math.max(clip2, 0)
+			local altLen = #tostring(altAdd)
+			local altw, alth = surface.GetTextSize(altAdd)
 			local altPad = (altw + (altLen * CFG.ALT_TEXT_SQ))
 
 			local alticon = "grenade"
@@ -2067,9 +2068,9 @@ local function weaponinfo(...)
 
 			local altCol = (altCount > 0) and Color(255, 255, 255, 255) or Color(255, 120, 120, 255)
 			
-			draw.RoundedBox( 4, ScrW() -  CoDHUD_SX(CFG.ALT_TEXT_X), ScrH() - CoDHUD_SY(CFG.ALT_TEXT_Y), CoDHUD_S(8) + altPad, CoDHUD_S(alth), Color( 0, 0, 0, 200 ) )
+			draw.RoundedBox( 4, ScrW() -  CoDHUD_SX(CFG.ALT_TEXT_X+2) , ScrH() - CoDHUD_SY(CFG.ALT_TEXT_Y), CoDHUD_S(10) + altPad, alth, Color( 0, 0, 0, 200 ) )
 			
-			DrawSqueezedText(altCount, "BO2_Ammo_Alt", ScrW() -  CoDHUD_SX(CFG.ALT_TEXT_X), ScrH() - CoDHUD_SY(CFG.ALT_TEXT_Y), altCol, CFG.ALT_TEXT_SQ, CFG.ALT_TEXT_SQ, 2, CoDHUD_S(999))
+			DrawSqueezedText(altAdd, "BO2_Ammo_Alt", ScrW() -  CoDHUD_SX(CFG.ALT_TEXT_X), ScrH() - CoDHUD_SY(CFG.ALT_TEXT_Y), altCol, CFG.ALT_TEXT_SQ, CFG.ALT_TEXT_SQ, 2, 0)
 		elseif maxClip2 > 0 and clip2 >= 0 then
 			local perc      = clip2 / maxClip2
 			local isLowClip = (perc <= CFG.STAT_LOW_PERC)

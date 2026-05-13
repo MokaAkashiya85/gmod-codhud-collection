@@ -1926,9 +1926,11 @@ local function weaponinfo(...)
     if altType ~= -1 then
 		if altType ~= primType and altType ~= game.GetAmmoID("Grenade") then
 			surface.SetFont("BO1_Ammo_Alt")
-			local altLen = #tostring(altCount)
-			local altw, alth = surface.GetTextSize(altCount)
+			local altAdd = altCount+math.max(clip2, 0)
+			local altLen = #tostring(altAdd)
+			local altw, alth = surface.GetTextSize(altAdd)
 			local altPad = (altw + (altLen * CFG.ALT_TEXT_SQ))
+			print(altw)
 
 			surface.SetMaterial(MAT_DPAD_LEFT)
 			surface.SetDrawColor(255, 255, 255)
@@ -1946,7 +1948,7 @@ local function weaponinfo(...)
 			
 			draw.RoundedBox( 4, ScrW() -  CoDHUD_SX(CFG.ALT_TEXT_X+4) - altPad * 0.5 , ScrH() - CoDHUD_SY(CFG.ALT_TEXT_Y), CoDHUD_S(8) + altPad, CoDHUD_S(alth), Color( 0, 0, 0, 200 ) )
 			
-			DrawSqueezedText(altCount, "BO1_Ammo_Alt", ScrW() -  CoDHUD_SX(CFG.ALT_TEXT_X), ScrH() - CoDHUD_SY(CFG.ALT_TEXT_Y), altCol, CFG.ALT_TEXT_SQ, CFG.ALT_TEXT_SQ, 1, CoDHUD_S(999))
+			DrawSqueezedText(altAdd, "BO1_Ammo_Alt", ScrW() -  CoDHUD_SX(CFG.ALT_TEXT_X), ScrH() - CoDHUD_SY(CFG.ALT_TEXT_Y), altCol, CFG.ALT_TEXT_SQ, CFG.ALT_TEXT_SQ, 1, 0)
 		elseif maxClip2 > 0 and clip2 >= 0 then
 			local perc      = clip2 / maxClip2
 			local isLowClip = (perc <= CFG.STAT_LOW_PERC)
