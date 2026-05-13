@@ -7,6 +7,8 @@ CreateConVar("codhud_friendly_fire", "0", {FCVAR_REPLICATED, FCVAR_ARCHIVE, FCVA
 
 if SERVER then
     hook.Add("PlayerShouldTakeDamage", "CoDHUD_FactionFriendlyFire", function(victim, attacker)
+		if CoDHUD_ActiveGamemode == "dm" then return end
+		
         if GetConVar("codhud_friendly_fire"):GetBool() then return end
         if not IsValid(attacker) or not attacker:IsPlayer() then return end
         if victim == attacker then return end

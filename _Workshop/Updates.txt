@@ -34,3 +34,8 @@
 - Fixed that the score check only checked for individual player's kills rather than the whole faction.
 - Fixed inconsistency regarding faction auto-join when players join the server.
 - CoD4, WaW HUDs: Fixed that the end-of-round match bonus was too high.
+
+[ Update 8 ]
+- Added Black Ops II HUD
+
+- Fixed significant performance issues when using GMinimap

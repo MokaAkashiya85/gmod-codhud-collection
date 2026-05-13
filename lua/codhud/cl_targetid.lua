@@ -27,6 +27,22 @@ if CLIENT then
     local deathMarkers = {} 
     local playerAliveState = {}
 
+	local function CoDHUD_IsFriendly(lp, ent)
+		local gm = CoDHUD_ActiveGamemodeCL or "war"
+
+		-- FFA
+		if gm == "dm" then
+			if ent == lp then return true end
+			return false
+		end
+
+		-- TDM
+		local myFaction = lp:GetNW2String("CoDHUD_Faction", "rangers")
+		local entFaction = ent:GetNW2String("CoDHUD_Faction", "none")
+
+		return (entFaction ~= "none" and entFaction == myFaction)
+	end
+
     hook.Add("HUDDrawTargetID", "MW2_SuppressDefaultHealth", function() return false end)
     local hide = { ["CHudTargetID"] = true, ["CHudSecondaryWeaponAmmo"] = true }
     hook.Add("HUDShouldDraw", "MW2_DisableGmodHUDParts", function(name) if hide[name] then return false end end)
@@ -70,7 +86,7 @@ if CLIENT then
         local screenCenter = Vector(scrW / 2, scrH / 2, 0)
 
         -- Handle Death Icons
-        if GetConVar("codhud_enable_deathicon"):GetBool() and not GetConVar("codhud_quickdisable_hud"):GetBool() then
+        if CoDHUD_ActiveGamemodeCL ~= "dm" and GetConVar("codhud_enable_deathicon"):GetBool() and not GetConVar("codhud_quickdisable_hud"):GetBool() then
             for i = #deathMarkers, 1, -1 do
                 local m = deathMarkers[i]
                 local elapsed = CurTime() - m.time
@@ -138,9 +154,8 @@ if CLIENT then
 
             if targetAlphas[entID] > 0 then
                 local alpha = targetAlphas[entID]
-                local targetFaction = ent:GetNW2String("CoDHUD_Faction", "none")
-                local isFriendly = (targetFaction != "none" and targetFaction == myFaction)
-                local factionColor = isFriendly and FRIENDLY_COLOR or ENEMY_COLOR
+                local isFriendly = CoDHUD_IsFriendly(lp, ent)
+				local factionColor = isFriendly and FRIENDLY_COLOR or ENEMY_COLOR
                 
                 local displayName = ""
                 if ent:IsPlayer() then

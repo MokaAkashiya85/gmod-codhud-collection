@@ -13,6 +13,14 @@ CreateConVar( "codhud_autobalance_on_roundstart", "0", { FCVAR_ARCHIVE, FCVAR_NO
 CoDHUD_RoundStarting = false
 CoDHUD_RoundStartTimer = nil
 
+CoDHUD_ActiveGamemode = "dm"
+
+-- cvars.AddChangeCallback("codhud_selected_gamemode", function()
+    -- if CoDHUD_RoundStarting or CoDHUD_RoundEnding then
+        -- RunConsoleCommand("codhud_selected_gamemode", CoDHUD_ActiveGamemode or "war")
+    -- end
+-- end)
+
 net.Receive("CoDHUD_SetGamemode", function(len, ply)
     if not IsValid(ply) or not ply:IsAdmin() then return end
 
@@ -34,7 +42,13 @@ net.Receive("CoDHUD_StartRound", function(len, ply)
 
 	if CoDHUD_RoundEnding then return end
 
-    local gamemode = GetConVar("codhud_selected_gamemode"):GetString()
+    CoDHUD_ActiveGamemode = GetConVar("codhud_selected_gamemode"):GetString()
+
+	if CoDHUD_ActiveGamemode ~= "war" and CoDHUD_ActiveGamemode ~= "dm" then
+		CoDHUD_ActiveGamemode = "war"
+	end
+
+	local gamemode = CoDHUD_ActiveGamemode
     local matchtimer = GetConVar("codhud_matchstart_timer"):GetInt()
     local maxtimer = GetConVar("codhud_time_limit"):GetFloat()
 

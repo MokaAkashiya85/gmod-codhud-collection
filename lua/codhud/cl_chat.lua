@@ -73,6 +73,9 @@ hook.Add("PlayerBindPress", "CoDHUD_Chat_BindPress", function(ply, bind, pressed
 	if (not GetConVar("codhud_enable_chat"):GetBool()) or GetConVar("codhud_quickdisable_hud"):GetBool() then return end
     if not pressed then return end
     if bind == "messagemode" then OpenCoDHUDChat(false) return true
+	
+	elseif CoDHUD_ActiveGamemodeCL == "dm" then return
+	
     elseif bind == "messagemode2" then OpenCoDHUDChat(true) return true end
 end)
 

@@ -245,6 +245,8 @@ function CoDHUD.Factions.BuildFactionPool(factionTable)
     if limit <= 0 or limit >= #all then
         return all -- no restriction
     end
+	
+	if CoDHUD_ActiveGamemode == "dm" then return all end
 
     for i = 1, limit do
         table.insert(pool, all[i])
@@ -463,7 +465,7 @@ hook.Add( "player_activate", "CoDHUD_JoinRoundSync", function(data)
             return
         end
 
-        local gamemode = GetConVar("codhud_selected_gamemode"):GetString()
+        local gamemode = CoDHUD_ActiveGamemode or "war"
         local maxtimer = GetConVar("codhud_time_limit"):GetFloat()
 
         local remaining = 0
@@ -506,6 +508,7 @@ hook.Add("PlayerDisconnected", "CoDHUD_ResetLateJoinFlag", function(ply)
 end)
 
 hook.Add("PlayerSelectSpawn", "CoDHUD_TwoFactionSpawns", function(ply)
+	if CoDHUD_ActiveGamemode == "dm" then return end
     if not CoDHUD.Factions.IsTwoFactionMode() then return end
 
     local map = CoDHUD.Factions.GetTwoFactionMap()

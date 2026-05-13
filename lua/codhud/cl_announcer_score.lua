@@ -39,6 +39,46 @@ local function CoDHUD_GetFactionScores(ply)
     return myScore, bestEnemyScore, lpFaction
 end
 
+local function CoDHUD_GetDMPlacements()
+    local players = {}
+
+    for _, p in ipairs(player.GetAll()) do
+        if IsValid(p) then
+            table.insert(players, {
+                ply = p,
+                score = math.max(0, p:Frags())
+            })
+        end
+    end
+
+    table.sort(players, function(a, b)
+        return a.score > b.score
+    end)
+
+    return players
+end
+
+local function CoDHUD_GetDMPlayerState(ply)
+    local placements = CoDHUD_GetDMPlacements()
+
+    local myPlace = nil
+    local myScore = math.max(0, ply:Frags())
+    local firstScore = 0
+
+    if placements[1] then
+        firstScore = placements[1].score or 0
+    end
+
+    for k, v in ipairs(placements) do
+        if v.ply == ply then
+            myPlace = k
+            break
+        end
+    end
+
+    return myPlace, myScore, firstScore
+end
+
 hook.Add("Think", "CoDHUD_Announcer_Score_Think", function()
     local ply = LocalPlayer()
     if not IsValid(ply) then return end
@@ -47,6 +87,7 @@ hook.Add("Think", "CoDHUD_Announcer_Score_Think", function()
 
 	local voicefile = CoDHUD[hudType].VoiceCallouts
 	if not voicefile then return end
+	local isDM = (CoDHUD_ActiveGamemodeCL == "dm")
 
     -- 1. Retrieve current faction and voice tag
     local currentFaction = ply:GetNW2String("CoDHUD_Faction", "")
@@ -57,7 +98,20 @@ hook.Add("Think", "CoDHUD_Announcer_Score_Think", function()
     if not CoDHUD.Factions[CoDHUD_GetHUDType()] or not CoDHUD.Factions[CoDHUD_GetHUDType()][currentFaction] then return end
 
     -- 2. Calculate Scores
-	local myScore, bestEnemyScore = CoDHUD_GetFactionScores(ply)
+	local myScore
+	local bestEnemyScore
+
+	if isDM then
+		local myPlace, score, firstScore = CoDHUD_GetDMPlayerState(ply)
+
+		myScore = score
+		bestEnemyScore = firstScore
+
+		-- DM does not use team-based announcer states
+		if myPlace == nil then return end
+	else
+		myScore, bestEnemyScore = CoDHUD_GetFactionScores(ply)
+	end
 
     -- 3. Reset logic for new rounds
     if myScore == 0 and bestEnemyScore == 0 then
@@ -135,6 +189,7 @@ hook.Add("Think", "CoDHUD_Announcer_Time_Think", function()
 
 	local voicefile = CoDHUD[hudType].VoiceCallouts
 	if not voicefile then return end
+	local isDM = (CoDHUD_ActiveGamemodeCL == "dm")
 
     -- 1. Retrieve current faction and voice tag
     local currentFaction = ply:GetNW2String("CoDHUD_Faction", "")
@@ -159,38 +214,46 @@ hook.Add("Think", "CoDHUD_Announcer_Time_Think", function()
 
 		timer.Remove("CoDHUD_SuspenseTimer")
 
-		local myScore, bestEnemyScore = CoDHUD_GetFactionScores(ply)
-
-		for _, p in ipairs(player.GetAll()) do
-			if p == LocalPlayer() then continue end
-			local score = math.max(0, p:Frags())
-			if score > bestEnemyScore then
-				bestEnemyScore = score
-			end
-		end
-
-		local sound = nil
-
 		if not MusicTriggered then
-			if myScore > bestEnemyScore then
-				-- winning
-				sound = CoDHUD_GetAnnouncerSound(voicefile.winningfight)
-				if voicefile.winningmusic then
-					MusicTriggered = true
-					CoDHUD_PlayAnnouncerSound(voicefile.winningmusic, true)
+			if isDM then
+				local myPlace = select(1, CoDHUD_GetDMPlayerState(ply))
+
+				if myPlace and myPlace <= 3 then
+					if voicefile.winningmusic then
+						MusicTriggered = true
+						CoDHUD_PlayAnnouncerSound(voicefile.winningmusic, true)
+					end
+				else
+					if voicefile.losingmusic then
+						MusicTriggered = true
+						CoDHUD_PlayAnnouncerSound(voicefile.losingmusic, true)
+					end
 				end
 			else
-				-- losing (includes tie fallback)
-				sound = CoDHUD_GetAnnouncerSound(voicefile.losingfight)
-				if voicefile.losingmusic then
-					MusicTriggered = true
-					CoDHUD_PlayAnnouncerSound(voicefile.losingmusic, true)
+				local myScore, bestEnemyScore = CoDHUD_GetFactionScores(ply)
+
+				local sound = nil
+
+				if myScore > bestEnemyScore then
+					sound = CoDHUD_GetAnnouncerSound(voicefile.winningfight)
+
+					if voicefile.winningmusic then
+						MusicTriggered = true
+						CoDHUD_PlayAnnouncerSound(voicefile.winningmusic, true)
+					end
+				else
+					sound = CoDHUD_GetAnnouncerSound(voicefile.losingfight)
+
+					if voicefile.losingmusic then
+						MusicTriggered = true
+						CoDHUD_PlayAnnouncerSound(voicefile.losingmusic, true)
+					end
+				end
+
+				if sound then
+					CoDHUD_PlayAnnouncerSound(sound, false)
 				end
 			end
-		end
-
-		if sound then
-			CoDHUD_PlayAnnouncerSound(sound, false)
 		end
 	end
 	

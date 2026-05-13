@@ -355,3 +355,16 @@ InitiateCoDFonts()
 hook.Add("OnScreenSizeChanged", "CoDHUD_ReinitChallengeFonts", function()
     InitiateCoDFonts()
 end)
+
+function CoDHUD_GetFactionColor(ent)
+    if not IsValid(ent) then return Color(255,255,255) end
+    local faction = ent:GetNW2String("CoDHUD_Faction", "rangers")
+
+	if CoDHUD_ActiveGamemodeCL == "dm" then return Color(255,255,255) end
+
+    if CoDHUD.Factions[CoDHUD_GetHUDType()][faction] and CoDHUD.Factions[CoDHUD_GetHUDType()][faction].killfeedcol then 
+		return CoDHUD.Factions[CoDHUD_GetHUDType()][faction].killfeedcol
+	end
+
+    return Color(255,255,255)
+end

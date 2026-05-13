@@ -43,7 +43,7 @@ local rs_dig_scale = 1.0
 local rs_bw         = 0
 local rs_boost_done = false
 local rs_locked_ang = nil
-local rs_gamemode	= "war"
+CoDHUD_ActiveGamemodeCL	= "war"
 
 local rs_header = nil
 local rs_objective = nil
@@ -111,7 +111,7 @@ local function CoDHUD_RS_Start(gamemode, timestart)
     rs_seq_start   = CurTime()
     rs_phase_start = CurTime()
     rs_boost_done  = false
-	rs_gamemode    = gamemode
+	CoDHUD_ActiveGamemodeCL    = gamemode
 
     -- Lock and explicitly reset angle pitch/roll upon respawn
     rs_locked_ang = lp:EyeAngles()
@@ -188,7 +188,7 @@ hook.Add("Think", "CoDHUD_RS_Think", function()
         if not rs_boost_done then
             rs_boost_done = true
 			timer.Simple( 0.1, function()
-				local sound = CoDHUD_GetAnnouncerSound({ CoDHUD.Gamemodes[CoDHUD_GetHUDType()].Boosts[rs_gamemode] or CoDHUD.Gamemodes[CoDHUD_GetHUDType()].Boosts["war"] })
+				local sound = CoDHUD_GetAnnouncerSound({ CoDHUD.Gamemodes[CoDHUD_GetHUDType()].Boosts[CoDHUD_ActiveGamemodeCL] or CoDHUD.Gamemodes[CoDHUD_GetHUDType()].Boosts["war"] })
 				if sound then CoDHUD_PlayAnnouncerSound(sound, false) end
 			end)
         end
@@ -198,7 +198,7 @@ hook.Add("Think", "CoDHUD_RS_Think", function()
             rs_phase_start = now
 
 			if CoDHUD[CoDHUD_GetHUDType()] and CoDHUD[CoDHUD_GetHUDType()].ChallengeComplete then
-				CoDHUD[CoDHUD_GetHUDType()].RoundStartObjective(CoDHUD.Gamemodes[CoDHUD_GetHUDType()].Hints[rs_gamemode] or CoDHUD.Gamemodes[CoDHUD_GetHUDType()].Hints["war"])
+				CoDHUD[CoDHUD_GetHUDType()].RoundStartObjective(CoDHUD.Gamemodes[CoDHUD_GetHUDType()].Hints[CoDHUD_ActiveGamemodeCL] or CoDHUD.Gamemodes[CoDHUD_GetHUDType()].Hints["war"])
 			end
         end
 
@@ -242,24 +242,6 @@ hook.Add("RenderScreenspaceEffects", "CoDHUD_RS_BW", function()
         ["$pp_colour_mulb"]       = 0,
     })
 end)
-
--- hook.Add("CreateMove", "CoDHUD_RS_BlockInput", function(cmd)
-    -- if not rs_movement_locked then return end
-    -- cmd:ClearMovement()
-	
-    -- cmd:RemoveKey(IN_ATTACK)
-	-- cmd:RemoveKey(IN_ATTACK2)
-	-- cmd:RemoveKey(IN_RELOAD)
-	-- cmd:RemoveKey(IN_USE)
-	-- cmd:RemoveKey(IN_JUMP)
-	-- cmd:RemoveKey(IN_DUCK)
-	-- cmd:RemoveKey(IN_SPEED)
-	-- cmd:RemoveKey(IN_WALK)
-	
-    -- if rs_locked_ang then
-        -- cmd:SetViewAngles(rs_locked_ang)
-    -- end
--- end)
 
 net.Receive("CoDHUD_RoundStart", function()
     local gamemode = net.ReadString()

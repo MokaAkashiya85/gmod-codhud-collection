@@ -520,7 +520,11 @@ local CoDHUD_SETTINGS = {
 					{ name = "#CoDHUD.RoundStart", adminOnly = true, controls = {
 
 							{ type = "combobox", label = "#CoDHUD.RoundStart.Gamemode", tooltip = "CoDHUD.RoundStart.Info",
-								choices = function() return CoDHUD.Gamemodes[CoDHUD_GetHUDType()] or {} end,
+								-- choices = function() return CoDHUD.Gamemodes[CoDHUD_GetHUDType()] or {} end,
+								choices = {
+									{"#MW2_MPUI_WAR", "war"},
+									{"#MW2_MPUI_DEATHMATCH", "dm"},
+								},
 								getCurrent = function() return GetConVar("codhud_selected_gamemode"):GetString() end,
 								onSelect = function(_, data)
 									net.Start("CoDHUD_SetGamemode")

@@ -19,96 +19,109 @@ local function GetScorebarData()
     local str = CoDHUD[CoDHUD_GetHUDType()].TextStrings
     local data = {}
 
-    -- RAW TIME (use this for logic)
+    local gm = CoDHUD_ActiveGamemodeCL or "war"
+    local isDM = (gm == "dm")
+
+    -- RAW TIME
     local remaining = math.max(0, CoDHUD_RoundEndTime - CurTime())
-    data.timeRaw = remaining -- precise float for comparisons
-    data.timeAlive = remaining > 0 -- simple boolean check
+    data.timeRaw = remaining
+    data.timeAlive = remaining > 0
 
-    -- DISPLAY TIME
-	local mins = math.floor(remaining / 60)
-	local secs = math.floor(remaining % 60)
+    -- TIME STRING
+    local mins = math.floor(remaining / 60)
+    local secs = math.floor(remaining % 60)
+    local baseTime = string.format("%d:%02d", mins, secs)
 
-	-- base string (always mm:ss)
-	local baseTime = string.format("%d:%02d", mins, secs)
+    if remaining < 30 and remaining > 0 then
+        local tenths = math.floor((remaining % 1) * 10)
+        data.timeStr = string.format("%s.%d", baseTime, tenths)
+    else
+        data.timeStr = baseTime
+    end
 
-	-- add tenths when under 30 seconds
-	if remaining < 30 and remaining > 0 then
-		local tenths = math.floor((remaining % 1) * 10)
-		data.timeStr = string.format("%s.%d", baseTime, tenths)
-	else
-		data.timeStr = baseTime
-	end
+    data.mins = mins
 
-	data.mins = mins
+    if isDM then -- FFA
+        local players = {}
 
-	-- BUILD FACTION SCORE TABLE
-	local factionScores = {}
+        for _, p in ipairs(player.GetAll()) do
+            if IsValid(p) then
+                table.insert(players, { ply = p, score = math.max(0, p:Frags()) })
+            end
+        end
 
-	for _, p in ipairs(player.GetAll()) do
-		local f = p:GetNW2String("CoDHUD_Faction", "")
-		if f ~= "" then
-			factionScores[f] = (factionScores[f] or 0) + math.max(0, p:Frags())
-		end
-	end
+        table.sort(players, function(a, b)
+            return a.score > b.score
+        end)
 
-	-- CONVERT TO SORTABLE ARRAY
-	local sortedFactions = {}
-	for faction, score in pairs(factionScores) do
-		table.insert(sortedFactions, {
-			faction = faction,
-			score = score
-		})
-	end
+        data.dmLeaderboard = players
 
-	-- SORT DESCENDING (highest score first)
-	table.sort(sortedFactions, function(a, b)
-		return a.score > b.score
-	end)
+        local myScore = math.max(0, ply:Frags())
+        data.clientScore = myScore
 
-	-- FIND MY FACTION INDEX
-	local myFaction = ply:GetNW2String("CoDHUD_Faction", "")
-	local myIndex = nil
+        local myIndex = 1
+        for i, v in ipairs(players) do
+            if v.ply == ply then
+                myIndex = i
+                break
+            end
+        end
 
-	for i, v in ipairs(sortedFactions) do
-		if v.faction == myFaction then
-			myIndex = i
-			break
-		end
-	end
+        data.dmPlacement = myIndex
 
-	-- GET MY SCORE
-	data.clientScore = factionScores[myFaction] or 0
+        local enemy = players[myIndex + 1]
+        data.enemyScore = enemy and enemy.score or 0
+        data.enemyPlayer = enemy and enemy.ply or nil
+    else -- TDM
+        local factionScores = {}
 
-	-- GET NEXT FACTION BELOW ME (2nd place relative)
-	local enemyFactionData = nil
+        for _, p in ipairs(player.GetAll()) do
+            local f = p:GetNW2String("CoDHUD_Faction", "")
+            if f ~= "" then
+                factionScores[f] = (factionScores[f] or 0) + math.max(0, p:Frags())
+            end
+        end
 
-	for _, v in ipairs(sortedFactions) do
-		if v.faction ~= myFaction then
-			enemyFactionData = v
-			break
-		end
-	end
+        local sortedFactions = {}
+        for faction, score in pairs(factionScores) do
+            table.insert(sortedFactions, { faction = faction, score = score })
+        end
 
-	data.enemyScore = enemyFactionData and enemyFactionData.score or 0
-	data.enemyFaction = enemyFactionData and enemyFactionData.faction or nil
+        table.sort(sortedFactions, function(a, b)
+            return a.score > b.score
+        end)
 
-    -- STATUS COLORS
+        local myFaction = ply:GetNW2String("CoDHUD_Faction", "")
+        data.clientScore = factionScores[myFaction] or 0
+
+        local enemyFactionData = nil
+        for _, v in ipairs(sortedFactions) do
+            if v.faction ~= myFaction then
+                enemyFactionData = v
+                break
+            end
+        end
+
+        data.enemyScore = enemyFactionData and enemyFactionData.score or 0
+        data.enemyFaction = enemyFactionData and enemyFactionData.faction or nil
+    end
+
+    -- STATUS (shared)
     local COL_WINNING = Color(110, 220, 120, 255)
     local COL_LOSING  = Color(215, 110, 120, 255)
     local COL_TIE     = Color(230, 230, 110, 255)
 
     data.statusText = str.scorebar.tied or "MW2_MPUI_TIED_CAPS"
     data.statusCol  = COL_TIE
-	data.statusLosing = false
+    data.statusLosing = false
 
     if data.clientScore > data.enemyScore then
         data.statusText = str.scorebar.winning or "MW2_MPUI_WINNING_CAPS"
         data.statusCol  = COL_WINNING
-		data.statusLosing = false
     elseif data.clientScore < data.enemyScore then
         data.statusText = str.scorebar.losing or "MW2_MPUI_LOSING_CAPS"
         data.statusCol  = COL_LOSING
-		data.statusLosing = true
+        data.statusLosing = true
     end
 
     return data

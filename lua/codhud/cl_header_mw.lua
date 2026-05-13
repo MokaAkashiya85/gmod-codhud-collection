@@ -95,6 +95,7 @@ function CoDHUD_Header_MW:New(cfg)
 	o.iconFadeOutSpeed = cfg.iconFadeOutSpeed or 400
 	
 	o.teams = cfg.teams or nil
+	o.dmscore = cfg.dmscore or nil
 	o.scoreY = cfg.scoreY or (cfg.y + 100)
 
 	o.challengeDesc   = cfg.challengeDesc or nil
@@ -1026,6 +1027,69 @@ function CoDHUD_Header_MW:Draw()
 			if fd then
 				DrawCODText( tostring(score), tostring(score), self.fonts.pri, self.fonts.sec, self.fonts.shd, x, self.scoreY, GetSafeColor(fd.glow) )
 			end
+		end
+	end
+
+	-- DM SCORE
+	if self.dmscore then
+		local lp = LocalPlayer()
+
+		local size = self.iconSize or 128
+		local gap  = self.iconGap or 60
+
+		-- normalize input (supports either table or single entry)
+		local ordered = {}
+
+		if istable(self.dmscore) then
+			for _, p in ipairs(self.dmscore) do
+				table.insert(ordered, p)
+			end
+		else
+			ordered = { self.dmscore }
+		end
+
+		-- sort by score descending
+		table.sort(ordered, function(a, b)
+			return (a.score or 0) > (b.score or 0)
+		end)
+
+		local count = #ordered
+		if count <= 0 then return end
+
+		local step = size + gap
+
+		-- mild compression for crowded DM headers
+		local compression = 1
+		if count == 3 then
+			compression = 0.9
+		elseif count >= 4 then
+			compression = 0.8
+		end
+
+		step = step * compression
+
+		local totalW = (count - 1) * step
+
+		for i, p in ipairs(ordered) do
+			local x = self.x + ((i - 1) * step - totalW / 2)
+			local y = self.iconY or self.y
+
+			-- optional icon (player avatar / faction icon fallback)
+			if p.icon then
+				surface.SetMaterial(p.icon)
+				surface.SetDrawColor(255, 255, 255, self.iconAlpha or 255)
+				surface.DrawTexturedRect(x - size/2, y, size, size)
+			end
+
+			-- name (optional)
+			if p.name then
+				draw.SimpleText( p.name, self.fonts.pri, x, self.scoreY, Color(255,255,255,self.subAlpha or 255), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )
+			end
+
+			-- score
+			local score = p.score or 0
+
+			DrawCODText( tostring(score), tostring(score), self.fonts.pri, self.fonts.sec, self.fonts.shd, x, self.scoreY + CoDHUD_S(28), Color(255,255,255,self.iconAlpha or 255), "center" )
 		end
 	end
 

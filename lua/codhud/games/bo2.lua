@@ -163,17 +163,6 @@ CoDHUD[hudtype].Timer = {
 	}
 }
 
-local function GetFactionColor(ent)
-    if not IsValid(ent) then return Color(255,255,255) end
-    local faction = ent:GetNW2String("CoDHUD_Faction", "rangers")
-
-    if CoDHUD.Factions[hudtype][faction] and CoDHUD.Factions[hudtype][faction].killfeedcol then 
-		return CoDHUD.Factions[hudtype][faction].killfeedcol
-	end
-
-    return Color(255,255,255)
-end
-
 -- [[ GAMEMODES ]]
 CoDHUD.Gamemodes[hudtype] = {
 	{ "#MW2_MPUI_WAR", "war" },
@@ -434,6 +423,7 @@ local function re_teams( ... )
     local ws_limit = select(3, ...)
     local re_result_glow = select(4, ...)
     local CFG = select(5, ...)
+    local dmScore = select(6, ...)
 
     local multiplier = 1
 
@@ -450,6 +440,7 @@ local function re_teams( ... )
     CoDHUD_HeaderQueue.Push({
 		type = "bo",
         teams = scaledTeams, -- use scaled version
+		dmscore = dmScore,
 		writeSounds = {""},
 		writeSpeed = 8,
         x = CoDHUD_SX(960),
@@ -798,8 +789,8 @@ local function killfeed( ... )
 		local attackerEnt = data.attackerEnt
 		local victimEnt = data.victimEnt
 
-		local aColBase = GetFactionColor(attackerEnt)
-		local vColBase = GetFactionColor(victimEnt)
+		local aColBase = CoDHUD_GetFactionColor(attackerEnt)
+		local vColBase = CoDHUD_GetFactionColor(victimEnt)
 
 		local aCol = Color(aColBase.r, aColBase.g, aColBase.b, finalTxtAlpha)
 		local vCol = Color(vColBase.r, vColBase.g, vColBase.b, finalTxtAlpha)
