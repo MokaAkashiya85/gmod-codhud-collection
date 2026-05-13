@@ -794,7 +794,7 @@ function CoDHUD_Header_MW:Draw()
 
 			-- MAIN TEXT
 			for i, line in ipairs(self.lines) do
-				draw.SimpleTextOutlined( line, self.fonts.pri, cx, cy - CoDHUD_S(18) + ((i - 1) * CoDHUD_S(34)), Color(255,255,255,alpha), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, outlined and 2 or 0, Color(0,0,0,alpha) )
+				draw.SimpleTextOutlined( line, self.fonts.pri, cx, cy - CoDHUD_S(18) + ((i - 1) * CoDHUD_S(34)), Color(255,255,255,alpha), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0,0,0,alpha) )
 			end
 
 			-- SUBTEXT

@@ -1492,17 +1492,8 @@ local function scorebar(data)
 end
 CoDHUD[hudtype].Scorebar = scorebar
 
--- local debugpic = true
-local debugpicture = Material("debugref/bo2_3.png", "smooth")
-
 local function scoreboard( ... )
 	local outlined = GetConVar("codhud_enable_outlinedtext"):GetBool()
-
-	if debugpic then
-		surface.SetMaterial(debugpicture)
-		surface.SetDrawColor(255, 255, 255, 255)
-		surface.DrawTexturedRect(0, 0, ScrW(), ScrH())
-	end
 
 	local CFG = {
 		-- Player Row Background
@@ -1510,16 +1501,16 @@ local function scoreboard( ... )
 		BAR_H = 40,
 		BAR_X_OFF = 142,
 		BAR_Y_OFF = 252,
-		BAR_ALPHA = 200,
+		BAR_ALPHA = 100,
 
 		-- Spacing & Layout
-		ROW_GAP = 8,
-		TEAM_GAP = 90,
+		ROW_GAP = 0,
+		TEAM_GAP = 30,
 
 		-- Faction Icon
 		ICON_SIZE = 192,
 		ICON_X_OFF = -240,
-		ICON_Y_OFF = -52,
+		ICON_Y_OFF = -32,
 
 		-- Score Position
 		SCORE_NAME_X = -278,
@@ -1559,17 +1550,18 @@ local function scoreboard( ... )
 		OFF_SCORE = 500,
 	}
 
-	local MAT_GRADIENT_L = Material("vgui/gradient-l")
+	local MAT_BOXFG = Material(hudtype .. "/hud/menu_mp_map_frame.png", "mips smooth")
+	local MAT_BOXOVERLAY = Material(hudtype .. "/hud/fade_score.vmt")
 	local MAT_ICON_DEAD  = Material(hudtype .. "/icons/hud_status_dead.png", "mips smooth")
 
-	local viewportTop = CoDHUD_S(175)
-	local viewportHeight = CoDHUD_S(800) -- cap scoreboard height (~65% screen)
+	local viewportTop = CoDHUD_S(0)
+	local viewportHeight = ScrH() -- cap scoreboard height (~65% screen)
 
 	local viewportBottom = viewportTop + viewportHeight
 
 	local function SortLogic(a, b)
-		local scoreA = math.max(0, a:Frags() * 100)
-		local scoreB = math.max(0, b:Frags() * 100)
+		local scoreA = math.max(0, a:Frags())
+		local scoreB = math.max(0, b:Frags())
 
 		if scoreA == scoreB then
 			if a == LocalPlayer() then return true end
@@ -1581,23 +1573,23 @@ local function scoreboard( ... )
 	end
 
 	local function DrawPlayerRow(ply, lp, x, y, w, h, barRight, bgCol)
-		-- Background
-		-- surface.SetDrawColor(bgCol.r, bgCol.g, bgCol.b, CFG.BAR_ALPHA)
-		-- surface.DrawRect(x, y, w, h)
-
 		-- Status Icon (dead indicator) - Moved next to name
 		if ply:IsValid() and not ply:Alive() then
 			surface.SetMaterial(MAT_ICON_DEAD)
 			surface.SetDrawColor(255, 255, 255, 255)
 			local iconSz = h * 0.8
 			-- Adjusted X to be right before the name (name starts at 110)
-			surface.DrawTexturedRect(x + CoDHUD_S(75), y + (h / 2) - (iconSz / 2), iconSz, iconSz)
+			surface.DrawTexturedRect(x - CoDHUD_S(32), y + (h / 2) - (iconSz / 2), iconSz, iconSz)
 		end
 
 		-- Colors & Stats
 		local isMe = (ply == lp)
-		local tCol = isMe and Color(255, 200, 50, 255) or Color(255, 255, 255, 255)
-		local pScore = math.max(0, ply:Frags() * 100)
+		if isMe then
+			surface.SetDrawColor(255, 140, 40, 255)
+			surface.DrawOutlinedRect(x - CoDHUD_S(4), y - CoDHUD_S(2), w + CoDHUD_S(6), h + CoDHUD_S(4), 3)
+		end
+		local tCol = Color(255, 255, 255, 255)
+		local pScore = math.max(0, ply:Frags())
 		local kills = ply:Frags()
 		local deaths = ply:Deaths()
 
@@ -1608,6 +1600,12 @@ local function scoreboard( ... )
 		end
 
 		local kd = string.format("%.2f", ratio)
+
+		-- Background on some elements
+		surface.SetDrawColor(bgCol.r, bgCol.g, bgCol.b, CFG.BAR_ALPHA)
+		surface.DrawRect(barRight - CoDHUD_SX(CFG.OFF_ASSISTS) - CoDHUD_SX(50), y, CoDHUD_S(100), h)
+		surface.DrawRect(barRight - CoDHUD_SX(CFG.OFF_DEATHS) - CoDHUD_SX(50), y, CoDHUD_S(100), h)
+		surface.DrawRect(barRight - CoDHUD_SX(CFG.OFF_SCORE) - CoDHUD_SX(50), y, CoDHUD_S(100), h)
 
 		-- Text
 		draw.SimpleTextOutlined(ply:Nick(), "BO2_Scoreboard_Text", x + CoDHUD_SX(80), y + (h / 2), tCol, TEXT_ALIGN_LEFT,  TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0))
@@ -1649,7 +1647,7 @@ local function scoreboard( ... )
 	for _, f in ipairs(factionList) do
 		local score = 0
 		for _, p in ipairs(f.players) do
-			score = score + math.max(0, p:Frags() * 100)
+			score = score + math.max(0, p:Frags())
 		end
 		f.score = score
 	end
@@ -1667,7 +1665,8 @@ local function scoreboard( ... )
 	CoDHUD.Scoreboard.ContentHeight = 0
 
 	for _, facData in ipairs(factionList) do
-		local factionHeight = CoDHUD_S(CFG.ICON_SIZE) + (#facData.players * (barH + CoDHUD_S(CFG.ROW_GAP))) + CoDHUD_S(CFG.TEAM_GAP)
+		local visualPlayers = math.max(#facData.players, 2)
+		local factionHeight = (visualPlayers * (barH + CoDHUD_S(CFG.ROW_GAP))) + CoDHUD_S(CFG.TEAM_GAP)
 
 		CoDHUD.Scoreboard.ContentHeight = CoDHUD.Scoreboard.ContentHeight + factionHeight
 	end
@@ -1679,33 +1678,69 @@ local function scoreboard( ... )
 
 	local startY = CoDHUD_S(CFG.BAR_Y_OFF) - math.floor(sb.Scroll)
 	local headerY = CoDHUD_S(CFG.BAR_Y_OFF) - CoDHUD_S(50) - CoDHUD.Scoreboard.Scroll
-			
+	
+	-- HEADER BACKGROUND
+	local headerPaddingX = CoDHUD_S(24)
+	local headerH = CoDHUD_S(45)
+	local headerX = barX - headerPaddingX
+	local headerW = (barRight - headerX) + CoDHUD_S(0)
+
+	-- extend left so timer fits
+	headerX = headerX - CoDHUD_S(260)
+	headerW = headerW + CoDHUD_S(260)
+
+	surface.SetDrawColor(0, 0, 0, 220)
+	surface.DrawRect( headerX, headerY - CoDHUD_S(5), headerW, headerH )
+	
+	surface.SetMaterial(MAT_BOXFG)
+	surface.SetDrawColor(255,255,255)
+	surface.DrawTexturedRect( headerX, headerY - CoDHUD_S(5), headerW, headerH )
+
 	-- Timer
 	local totalSecs = math.floor(CurTime())
 	local mins, secs = math.floor(totalSecs / 60), totalSecs % 60
 	local timeStr = string.format("%d:%02d", mins, secs)
-	DrawSqueezedText(timeStr, "BO2_Scoreboard_Timer", CoDHUD_S(CFG.TIMER_X_POS), CoDHUD_S(CFG.TIMER_Y_OFF), Color(255, 255, 255, 255), CFG.SQUEEZE, CFG.SQUEEZE_ONE, 2, CFG.SQUEEZE_ONE_BEFORE, outlined and 1.5 or 0)
+	draw.SimpleTextOutlined( timeStr, "BO2_Scoreboard_Timer", CoDHUD_S(CFG.TIMER_X_POS), headerY, Color(255,255,255), TEXT_ALIGN_LEFT, 0, outlined and 1 or 0, Color(0,0,0) )
 	
-	render.SetScissorRect(0, viewportTop, ScrW(), viewportBottom, true)
-		-- Stats column headers
-		draw.SimpleTextOutlined( language.GetPhrase("BO1_CGAME_SB_PING"), "BO2_Scoreboard_Text", barRight - CoDHUD_SX(CFG.OFF_PING) + CoDHUD_SX(4), headerY, Color(255,255,255), TEXT_ALIGN_RIGHT, 0, outlined and 1 or 0, Color(0,0,0) )
-		draw.SimpleTextOutlined( language.GetPhrase("BO1_CGAME_SB_DEATHS"), "BO2_Scoreboard_Text", barRight - CoDHUD_SX(CFG.OFF_DEATHS), headerY, Color(255,255,255), TEXT_ALIGN_CENTER, 0, outlined and 1 or 0, Color(0,0,0) )
-		draw.SimpleTextOutlined( language.GetPhrase("BO1_CGAME_SB_KDRATIO"), "BO2_Scoreboard_Text", barRight - CoDHUD_SX(CFG.OFF_RATIO), headerY, Color(255,255,255), TEXT_ALIGN_CENTER, 0, outlined and 1 or 0, Color(0,0,0) )
-		draw.SimpleTextOutlined( language.GetPhrase("BO1_CGAME_SB_ASSISTS"), "BO2_Scoreboard_Text", barRight - CoDHUD_SX(CFG.OFF_ASSISTS), headerY, Color(255,255,255), TEXT_ALIGN_CENTER, 0, outlined and 1 or 0, Color(0,0,0) )
-		draw.SimpleTextOutlined( language.GetPhrase("BO1_CGAME_SB_KILLS"), "BO2_Scoreboard_Text", barRight - CoDHUD_SX(CFG.OFF_KILLS), headerY, Color(255,255,255), TEXT_ALIGN_CENTER, 0, outlined and 1 or 0, Color(0,0,0) )
-		draw.SimpleTextOutlined( language.GetPhrase("BO1_CGAME_SB_SCORE"), "BO2_Scoreboard_Text", barRight - CoDHUD_SX(CFG.OFF_SCORE), headerY, Color(255,255,255), TEXT_ALIGN_CENTER, 0, outlined and 1 or 0, Color(0,0,0) )
+	-- Stats column headers
+	draw.SimpleTextOutlined( language.GetPhrase("BO1_CGAME_SB_PING"), "BO2_Scoreboard_Text", barRight - CoDHUD_SX(CFG.OFF_PING) + CoDHUD_SX(4), headerY, Color(255,255,255), TEXT_ALIGN_RIGHT, 0, outlined and 1 or 0, Color(0,0,0) )
+	draw.SimpleTextOutlined( language.GetPhrase("BO1_CGAME_SB_DEATHS"), "BO2_Scoreboard_Text", barRight - CoDHUD_SX(CFG.OFF_DEATHS), headerY, Color(255,255,255), TEXT_ALIGN_CENTER, 0, outlined and 1 or 0, Color(0,0,0) )
+	draw.SimpleTextOutlined( language.GetPhrase("BO1_CGAME_SB_KDRATIO"), "BO2_Scoreboard_Text", barRight - CoDHUD_SX(CFG.OFF_RATIO), headerY, Color(255,255,255), TEXT_ALIGN_CENTER, 0, outlined and 1 or 0, Color(0,0,0) )
+	draw.SimpleTextOutlined( language.GetPhrase("BO1_CGAME_SB_ASSISTS"), "BO2_Scoreboard_Text", barRight - CoDHUD_SX(CFG.OFF_ASSISTS), headerY, Color(255,255,255), TEXT_ALIGN_CENTER, 0, outlined and 1 or 0, Color(0,0,0) )
+	draw.SimpleTextOutlined( language.GetPhrase("BO1_CGAME_SB_KILLS"), "BO2_Scoreboard_Text", barRight - CoDHUD_SX(CFG.OFF_KILLS), headerY, Color(255,255,255), TEXT_ALIGN_CENTER, 0, outlined and 1 or 0, Color(0,0,0) )
+	draw.SimpleTextOutlined( language.GetPhrase("BO1_CGAME_SB_SCORE"), "BO2_Scoreboard_Text", barRight - CoDHUD_SX(CFG.OFF_SCORE), headerY, Color(255,255,255), TEXT_ALIGN_CENTER, 0, outlined and 1 or 0, Color(0,0,0) )
 		
+		
+	render.SetScissorRect(0, viewportTop, ScrW(), viewportBottom, true)
 		for fi, facData in ipairs(factionList) do
 			local players = facData.players
 			local facKey = facData.key
 			local score = facData.score or 0
-			local fData = CoDHUD.Factions[hudtype] and CoDHUD.Factions[hudtype][facKey] or {
-				name = facKey,
-				short = facKey,
-				color = Color(120,120,120)
-			}
+			local fData = CoDHUD.Factions[hudtype] and CoDHUD.Factions[hudtype][facKey] or { name = facKey, short = facKey, color = Color(120,120,120) }
 
 			local sectionY = startY
+
+			local playerCount = #players
+			local visualPlayers = math.max(playerCount, 2)
+
+			local factionRectX = barX - CoDHUD_S(24)
+			local factionRectY = sectionY - CoDHUD_S(3)
+			local factionRectW = barW + CoDHUD_S(24)
+			local factionRectH = (visualPlayers * (barH + CoDHUD_S(CFG.ROW_GAP))) + CoDHUD_S(6)
+
+			factionRectX = factionRectX - CoDHUD_S(260)
+			factionRectW = factionRectW + CoDHUD_S(260)
+
+			surface.SetDrawColor(0, 0, 0, 210)
+			surface.DrawRect( factionRectX, factionRectY, factionRectW, factionRectH )
+
+			surface.SetMaterial(MAT_BOXFG)
+			surface.SetDrawColor(255,255,255)
+			surface.DrawTexturedRect( factionRectX, factionRectY, factionRectW, factionRectH )
+
+			surface.SetMaterial(MAT_BOXFG)
+			surface.SetDrawColor(255,255,255)
+			surface.DrawTexturedRect( factionRectX, factionRectY, factionRectW, factionRectH )
 
 			-- ICON
 			local iconPath = CoDHUD.Factions[hudtype][facKey].scoreIcon
@@ -1713,9 +1748,21 @@ local function scoreboard( ... )
 
 			surface.SetMaterial(mat)
 			surface.SetDrawColor(255,255,255,255)
-			surface.DrawTexturedRect(barX + CoDHUD_S(CFG.ICON_X_OFF), sectionY + CoDHUD_S(CFG.ICON_Y_OFF), CoDHUD_S(CFG.ICON_SIZE), CoDHUD_S(CFG.ICON_SIZE))
 
-			DrawSqueezedText( score, "BO2_Scoreboard_Score", barX + CoDHUD_SX(CFG.SCORE_NAME_X), sectionY + CoDHUD_S(CFG.SCORE_NAME_Y) - CoDHUD_S(22), Color(255,255,255), CoDHUD_S(-2), CoDHUD_S(-6), 2, CoDHUD_S(-12), CoDHUD_SX(1) )
+			local iconSize = CoDHUD_S(CFG.ICON_SIZE)
+			local iconX = barX + CoDHUD_S(CFG.ICON_X_OFF)
+			local iconY = sectionY + CoDHUD_S(CFG.ICON_Y_OFF)
+			local minPlayers = 2
+			local maxPlayersForFullIcon = 4
+			local revealT = math.Clamp( (playerCount - minPlayers) / (maxPlayersForFullIcon - minPlayers), 0, 1 )
+			local visibleFrac = Lerp(revealT, 0.6, 1)
+			surface.DrawTexturedRectUV( iconX, iconY, iconSize, iconSize * visibleFrac, 0, 0, 1, visibleFrac )
+
+			surface.SetMaterial(MAT_BOXOVERLAY)
+			surface.SetDrawColor(fData.glow)
+			surface.DrawTexturedRect( factionRectX, factionRectY + CoDHUD_SY(3), iconSize * 1.4, factionRectH )
+
+			draw.SimpleTextOutlined( score, "BO2_Scoreboard_Score", barX + CoDHUD_SX(CFG.SCORE_NAME_X), sectionY + CoDHUD_S(CFG.SCORE_NAME_Y) - CoDHUD_S(22), Color(255,255,255), TEXT_ALIGN_LEFT, 0, outlined and 1 or 0, Color(0,0,0) )
 			
 			surface.SetFont("BO2_Scoreboard_Score")
 			local scorew, scoreh = surface.GetTextSize(score)
@@ -1729,7 +1776,7 @@ local function scoreboard( ... )
 			end
 
 			-- push next faction down
-			local sectionHeight = CoDHUD_S(0) + (#players * (barH + CoDHUD_S(CFG.ROW_GAP)))
+			local sectionHeight = (visualPlayers * (barH + CoDHUD_S(CFG.ROW_GAP)))
 			startY = startY + sectionHeight + CoDHUD_S(CFG.TEAM_GAP)
 		end
 	render.SetScissorRect(0, 0, 0, 0, false)
@@ -1786,7 +1833,7 @@ local function friendorfoe( ... )
 	matrix:Scale(Vector(finalScale, finalScale, 1))
 
 	cam.PushModelMatrix(matrix)
-		draw.SimpleText(displayName, "BO1_TargetName_Primary", 0, 0, Color(factionColor.r, factionColor.g, factionColor.b, alpha), 0, 0)
+		draw.SimpleText(displayName, "BO2_TargetName_Primary", 0, 0, Color(factionColor.r, factionColor.g, factionColor.b, alpha), 0, 0)
 	cam.PopModelMatrix()
 end
 CoDHUD[hudtype].IFF = friendorfoe
@@ -1822,3 +1869,266 @@ local function voice( ... )
 	yOffset = yOffset + SPACING
 end
 CoDHUD[hudtype].VoiceChat = voice
+
+-- local debugpic = true
+local debugpicture = Material("debugref/bo2_2.png", "smooth")
+
+local function weaponinfo(...)
+
+	if debugpic then
+		surface.SetMaterial(debugpicture)
+		surface.SetDrawColor(255, 255, 255, 255)
+		surface.DrawTexturedRect(0, 0, ScrW(), ScrH())
+	end
+
+	local MASK = select(1, ...)
+	local ply = select(3, ...)
+
+
+	local CFG = {
+		-- Base Bar
+		BAR_W     = 441.6, -- 256 x 1.725
+		BAR_H     = 220.8, -- 128 x 1.725
+		BAR_X_OFF = 446.6,
+		BAR_Y_OFF = -32,
+
+		-- Lines
+		LINES_W       = 295,
+		LINES_H       = 142.5,
+		LINES_X_OFF   = 131,
+		LINES_Y_OFF   = -20,
+
+		-- Grenades
+		GRENADE_X_OFF     = 140,
+		GRENADE_Y_OFF     = 50,
+		GRENADE_ICON_W    = 40,
+		GRENADE_ICON_H    = 40,
+		GRENADE_STACK_GAP = -4,
+		GRENADE_MAX       = 4,
+		GRENADE_SHADES    = { 255, 200, 175, 120 },
+
+		-- Reserve Ammo
+		RES_X       = 80,
+		RES_Y       = 102.5,
+
+		-- Text kerning
+		SQUEEZE            = -6,
+		SQUEEZE_ONE        = -14,
+		SQUEEZE_ONE_BEFORE = -10,
+
+		-- Weapon Name
+		WEP_NAME_X_OFF = 55,
+		WEP_NAME_Y_OFF = 145,
+		WEP_NAME_FADE  = 2,
+		WEP_NAME_SQ    = -3,
+		WEP_NAME_SQ1   = -8,
+
+		-- Status Indicator
+		STAT_FONT_SIZE = 28,
+		STAT_LOW_PERC  = 0.40,
+		STAT_FLASH_SPD = 8,
+		STAT_Y_OFF     = 62,
+
+		-- Alt Ammo (Underbarrel / Secondary)
+		ALT_TEXT_X     = 320 - 56,
+		ALT_TEXT_Y     = 42,
+		ALT_TEXT_SQ    = 0,
+
+		ALT_WICON_SIZE  = 48,
+		ALT_WICON_X     = 320,
+		ALT_WICON_Y     = 56,
+	}
+
+
+	local MAT_FRAME  = Material(hudtype .. "/hud/background_weaponinfo.vmt")
+
+	local MAT_ALT  = {
+		["grenade"] = Material(hudtype .. "/icons/hud_obit_grenade_launcher_attach.png", "smooth mips"),
+		["buckshot"] = Material("mw2/hud/dpad_underbarrel_shotgun.png", "smooth mips"),
+	}
+	
+	local MAT_GRENADE = Material(hudtype .. "/icons/grenadeicon.png", "smooth")
+
+    local barW, barH = CoDHUD_SX(CFG.BAR_W), CoDHUD_SY(CFG.BAR_H)
+    local barX = ScrW() - CoDHUD_SX(CFG.BAR_X_OFF)
+    local barY = ScrH() - CoDHUD_SY(CFG.BAR_Y_OFF) - barH
+
+    surface.SetMaterial(MAT_FRAME)
+    surface.SetDrawColor(255, 255, 255)
+	for i = 1, 8 do
+		surface.DrawTexturedRect(barX, barY, barW, barH)
+	end
+
+    -- 2. GRENADE DRAWING
+    local grenadeCount = math.Clamp(ply:GetAmmoCount("Grenade") or 0, 0, CFG.GRENADE_MAX)
+    if grenadeCount > 0 then
+        local barW = CoDHUD_SX(CFG.BAR_W)
+        local barH = CoDHUD_SY(CFG.BAR_H)
+        local barX = ScrW() - CoDHUD_SX(CFG.BAR_X_OFF) - barW
+        local barY = ScrH() - CoDHUD_SY(CFG.BAR_Y_OFF) - barH
+
+        local iW = CoDHUD_S(CFG.GRENADE_ICON_W)
+        local iH = CoDHUD_S(CFG.GRENADE_ICON_H)
+        local stackGap = CoDHUD_S(CFG.GRENADE_STACK_GAP)
+
+        local anchorX = ScrW() - CoDHUD_SX(CFG.GRENADE_X_OFF)
+        local anchorY = ScrH() - CoDHUD_SY(CFG.GRENADE_Y_OFF)
+
+        surface.SetMaterial(MAT_GRENADE)
+
+        for i = (CFG.GRENADE_MAX - 1), 0, -1 do
+            if i < grenadeCount then
+                local colorIndex = i + 1
+                local shade = CFG.GRENADE_SHADES[colorIndex] or CFG.GRENADE_SHADES[#CFG.GRENADE_SHADES]
+                surface.SetDrawColor(shade, shade, shade, 255)
+
+                local xPos = anchorX - (i * stackGap)
+                local yPos = anchorY
+
+                surface.DrawTexturedRect(xPos, yPos, iW, iH)
+            end
+        end
+    end
+
+    -- 3. WEAPON HUD DRAWING
+    local wep = ply:GetActiveWeapon()
+    if not IsValid(wep) then return end
+
+    if wep ~= lastWep then
+        lastWep       = wep
+        wepSwitchTime = CurTime()
+    end
+
+    local clip    = wep:Clip1()
+    local clip2    = wep:Clip2()
+    local maxClip = wep:GetMaxClip1()
+    local maxClip2 = wep:GetMaxClip2()
+    local primType = wep:GetPrimaryAmmoType()
+    local altType = wep:GetSecondaryAmmoType()
+	local altAmmoName = game.GetAmmoName(altType)
+    local primCount = ply:GetAmmoCount(primType)
+	local altCount = ply:GetAmmoCount(altType)
+
+	local reloading = 
+	wep.IsReloading or reloadingM203 -- CW2
+	or (wep.ARC9 and wep:GetReloading()) -- ARC9
+	or (wep.ArcCW and wep:GetReloading()) -- ArcCW
+	or (wep.IsTFAWeapon and TFA.Enum.ReloadStatus[wep:GetStatus()]) -- TFA
+
+	local glactive = 
+	wep.dt and (wep.dt.AltActive or wep.dt.M203Active) -- CW2
+	or (wep.ARC9 and wep:GetUBGL())
+
+	if glactive then
+		clip = clip2
+		maxClip = maxClip2
+		primCount = altCount - clip
+	end
+
+	surface.SetFont("BO2_Res")
+	local restext = " / " .. primCount
+	local resw, resh = surface.GetTextSize(restext)
+	surface.SetFont("BO2_Res_Large")
+	local clipw, cliph = surface.GetTextSize(maxClip)
+	surface.SetFont("BO2_Res")
+
+	if primType ~= -1 then
+        local resCol = (primCount == 0 or primCount < maxClip) and Color(255, 120, 120, 255) or  Color(255, 255, 255, 255)
+		if maxClip > 0 then
+			draw.SimpleTextOutlined(restext, "BO2_Res", ScrW() - CoDHUD_SX(CFG.RES_X) - resw, ScrH() - CoDHUD_SY(CFG.RES_Y), resCol, 0, 0, outlined and 1 or 0, Color(0, 0, 0))
+		else
+			surface.SetFont("BO2_Res_Large")
+			local restext, resw = tostring(primCount), surface.GetTextSize(primCount)
+			draw.SimpleTextOutlined(primCount, "BO2_Res_Large", ScrW() - CoDHUD_SX(CFG.RES_X) - resw, ScrH() - CoDHUD_SY(CFG.RES_Y * 1.15), resCol, 0, 0, outlined and 1 or 0, Color(0, 0, 0))
+			surface.SetFont("BO2_Res")
+		end
+    end
+
+	surface.SetFont("BO2_Wep_Name")
+	local name  = string.upper(language.GetPhrase(wep:GetPrintName() or wep:GetClass()))
+	local namew, nameh = surface.GetTextSize(name)
+
+	draw.RoundedBox( 4, ScrW() - CoDHUD_SX(CFG.WEP_NAME_X_OFF) - CoDHUD_S(namew), ScrH() - CoDHUD_SY(CFG.WEP_NAME_Y_OFF), CoDHUD_S(namew) + CoDHUD_S(8), CoDHUD_S(nameh), Color( 255, 255, 255, 100 ) )
+	draw.SimpleTextOutlined(name, "BO2_Wep_Name", ScrW() - CoDHUD_SX(CFG.WEP_NAME_X_OFF), ScrH() - CoDHUD_SY(CFG.WEP_NAME_Y_OFF), Color(0, 0, 0,175), 2, 0, 1, Color(0, 0, 0, 10))
+
+	local altCache = (altType == primType or altType == game.GetAmmoID("Grenade") and maxClip2 > 0)
+
+    if altType ~= -1 then
+		if altType ~= primType and altType ~= game.GetAmmoID("Grenade") then
+			surface.SetFont("BO2_Ammo_Alt")
+			local altLen = #tostring(altCount)
+			local altw, alth = surface.GetTextSize(altCount)
+			local altPad = (altw + (altLen * CFG.ALT_TEXT_SQ))
+
+			local alticon = "grenade"
+			if altAmmoName == "Buckshot" then alticon = "buckshot" end
+
+			surface.SetMaterial(MAT_ALT[alticon])
+			surface.SetDrawColor(255, 255, 255)
+			surface.DrawTexturedRect(ScrW() - CoDHUD_SX(CFG.ALT_WICON_X), ScrH() - CoDHUD_SY(CFG.ALT_WICON_Y), CoDHUD_S(CFG.ALT_WICON_SIZE), CoDHUD_S(CFG.ALT_WICON_SIZE))
+
+			local altCol = (altCount > 0) and Color(255, 255, 255, 255) or Color(255, 120, 120, 255)
+			
+			draw.RoundedBox( 4, ScrW() -  CoDHUD_SX(CFG.ALT_TEXT_X), ScrH() - CoDHUD_SY(CFG.ALT_TEXT_Y), CoDHUD_S(8) + altPad, CoDHUD_S(alth), Color( 0, 0, 0, 200 ) )
+			
+			DrawSqueezedText(altCount, "BO2_Ammo_Alt", ScrW() -  CoDHUD_SX(CFG.ALT_TEXT_X), ScrH() - CoDHUD_SY(CFG.ALT_TEXT_Y), altCol, CFG.ALT_TEXT_SQ, CFG.ALT_TEXT_SQ, 2, CoDHUD_S(999))
+		elseif maxClip2 > 0 and clip2 >= 0 then
+			local perc      = clip2 / maxClip2
+			local isLowClip = (perc <= CFG.STAT_LOW_PERC)
+			local blink = 255 * math.abs(math.sin(RealTime() * 3))
+			
+			local col = Color(255, isLowClip and blink or 255, isLowClip and blink or 255)
+			
+			draw.SimpleTextOutlined(clip2, "BO2_Res_Large", ScrW() - CoDHUD_SX(CFG.RES_X) - resw, ScrH() - CoDHUD_SY(CFG.RES_Y * 1.15), col, 2, 0, outlined and 1 or 0, Color(0, 0, 0))
+		end
+    end
+
+    if maxClip > 0 and clip >= 0 then
+        local perc      = clip / maxClip
+        local isLowClip = (perc <= CFG.STAT_LOW_PERC)
+		local blink = 255 * math.abs(math.sin(RealTime() * 3))
+		
+		local col = Color(255, isLowClip and blink or 255, isLowClip and blink or 255)
+		
+        DrawSqueezedText(clip, "BO2_Res_Large", ScrW() - CoDHUD_SX(CFG.RES_X+(altCache and 12 or 0)) - resw - (altCache and clipw or 0), ScrH() - CoDHUD_SY(CFG.RES_Y * 1.15), col, 0, 0, 0)
+    end
+
+    if maxClip > 0 and clip >= 0 and not reloading then
+        local perc      = clip / maxClip
+        local statText  = ""
+        local statCol   = Color(255, 255, 255)
+        local isNoAmmo  = false
+        local isLowAmmo = false
+        local isReloadText  = false
+
+        if clip == 0 and primCount == 0 then
+            statText = "#MW2_WEAPON_NO_AMMO"
+            isNoAmmo = true
+        elseif perc <= CFG.STAT_LOW_PERC and primCount == 0 then
+            statText = "#MW2_PLATFORM_LOW_AMMO_NO_RELOAD"
+            statCol  = Color(255, 230, 0)
+            isLowAmmo = true
+        elseif perc <= CFG.STAT_LOW_PERC and primCount > 0 then
+            statText = "#MW2_PLATFORM_RELOAD"
+            isReloadText = true
+        end
+
+        if statText ~= "" then
+            local cx   = ScrW() / 2
+            local cy   = (ScrH() / 2) + CoDHUD_SY(CFG.STAT_Y_OFF)
+            local sine = (math.sin(CurTime() * CFG.STAT_FLASH_SPD) + 1) / 2
+
+            local finalCol = table.Copy(statCol)
+
+            if isNoAmmo then
+                local glow = 225 + (sine * 30)
+                finalCol = Color(glow, 40, 40, glow)
+            elseif isLowAmmo or isReloadText then
+                finalCol.a = 100 + (sine * 155)
+            end
+
+            draw.SimpleTextOutlined(statText, "BO2_Stat_Font", cx + CoDHUD_SX(2), cy + CoDHUD_SY(2), finalCol, 1, 1, 1.5, Color(0, 0, 0, finalCol.a * 0.8))
+        end
+    end
+end
+CoDHUD[hudtype].WeaponInfo = weaponinfo

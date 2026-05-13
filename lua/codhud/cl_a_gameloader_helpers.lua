@@ -285,7 +285,7 @@ local function InitiateCoDFonts()
 	-- [ BO2 ]
 	-- Challenges
     surface.CreateFont( "BO2_ChalHeader",			{ font = "AgencyFB", size = CoDHUD_S(48), weight = 800,  antialias = true })
-    surface.CreateFont( "BO2_ChalSub",				{ font = "AgencyFB", size = CoDHUD_S(48), weight = 400,  antialias = true })
+    surface.CreateFont( "BO2_ChalSub",				{ font = "AgencyFB", size = CoDHUD_S(32), weight = 400,  antialias = true })
 	
 	-- Chat
 	surface.CreateFont( "BO2_ChatFont",				{ font = "AgencyFB",  size = CoDHUD_S(22),  weight = 400,  antialias = true, shadow = true })
@@ -345,11 +345,11 @@ local function InitiateCoDFonts()
 	surface.CreateFont( "BO2_VoiceFont",			{ font = "AgencyFB",  size = CoDHUD_S(30),  weight = 600,  antialias = true, shadow = true })
 	
 	-- Weapon HUD
-    surface.CreateFont( "BO2_Res",					{ font = "AgencyFB", size = CoDHUD_S(38), weight = 400, antialias = true, shadow = true, extended = true })
-    surface.CreateFont( "BO2_Res_Large",			{ font = "AgencyFB", size = CoDHUD_S(56), weight = 400, antialias = true, shadow = true, extended = true })
-    surface.CreateFont( "BO2_Wep_Name",				{ font = "AgencyFB", size = CoDHUD_S(38), weight = 400, antialias = true, shadow = true, extended = true })
+    surface.CreateFont( "BO2_Res",					{ font = "AgencyFB", size = CoDHUD_S(54), weight = 400, antialias = true, shadow = true, italic = true, extended = true })
+    surface.CreateFont( "BO2_Res_Large",			{ font = "AgencyFB", size = CoDHUD_S(73), weight = 400, antialias = true, shadow = true, italic = true, extended = true })
+    surface.CreateFont( "BO2_Wep_Name",				{ font = "AgencyFB", size = CoDHUD_S(28), weight = 400, antialias = true, shadow = true, italic = true, extended = true })
     surface.CreateFont( "BO2_Stat_Font",			{ font = "AgencyFB", size = CoDHUD_S(28), weight = 400, antialias = true, shadow = true, extended = true })
-    surface.CreateFont( "BO2_Ammo_Alt",				{ font = "AgencyFB", size = CoDHUD_S(20), weight = 400, antialias = true, shadow = true, extended = true })
+    surface.CreateFont( "BO2_Ammo_Alt",				{ font = "AgencyFB", size = CoDHUD_S(26), weight = 400, antialias = true, shadow = true, italic = true, extended = true })
 end
 
 InitiateCoDFonts()
