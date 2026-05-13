@@ -269,6 +269,38 @@ end
 -- [[ HUD ELEMENTS ]]
 CoDHUD[hudtype].MedalsBlockChallenges = false   -- medals pause challenges
 
+CoDHUD[hudtype].LevelData = {
+	nameprefix = "MW2_",
+	materialpath = "mw2/ranks/cardicon_", -- For icons; followed by the "rank icon" path.
+}
+
+CoDHUD[hudtype].Levels = nil
+
+local function levelup( ... )
+    local rank = select(1, ...)
+    local level = select(2, ...)
+    local logo = select(3, ...)
+
+    CoDHUD_HeaderQueue.Push({
+        text = language.GetPhrase("MW2_RANK_PROMOTED") .. "\n" .. rank,
+        x = CoDHUD_SX(960),
+        y = CoDHUD_SY(125),
+        color = Color(0,220,80),
+		sfx = "hud/mp_levelup_final.mp3",
+        fonts = {
+            pri = "MW2_ChalHeader_Pri",
+            sec = "MW2_ChalHeader_Sec",
+            shd = "MW2_ChalHeader_Shd",
+            sub = "MW2_ChalSub"
+        },
+
+		iconY = CoDHUD_SY(180),
+		iconSize = CoDHUD_S(134),
+		icon = logo
+    })
+end
+CoDHUD[hudtype].Levelup = levelup
+
 local function settingsmenu( ... )
 	local w = select(1, ...)
 	local h = select(2, ...)
@@ -316,6 +348,7 @@ local function challengecomplete( ... )
         x = CoDHUD_SX(960),
         y = CoDHUD_SY(205),
         color = Color(0,220,80),
+		sfx = "hud/mp_challengecomplete_metal_2.mp3",
         fonts = {
             pri = "MW2_ChalHeader_Pri",
             sec = "MW2_ChalHeader_Sec",
@@ -324,8 +357,6 @@ local function challengecomplete( ... )
         },
 		align = align or nil
     })
-
-    surface.PlaySound("hud/mp_challengecomplete_metal_2.mp3")
 end
 CoDHUD[hudtype].ChallengeComplete = challengecomplete
 
