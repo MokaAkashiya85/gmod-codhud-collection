@@ -2026,6 +2026,21 @@ local function weaponinfo(...)
 		return "default"
 	end
 
+    local barW = CoDHUD_SX(CFG.BAR_W)
+    local barH = CoDHUD_SY(CFG.BAR_H)
+    local barX = ScrW() - CoDHUD_SX(CFG.BAR_X_OFF) - barW
+    local barY = ScrH() - CoDHUD_SY(CFG.BAR_Y_OFF) - barH
+
+	draw.NoTexture()
+
+    surface.SetDrawColor(225, 225, 225, 125)
+    surface.DrawTexturedRectRotated(barX + CoDHUD_S(369), barY + CoDHUD_S(135), CoDHUD_S(47.5), CoDHUD_S(4), 45)
+    surface.DrawTexturedRectRotated(barX + CoDHUD_S(400), barY + CoDHUD_S(118.5), CoDHUD_S(30), CoDHUD_S(4), 0)
+
+    surface.SetMaterial(MAT_BAR)
+    surface.SetDrawColor(255, 255, 255, 125)
+    surface.DrawTexturedRect(barX, barY, barW, barH)
+
     -- 1. GRENADE DRAWING
     local grenadeCount = math.Clamp(ply:GetAmmoCount("Grenade") or 0, 0, CFG.GRENADE_MAX)
     if grenadeCount > 0 then
@@ -2075,21 +2090,6 @@ local function weaponinfo(...)
     local primCount = ply:GetAmmoCount(primType)
 	local altAmmoName = game.GetAmmoName(altType)
 	local altCount = ply:GetAmmoCount(altType)
-
-    local barW = CoDHUD_SX(CFG.BAR_W)
-    local barH = CoDHUD_SY(CFG.BAR_H)
-    local barX = ScrW() - CoDHUD_SX(CFG.BAR_X_OFF) - barW
-    local barY = ScrH() - CoDHUD_SY(CFG.BAR_Y_OFF) - barH
-	
-	draw.NoTexture()
-
-    surface.SetDrawColor(225, 225, 225, 200)
-    surface.DrawTexturedRectRotated(barX + CoDHUD_S(369), barY + CoDHUD_S(135), CoDHUD_S(47.5), CoDHUD_S(4), 45)
-    surface.DrawTexturedRectRotated(barX + CoDHUD_S(400), barY + CoDHUD_S(118.5), CoDHUD_S(30), CoDHUD_S(4), 0)
-
-    surface.SetMaterial(MAT_BAR)
-    surface.SetDrawColor(255, 255, 255, 125)
-    surface.DrawTexturedRect(barX, barY, barW, barH)
 
 	local reloading = 
 	wep.IsReloading or reloadingM203 -- CW2

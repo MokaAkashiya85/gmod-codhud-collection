@@ -2012,7 +2012,6 @@ local function weaponinfo(...)
     surface.SetDrawColor(255, 255, 255, 125)
     surface.DrawTexturedRect(barX, barY, barW, barH)
 
-
     -- ==========================================
     -- 1. COMPASS DRAWING
     -- ==========================================
