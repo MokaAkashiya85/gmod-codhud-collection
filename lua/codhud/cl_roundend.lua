@@ -30,9 +30,13 @@ local function CoDHUD_GetDMPlacements()
         end
     end
 
-    table.sort(players, function(a, b)
-        return a.score > b.score
-    end)
+	table.sort(players, function(a, b)
+		if a.score == b.score then
+			return a.ply:Nick() < b.ply:Nick()
+		end
+
+		return a.score > b.score
+	end)
 
     return players
 end
@@ -117,28 +121,6 @@ net.Receive("CoDHUD_RoundEnd", function()
     local voiceTag  = fdata and fdata.voice or nil
     local hasTwo    = (loserFac ~= "" and CoDHUD.Factions[CoDHUD_GetHUDType()] and CoDHUD.Factions[CoDHUD_GetHUDType()][loserFac] ~= nil)
 
-    local leftFac   = localFac
-    local rightFac  = resultState == "win" and loserFac or winnerFac
-    local leftSc    = resultState == "win" and winnerSc or loserSc
-    local rightSc   = resultState == "win" and loserSc  or winnerSc
-
-    local now = CurTime()
-
-    -- Core state
-    re_active      = true
-    re_lock_time   = now
-    re_bw          = 0
-    re_winner      = winnerFac
-    re_loser       = loserFac
-    re_has_two     = hasTwo
-    re_left_fac    = leftFac
-    re_right_fac   = rightFac
-    re_match_bonus = CalcMatchBonus(kills)
-    re_mvlock      = true
-    re_locked_ang  = nil
-	
-	_G.CoDHUD_IsRoundEnding = true
-
 	-- Team Scores
 	local teamsMap = {}
 
@@ -173,28 +155,44 @@ net.Receive("CoDHUD_RoundEnd", function()
 
 	local resultState
 	local placement = nil
+	local dmScore = {}
 
 	if isDM then
 		local placements = CoDHUD_GetDMPlacements()
-		local dmScore = {}
-
-		if isDM then
-			for i, data in ipairs(placements) do
-				dmScore[#dmScore + 1] = {
-					ply = data.ply,
-					score = data.score,
-					placement = i
-				}
-			end
-		end
 
 		for i, data in ipairs(placements) do
+			local entry = {
+				name  = IsValid(data.ply) and data.ply:Nick() or "Unknown",
+				pos   = i,
+				score = data.score or 0,
+				ply   = data.ply -- optional, useful later if needed
+			}
+
+			table.insert(dmScore, entry)
+
+			-- local player's placement
 			if data.ply == ply then
 				placement = i
-				break
 			end
 		end
 	end
+
+    local now = CurTime()
+
+    -- Core state
+    re_active      = true
+    re_lock_time   = now
+    re_bw          = 0
+    re_winner      = winnerFac
+    re_loser       = loserFac
+    re_has_two     = hasTwo
+    -- re_left_fac    = leftFac
+    -- re_right_fac   = rightFac
+    re_match_bonus = CalcMatchBonus(kills)
+    re_mvlock      = true
+    re_locked_ang  = nil
+	
+	_G.CoDHUD_IsRoundEnding = true
 
 	-- ============================================================
 	--  Draw detection
@@ -215,15 +213,6 @@ net.Receive("CoDHUD_RoundEnd", function()
 
 	-- RESULT RESOLUTION (single source of truth)
 	if isDM then
-		local placements = CoDHUD_GetDMPlacements()
-
-		for i, data in ipairs(placements) do
-			if data.ply == ply then
-				placement = i
-				break
-			end
-		end
-
 		if placement == 1 then
 			resultState = "win"
 			re_result_glow = Color(0, 220, 80)
@@ -251,6 +240,14 @@ net.Receive("CoDHUD_RoundEnd", function()
 		end
 	end
 
+    local leftFac   = localFac
+    local rightFac  = resultState == "win" and loserFac or winnerFac
+    local leftSc    = resultState == "win" and winnerSc or loserSc
+    local rightSc   = resultState == "win" and loserSc  or winnerSc
+	
+    re_left_fac    = leftFac
+    re_right_fac   = rightFac
+	
 	if resultState == "win" then
 		ws_result = str.re.win or "MW2_MP_VICTORY"
 	elseif resultState == "draw" then
@@ -282,17 +279,7 @@ net.Receive("CoDHUD_RoundEnd", function()
 		local theme
 
 		if isDM then
-			local placements = CoDHUD_GetDMPlacements()
-			local top3 = false
-
-			for i, data in ipairs(placements) do
-				if data.ply == ply and i <= 3 then
-					top3 = true
-					break
-				end
-			end
-
-			theme = "music/" .. CoDHUD_GetHUDType() .. "/" .. (top3 and fdata.victorytheme or fdata.defeattheme)
+			theme = "music/" .. CoDHUD_GetHUDType() .. "/" .. ((placement and placement <= 3) and fdata.victorytheme or fdata.defeattheme)
 		elseif isDraw then
 			theme = voicefile.drawmusic
 		else

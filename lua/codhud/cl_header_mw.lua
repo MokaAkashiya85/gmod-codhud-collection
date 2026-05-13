@@ -967,7 +967,7 @@ function CoDHUD_Header_MW:Draw()
 	end
 	
 	-- TEAMS
-	if self.teams then
+	if self.teams and CoDHUD_ActiveGamemodeCL ~= "dm" then
 		local count = #self.teams
 		if count <= 0 then return end
 
@@ -1031,65 +1031,44 @@ function CoDHUD_Header_MW:Draw()
 	end
 
 	-- DM SCORE
-	if self.dmscore then
-		local lp = LocalPlayer()
-
+	if self.dmscore and CoDHUD_ActiveGamemodeCL == "dm" then
 		local size = self.iconSize or 128
 		local gap  = self.iconGap or 60
 
-		-- normalize input (supports either table or single entry)
 		local ordered = {}
 
-		if istable(self.dmscore) then
-			for _, p in ipairs(self.dmscore) do
-				table.insert(ordered, p)
-			end
-		else
-			ordered = { self.dmscore }
+		for _, p in ipairs(self.dmscore) do
+			table.insert(ordered, p)
 		end
 
-		-- sort by score descending
 		table.sort(ordered, function(a, b)
 			return (a.score or 0) > (b.score or 0)
 		end)
 
-		local count = #ordered
-		if count <= 0 then return end
+		local suffix = {
+			[1] = "MW2_MP_FIRSTPLACE_NAME",
+			[2] = "MW2_MP_SECONDPLACE_NAME",
+			[3] = "MW2_MP_THIRDPLACE_NAME"
+		}
 
-		local step = size + gap
+		local max = math.min(3, #ordered)
 
-		-- mild compression for crowded DM headers
-		local compression = 1
-		if count == 3 then
-			compression = 0.9
-		elseif count >= 4 then
-			compression = 0.8
-		end
+		local step = (self.iconSize or 128 + (self.iconGap or 60)) * 0.5
 
-		step = step * compression
+		local startY = self.iconY + CoDHUD_SY(90) - ((max - 1) * step) / 2
 
-		local totalW = (count - 1) * step
+		for i = 1, max do
+			local p = ordered[i]
+			if not p then break end
 
-		for i, p in ipairs(ordered) do
-			local x = self.x + ((i - 1) * step - totalW / 2)
-			local y = self.iconY or self.y
+			local suf = language.GetPhrase(suffix[i]) or i .. ". %s"
 
-			-- optional icon (player avatar / faction icon fallback)
-			if p.icon then
-				surface.SetMaterial(p.icon)
-				surface.SetDrawColor(255, 255, 255, self.iconAlpha or 255)
-				surface.DrawTexturedRect(x - size/2, y, size, size)
-			end
+			local text = string.format(suf, p.name or "Unknown")
 
-			-- name (optional)
-			if p.name then
-				draw.SimpleText( p.name, self.fonts.pri, x, self.scoreY, Color(255,255,255,self.subAlpha or 255), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER )
-			end
+			local x = self.x
+			local y = startY + (i - 1) * step
 
-			-- score
-			local score = p.score or 0
-
-			DrawCODText( tostring(score), tostring(score), self.fonts.pri, self.fonts.sec, self.fonts.shd, x, self.scoreY + CoDHUD_S(28), Color(255,255,255,self.iconAlpha or 255), "center" )
+			DrawCODText( text, text, self.fonts.pri, self.fonts.sec, self.fonts.shd, x, y, GetSafeColor(Color(0,0,0)) )
 		end
 	end
 

@@ -9,7 +9,7 @@ if CLIENT then
         NEAR_DISTANCE       = 500, 
         MIN_SCALE           = 0.6, 
         MAX_SCALE           = 1.0, 
-        FOCUS_TIME          = 0.4, 
+        FOCUS_TIME          = 0.1, 
         
         -- Death Icon Settings
         DEATH_ICON_DURATION = 3.7, 
@@ -147,7 +147,11 @@ if CLIENT then
             local canSee = focusTimers[entID] >= CFG.FOCUS_TIME
             
             if canSee then
-                targetAlphas[entID] = math.Approach(targetAlphas[entID], CFG.GLOBAL_ALPHA, FrameTime() * 700)
+				if CoDHUD_IsFriendly(LocalPlayer(), ent) then
+					targetAlphas[entID] = 255
+				else
+					targetAlphas[entID] = math.Approach(targetAlphas[entID], CFG.GLOBAL_ALPHA, FrameTime() * 700)
+				end
             else
                 targetAlphas[entID] = math.Approach(targetAlphas[entID], 0, FrameTime() * 500)
             end

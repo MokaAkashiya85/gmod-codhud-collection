@@ -41,37 +41,46 @@ local function GetScorebarData()
 
     data.mins = mins
 
-    if isDM then -- FFA
-        local players = {}
+	if isDM then -- FFA
+		local players = {}
 
-        for _, p in ipairs(player.GetAll()) do
-            if IsValid(p) then
-                table.insert(players, { ply = p, score = math.max(0, p:Frags()) })
-            end
-        end
+		for _, p in ipairs(player.GetAll()) do
+			if IsValid(p) then
+				table.insert(players, { ply = p, score = math.max(0, p:Frags()) })
+			end
+		end
 
-        table.sort(players, function(a, b)
-            return a.score > b.score
-        end)
+		table.sort(players, function(a, b)
+			return a.score > b.score
+		end)
 
-        data.dmLeaderboard = players
+		data.dmLeaderboard = players
 
-        local myScore = math.max(0, ply:Frags())
-        data.clientScore = myScore
+		local myScore = math.max(0, ply:Frags())
+		data.clientScore = myScore
 
-        local myIndex = 1
-        for i, v in ipairs(players) do
-            if v.ply == ply then
-                myIndex = i
-                break
-            end
-        end
+		local myIndex = 1
+		for i, v in ipairs(players) do
+			if v.ply == ply then
+				myIndex = i
+				break
+			end
+		end
 
-        data.dmPlacement = myIndex
+		data.dmPlacement = myIndex
 
-        local enemy = players[myIndex + 1]
-        data.enemyScore = enemy and enemy.score or 0
-        data.enemyPlayer = enemy and enemy.ply or nil
+		local first = players[1]
+		local second = players[2]
+
+		-- 🧠 IMPORTANT FIX: NEVER overwrite clientScore
+
+		if myIndex == 1 then
+			data.enemyScore = second and second.score or 0
+			data.enemyPlayer = second and second.ply or nil
+		else
+			data.enemyScore = first and first.score or 0
+			data.enemyPlayer = first and first.ply or nil
+		end
     else -- TDM
         local factionScores = {}
 

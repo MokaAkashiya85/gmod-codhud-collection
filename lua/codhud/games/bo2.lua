@@ -139,9 +139,9 @@ CoDHUD[hudtype].TextStrings = {
 }
 
 CoDHUD[hudtype].VoiceCallouts = {
-	winningmusic = "music/bo1/timers/eagleclaw_timer_a.wav",
-	losingmusic = "music/bo1/timers/invictus_time_a.wav",
-	drawmusic = "music/bo1/results/draw/pentagon_lose_a.wav",
+	winningmusic = "music/bo2/timers/mus_mp_timer_00.SN65.pc.snd.wav",
+	losingmusic = "music/bo2/timers/mus_mp_timer_01.SN65.pc.snd.wav",
+	drawmusic = "music/bo2/draw/mus_draw_00.SN65.pc.snd.wav",
 
 	winningfight = "winning",
 	losingfight = "losing",
@@ -173,6 +173,11 @@ CoDHUD.Gamemodes[hudtype] = {
 	{ "#MW2_MPUI_CAPTURE_THE_FLAG", "ctf" },
 	{ "#MW2_MPUI_HEADQUARTERS", "hq" },
 	{ "#MW2_MPUI_DD", "dd" },
+}
+
+CoDHUD.Gamemodes[hudtype].Names = {
+    war = "MW2_MPUI_WAR",
+    dm  = "MW2_MPUI_DEATHMATCH",
 }
 
 CoDHUD.Gamemodes[hudtype].Hints = {
@@ -439,7 +444,7 @@ local function re_teams( ... )
     -- Teams
     CoDHUD_HeaderQueue.Push({
 		type = "bo",
-        teams = scaledTeams, -- use scaled version
+        teams = scaledTeams,
 		dmscore = dmScore,
 		writeSounds = {""},
 		writeSpeed = 8,
@@ -1136,7 +1141,7 @@ local function minimap( ... )
         
         local isAlive = (ent:IsPlayer() and ent:Alive()) or (ent:IsNPC() and ent:Health() > 0)
         local targetFaction = ent:GetNW2String("CoDHUD_Faction", "")
-        local isFriendly = (localFaction ~= "" and targetFaction == localFaction)
+        local isFriendly = (CoDHUD_ActiveGamemodeCL ~= "dm") and (localFaction ~= "" and targetFaction == localFaction)
         local entIdx = ent:EntIndex()
 
         -- Visibility / Shared Vision Check (Enemies only)
@@ -1530,6 +1535,10 @@ local function scoreboard( ... )
 		SQUEEZE_ONE = -0,
 		SQUEEZE_ONE_BEFORE = -0,
 
+		-- GM and Map Name
+		MAPNAME_X_POS = 425,
+		MAPNAME_Y_OFF = 150,
+		
 		-- Stat Offsets (from barRight, going left)
 		OFF_PING = 10,
 		OFF_ASSISTS = 100,
@@ -1598,7 +1607,7 @@ local function scoreboard( ... )
 
 		-- Text
 		draw.SimpleTextOutlined(ply:Nick(), "BO2_Scoreboard_Text", x + CoDHUD_SX(80), y + (h / 2), tCol, TEXT_ALIGN_LEFT,  TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0))
-		draw.SimpleTextOutlined(ply:Ping(), "BO2_Scoreboard_Text", barRight - CoDHUD_SX(CFG.OFF_PING),  y + (h / 2), tCol, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0))
+		draw.SimpleTextOutlined(ply:Ping(), "BO2_Scoreboard_Text", barRight - CoDHUD_SX(CFG.OFF_PING),  y + (h / 2), tCol, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0))
 		draw.SimpleTextOutlined(deaths, "BO2_Scoreboard_Text", barRight - CoDHUD_SX(CFG.OFF_DEATHS),  y + (h / 2), tCol, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0))
 		draw.SimpleTextOutlined(kd, "BO2_Scoreboard_Text", barRight - CoDHUD_SX(CFG.OFF_RATIO),  y + (h / 2), tCol, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0))
 		draw.SimpleTextOutlined(ply:GetNWInt("Assists", 0), "BO2_Scoreboard_Text", barRight - CoDHUD_SX(CFG.OFF_ASSISTS), y + (h / 2), tCol, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0))
@@ -1610,38 +1619,38 @@ local function scoreboard( ... )
     local lp = LocalPlayer()
 
     -- 1. IDENTIFY FACTIONS & PLAYERS
-	local factions = {}
+	local groups = {}
 
-	for _, p in ipairs(player.GetAll()) do
-		local fac = p:GetNW2String("CoDHUD_Faction", "rangers")
-		if fac == "" then fac = "rangers" end
+	if CoDHUD_ActiveGamemodeCL == "dm" then
+		local allPlayers = player.GetAll()
+		table.sort(allPlayers, SortLogic)
+		groups = { { key = "dm", players = allPlayers, score = 0 } }
+	else
+		local factions = {}
 
-		factions[fac] = factions[fac] or {}
-		table.insert(factions[fac], p)
+		for _, p in ipairs(player.GetAll()) do
+			local fac = p:GetNW2String("CoDHUD_Faction", "rangers")
+			if fac == "" then fac = "rangers" end
+
+			factions[fac] = factions[fac] or {}
+			table.insert(factions[fac], p)
+		end
+
+		for fac, players in pairs(factions) do
+			table.sort(players, SortLogic)
+			table.insert(groups, { key = fac, players = players, score = 0 })
+		end
 	end
 
-    -- 2. SORT PLAYERS
-	local factionList = {}
-
-	for fac, players in pairs(factions) do
-		table.sort(players, SortLogic)
-
-		table.insert(factionList, {
-			key = fac,
-			players = players,
-			score = 0
-		})
-	end
-
-	for _, f in ipairs(factionList) do
+	for _, g in ipairs(groups) do
 		local score = 0
-		for _, p in ipairs(f.players) do
+		for _, p in ipairs(g.players) do
 			score = score + math.max(0, p:Frags())
 		end
-		f.score = score
+		g.score = score
 	end
 
-	table.sort(factionList, function(a, b)
+	table.sort(groups, function(a, b)
 		return a.score > b.score
 	end)
 
@@ -1653,7 +1662,7 @@ local function scoreboard( ... )
 	
 	CoDHUD.Scoreboard.ContentHeight = 0
 
-	for _, facData in ipairs(factionList) do
+	for _, facData in ipairs(groups) do
 		local visualPlayers = math.max(#facData.players, 2)
 		local factionHeight = (visualPlayers * (barH + CoDHUD_S(CFG.ROW_GAP))) + CoDHUD_S(CFG.TEAM_GAP)
 
@@ -1691,6 +1700,11 @@ local function scoreboard( ... )
 	local timeStr = string.format("%d:%02d", mins, secs)
 	draw.SimpleTextOutlined( timeStr, "BO2_Scoreboard_Timer", CoDHUD_S(CFG.TIMER_X_POS), headerY, Color(255,255,255), TEXT_ALIGN_LEFT, 0, outlined and 1 or 0, Color(0,0,0) )
 	
+	local gm = CoDHUD_ActiveGamemodeCL
+	local gmname = language.GetPhrase(CoDHUD.Gamemodes[hudtype].Names[gm] or gm)
+	
+	draw.SimpleTextOutlined( gmname .. " : " .. game:GetMap(), "BO2_Scoreboard_Timer", CoDHUD_S(CFG.MAPNAME_X_POS), headerY, Color(255,255,255), TEXT_ALIGN_LEFT, 0, outlined and 1 or 0, Color(0,0,0) )
+	
 	-- Stats column headers
 	draw.SimpleTextOutlined( language.GetPhrase("BO1_CGAME_SB_PING"), "BO2_Scoreboard_Text", barRight - CoDHUD_SX(CFG.OFF_PING) + CoDHUD_SX(4), headerY, Color(255,255,255), TEXT_ALIGN_RIGHT, 0, outlined and 1 or 0, Color(0,0,0) )
 	draw.SimpleTextOutlined( language.GetPhrase("BO1_CGAME_SB_DEATHS"), "BO2_Scoreboard_Text", barRight - CoDHUD_SX(CFG.OFF_DEATHS), headerY, Color(255,255,255), TEXT_ALIGN_CENTER, 0, outlined and 1 or 0, Color(0,0,0) )
@@ -1698,14 +1712,23 @@ local function scoreboard( ... )
 	draw.SimpleTextOutlined( language.GetPhrase("BO1_CGAME_SB_ASSISTS"), "BO2_Scoreboard_Text", barRight - CoDHUD_SX(CFG.OFF_ASSISTS), headerY, Color(255,255,255), TEXT_ALIGN_CENTER, 0, outlined and 1 or 0, Color(0,0,0) )
 	draw.SimpleTextOutlined( language.GetPhrase("BO1_CGAME_SB_KILLS"), "BO2_Scoreboard_Text", barRight - CoDHUD_SX(CFG.OFF_KILLS), headerY, Color(255,255,255), TEXT_ALIGN_CENTER, 0, outlined and 1 or 0, Color(0,0,0) )
 	draw.SimpleTextOutlined( language.GetPhrase("BO1_CGAME_SB_SCORE"), "BO2_Scoreboard_Text", barRight - CoDHUD_SX(CFG.OFF_SCORE), headerY, Color(255,255,255), TEXT_ALIGN_CENTER, 0, outlined and 1 or 0, Color(0,0,0) )
-		
-		
+
 	render.SetScissorRect(0, viewportTop, ScrW(), viewportBottom, true)
-		for fi, facData in ipairs(factionList) do
+		for fi, facData in ipairs(groups) do
 			local players = facData.players
+			
+			local leader = players[1]
+			local leaderScore = players[1]:Frags()
+
 			local facKey = facData.key
 			local score = facData.score or 0
-			local fData = CoDHUD.Factions[hudtype] and CoDHUD.Factions[hudtype][facKey] or { name = facKey, short = facKey, color = Color(120,120,120) }
+			local fData
+
+			if CoDHUD_ActiveGamemodeCL == "dm" then
+				fData = { name = "DM", short = "DM", color = Color(200, 200, 200), glow = Color(255, 255, 255) }
+			else
+				fData = CoDHUD.Factions[hudtype] and CoDHUD.Factions[hudtype][facKey] or { name = facKey, short = facKey, color = Color(120,120,120), glow = Color(255,255,255) }
+			end
 
 			local sectionY = startY
 
@@ -1730,33 +1753,50 @@ local function scoreboard( ... )
 			surface.SetMaterial(MAT_BOXFG)
 			surface.SetDrawColor(255,255,255)
 			surface.DrawTexturedRect( factionRectX, factionRectY, factionRectW, factionRectH )
-
-			-- ICON
-			local iconPath = CoDHUD.Factions[hudtype][facKey].scoreIcon
-			local mat = Material(iconPath, "smooth")
-
-			surface.SetMaterial(mat)
-			surface.SetDrawColor(255,255,255,255)
-
+				
 			local iconSize = CoDHUD_S(CFG.ICON_SIZE)
 			local iconX = barX + CoDHUD_S(CFG.ICON_X_OFF)
 			local iconY = sectionY + CoDHUD_S(CFG.ICON_Y_OFF)
-			local minPlayers = 2
-			local maxPlayersForFullIcon = 4
-			local revealT = math.Clamp( (playerCount - minPlayers) / (maxPlayersForFullIcon - minPlayers), 0, 1 )
-			local visibleFrac = Lerp(revealT, 0.6, 1)
-			surface.DrawTexturedRectUV( iconX, iconY, iconSize, iconSize * visibleFrac, 0, 0, 1, visibleFrac )
+				
+			if CoDHUD_ActiveGamemodeCL ~= "dm" then
+				-- FACTION ICON (unchanged)
+				local iconPath = CoDHUD.Factions[hudtype][facKey].scoreIcon
+				local mat = Material(iconPath, "smooth")
+
+				surface.SetMaterial(mat)
+				surface.SetDrawColor(255,255,255,255)
+
+				local minPlayers = 2
+				local maxPlayersForFullIcon = 4
+				local revealT = math.Clamp((playerCount - minPlayers) / (maxPlayersForFullIcon - minPlayers), 0, 1)
+				local visibleFrac = Lerp(revealT, 0.6, 1)
+
+				surface.DrawTexturedRectUV(iconX, iconY, iconSize, iconSize * visibleFrac, 0, 0, 1, visibleFrac)
+			end
 
 			surface.SetMaterial(MAT_BOXOVERLAY)
 			surface.SetDrawColor(fData.glow)
 			surface.DrawTexturedRect( factionRectX, factionRectY + CoDHUD_SY(3), iconSize * 1.4, factionRectH )
 
-			draw.SimpleTextOutlined( score, "BO2_Scoreboard_Score", barX + CoDHUD_SX(CFG.SCORE_NAME_X), sectionY + CoDHUD_S(CFG.SCORE_NAME_Y) - CoDHUD_S(22), Color(255,255,255), TEXT_ALIGN_LEFT, 0, outlined and 1 or 0, Color(0,0,0) )
+			local displayScore = leaderScore or 0
+
+			draw.SimpleTextOutlined( displayScore, "BO2_Scoreboard_Score", barX + CoDHUD_SX(CFG.SCORE_NAME_X), sectionY + CoDHUD_S(CFG.SCORE_NAME_Y) - CoDHUD_S(22), Color(255,255,255), TEXT_ALIGN_LEFT, 0, outlined and 1 or 0, Color(0,0,0) )
 			
 			surface.SetFont("BO2_Scoreboard_Score")
 			local scorew, scoreh = surface.GetTextSize(score)
+			local facname
+
+			if CoDHUD_ActiveGamemodeCL == "dm" then
+				if IsValid(leader) then
+					facname = leader:Nick()
+				else
+					facname = "Unknown"
+				end
+			else
+				facname = fData.short .. "_CAPS"
+			end
 			
-			draw.SimpleTextOutlined( language.GetPhrase(fData.short .. "_CAPS"), "BO2_Scoreboard_Text", barX + CoDHUD_S(CFG.FAC_NAME_X), sectionY + CoDHUD_S(CFG.FAC_NAME_Y), fData.glow, 0,0, outlined and 1 or 0, Color(0,0,0) )
+			draw.SimpleTextOutlined( language.GetPhrase(facname), "BO2_Scoreboard_Text", barX + CoDHUD_S(CFG.FAC_NAME_X), sectionY + CoDHUD_S(CFG.FAC_NAME_Y), fData.glow, 0,0, outlined and 1 or 0, Color(0,0,0) )
 
 			-- rows
 			for i, ply in ipairs(players) do

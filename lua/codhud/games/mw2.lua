@@ -174,6 +174,11 @@ CoDHUD.Gamemodes[hudtype] = {
 	{ "#MW2_MPUI_GTNW", "gtnw" },
 }
 
+CoDHUD.Gamemodes[hudtype].Names = {
+    war = "MW2_MPUI_WAR",
+    dm  = "MW2_MPUI_DEATHMATCH",
+}
+
 CoDHUD.Gamemodes[hudtype].Hints = {
     ["war"] = "MW2_MP_OBJ_WAR_HINT", -- TDM
     ["dm"] = "MW2_MP_OBJ_DM_HINT", -- FFA
@@ -434,6 +439,7 @@ local function re_teams( ... )
     local ws_limit = select(3, ...)
     local re_result_glow = select(4, ...)
     local CFG = select(5, ...)
+    local dmScore = select(6, ...)
 
     local multiplier = 100
 
@@ -448,7 +454,8 @@ local function re_teams( ... )
 
     -- Teams
     CoDHUD_HeaderQueue.Push({
-        teams = scaledTeams, -- use scaled version
+        teams = scaledTeams,
+		dmscore = dmScore,
         x = CoDHUD_SX(960),
         y = CoDHUD_SY(400),
         multiple = true,
@@ -1000,7 +1007,7 @@ local function minimap( ... )
         
         local isAlive = (ent:IsPlayer() and ent:Alive()) or (ent:IsNPC() and ent:Health() > 0)
         local targetFaction = ent:GetNW2String("CoDHUD_Faction", "")
-        local isFriendly = (localFaction ~= "" and targetFaction == localFaction)
+        local isFriendly = (CoDHUD_ActiveGamemodeCL ~= "dm") and (localFaction ~= "" and targetFaction == localFaction)
         local entIdx = ent:EntIndex()
 
         -- Visibility / Shared Vision Check (Enemies only)
@@ -1310,12 +1317,21 @@ local function scorebar(data)
 		DrawSqueezedText( timeStr, "MW2_Timer", barX + CoDHUD_SX(CFG.TIMER_X) + xShift, barY + CoDHUD_SY(CFG.TIMER_Y), timecol, CFG.SQUEEZE, CFG.SQUEEZE_ONE, 1, CFG.SQUEEZE_ONE_BEFORE, CoDHUD_SX(CFG.TIMER_OUTLINE_W) )
 	end
 	
-	-- Status Colors
-	data.tiedCol = Color(110, 220, 120, 255)
-	data.winningCol = Color(215, 110, 120, 255)
-	data.losingCol = Color(230, 230, 110, 255)
+	-- Status
+	local text = language.GetPhrase(data.statusText)
+	local textcol = data.statusCol
 
-    draw.SimpleTextOutlined( language.GetPhrase(data.statusText), "MW2_Status", barX + CoDHUD_SX(CFG.STATUS_X), barY + CoDHUD_SY(CFG.STATUS_Y), data.statusCol, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP, outlined and 1 or 0, Color(0,0,0) )
+	local alt = math.floor(CurTime() / 10) % 2 == 1
+
+	local gm = CoDHUD_ActiveGamemodeCL
+	local gmname = language.GetPhrase(CoDHUD.Gamemodes[hudtype].Names[gm] or gm)
+
+	if alt then
+		text = gmname
+		textcol = Color(230, 230, 110)
+	end
+
+    draw.SimpleTextOutlined( text, "MW2_Status", barX + CoDHUD_SX(CFG.STATUS_X), barY + CoDHUD_SY(CFG.STATUS_Y), textcol, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP, outlined and 1 or 0, Color(0,0,0) )
 
     -- SCORE BARS (UNCHANGED)
     local clientKills   = data.clientScore
@@ -1671,38 +1687,38 @@ local function scoreboard( ... )
     local lp = LocalPlayer()
 
     -- 1. IDENTIFY FACTIONS & PLAYERS
-	local factions = {}
+	local groups = {}
 
-	for _, p in ipairs(player.GetAll()) do
-		local fac = p:GetNW2String("CoDHUD_Faction", "rangers")
-		if fac == "" then fac = "rangers" end
+	if CoDHUD_ActiveGamemodeCL == "dm" then
+		local allPlayers = player.GetAll()
+		table.sort(allPlayers, SortLogic)
+		groups = { { key = "dm", players = allPlayers, score = 0 } }
+	else
+		local factions = {}
 
-		factions[fac] = factions[fac] or {}
-		table.insert(factions[fac], p)
-	end
+		for _, p in ipairs(player.GetAll()) do
+			local fac = p:GetNW2String("CoDHUD_Faction", "rangers")
+			if fac == "" then fac = "rangers" end
 
-    -- 2. SORT PLAYERS
-	local factionList = {}
-
-	for fac, players in pairs(factions) do
-		table.sort(players, SortLogic)
-
-		table.insert(factionList, {
-			key = fac,
-			players = players,
-			score = 0
-		})
-	end
-
-	for _, f in ipairs(factionList) do
-		local score = 0
-		for _, p in ipairs(f.players) do
-			score = score + math.max(0, p:Frags() * 100)
+			factions[fac] = factions[fac] or {}
+			table.insert(factions[fac], p)
 		end
-		f.score = score
+
+		for fac, players in pairs(factions) do
+			table.sort(players, SortLogic)
+			table.insert(groups, { key = fac, players = players, score = 0 })
+		end
 	end
 
-	table.sort(factionList, function(a, b)
+	for _, g in ipairs(groups) do
+		local score = 0
+		for _, p in ipairs(g.players) do
+			score = score + math.max(0, p:Frags())
+		end
+		g.score = score
+	end
+
+	table.sort(groups, function(a, b)
 		return a.score > b.score
 	end)
 
@@ -1714,7 +1730,7 @@ local function scoreboard( ... )
 	
 	CoDHUD.Scoreboard.ContentHeight = 0
 
-	for _, facData in ipairs(factionList) do
+	for _, facData in ipairs(groups) do
 		local factionHeight = CoDHUD_S(CFG.ICON_SIZE) + (#facData.players * (barH + CoDHUD_S(CFG.ROW_GAP))) + CoDHUD_S(CFG.TEAM_GAP)
 
 		CoDHUD.Scoreboard.ContentHeight = CoDHUD.Scoreboard.ContentHeight + factionHeight
@@ -1735,26 +1751,30 @@ local function scoreboard( ... )
 		draw.SimpleTextOutlined( language.GetPhrase("MW2_CGAME_SB_KILLS"), "MW2_Scoreboard_Text", barRight - CoDHUD_S(CFG.OFF_KILLS), headerY, Color(255,255,255), TEXT_ALIGN_RIGHT, 0, outlined and 1 or 0, Color(0,0,0) )
 		draw.SimpleTextOutlined( language.GetPhrase("MW2_CGAME_SB_SCORE"), "MW2_Scoreboard_Text", barRight - CoDHUD_S(CFG.OFF_SCORE), headerY, Color(255,255,255), TEXT_ALIGN_RIGHT, 0, outlined and 1 or 0, Color(0,0,0) )
 		
-		for fi, facData in ipairs(factionList) do
+		for fi, facData in ipairs(groups) do
 			local players = facData.players
 			local facKey = facData.key
-			local fData = CoDHUD.Factions[hudtype] and CoDHUD.Factions[hudtype][facKey] or {
-				name = facKey,
-				short = facKey,
-				color = Color(120,120,120)
-			}
+			local fData
+
+			if CoDHUD_ActiveGamemodeCL == "dm" then
+				fData = { name = "DM", short = "DM", color = Color(200, 200, 0), glow = Color(255, 255, 255) }
+			else
+				fData = CoDHUD.Factions[hudtype] and CoDHUD.Factions[hudtype][facKey] or { name = facKey, short = facKey, color = Color(120,120,120), glow = Color(255,255,255) }
+			end
 
 			local sectionY = startY
 
-			-- ICON
-			local iconPath = CoDHUD.Factions[hudtype][facKey].spawnIcon
-			local mat = Material(iconPath, "smooth")
+			if CoDHUD_ActiveGamemodeCL ~= "dm" then
+				-- ICON
+				local iconPath = CoDHUD.Factions[hudtype][facKey].spawnIcon
+				local mat = Material(iconPath, "smooth")
 
-			surface.SetMaterial(mat)
-			surface.SetDrawColor(255,255,255,255)
-			surface.DrawTexturedRect(barX + CoDHUD_S(CFG.ICON_X_OFF), sectionY + CoDHUD_S(CFG.ICON_Y_OFF), CoDHUD_S(CFG.ICON_SIZE), CoDHUD_S(CFG.ICON_SIZE))
+				surface.SetMaterial(mat)
+				surface.SetDrawColor(255,255,255,255)
+				surface.DrawTexturedRect(barX + CoDHUD_S(CFG.ICON_X_OFF), sectionY + CoDHUD_S(CFG.ICON_Y_OFF), CoDHUD_S(CFG.ICON_SIZE), CoDHUD_S(CFG.ICON_SIZE))
 
-			draw.SimpleTextOutlined( language.GetPhrase(fData.short) .. " (" .. #players .. ")", "MW2_Scoreboard_Text", barX + CoDHUD_S(CFG.FAC_NAME_X), sectionY + CoDHUD_S(CFG.FAC_NAME_Y), Color(255,255,255), 0,0, outlined and 1 or 0, Color(0,0,0) )
+				draw.SimpleTextOutlined( language.GetPhrase(fData.short) .. " (" .. #players .. ")", "MW2_Scoreboard_Text", barX + CoDHUD_S(CFG.FAC_NAME_X), sectionY + CoDHUD_S(CFG.FAC_NAME_Y), Color(255,255,255), 0,0, outlined and 1 or 0, Color(0,0,0) )
+			end
 
 			-- rows
 			for i, ply in ipairs(players) do
@@ -1786,7 +1806,7 @@ local function scoreboard( ... )
 	local myFaction = lp:GetNW2String("CoDHUD_Faction", "rangers")
 	if myFaction == "" then myFaction = "rangers" end
 	
-	table.sort(factionList, function(a, b)
+	table.sort(groups, function(a, b)
 		if a.key == myFaction then return true end
 		if b.key == myFaction then return false end
 		return a.score > b.score
@@ -1802,7 +1822,9 @@ local function scoreboard( ... )
 
 	surface.SetFont("MW2_Scoreboard_Text")
 
-	for _, fac in ipairs(factionList) do
+	if CoDHUD_ActiveGamemodeCL == "dm" then return end
+
+	for _, fac in ipairs(groups) do
 		local key = fac.key
 		local players = fac.players
 		local score = fac.score or 0

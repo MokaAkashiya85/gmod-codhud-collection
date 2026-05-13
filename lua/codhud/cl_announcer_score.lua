@@ -151,6 +151,8 @@ hook.Add("Think", "CoDHUD_Announcer_Score_Think", function()
         end
     end
 
+	if CoDHUD_ActiveGamemodeCL == "dm" then return end
+
     -- 7. General Score State Triggers
     local currentState = "tied"
     if myScore > bestEnemyScore then 

@@ -43,7 +43,7 @@ local rs_dig_scale = 1.0
 local rs_bw         = 0
 local rs_boost_done = false
 local rs_locked_ang = nil
-CoDHUD_ActiveGamemodeCL	= "war"
+CoDHUD_ActiveGamemodeCL	= "dm"
 
 local rs_header = nil
 local rs_objective = nil
@@ -247,8 +247,9 @@ net.Receive("CoDHUD_RoundStart", function()
     local gamemode = net.ReadString()
     local timestart = net.ReadInt(6)
     local maxtimer = net.ReadInt(32)
-
     CoDHUD_RoundEndTime = net.ReadFloat()
+
+	CoDHUD_ActiveGamemodeCL = gamemode
 
 	if maxtimer > 0 then
 		CoDHUD_MatchMaxTime = maxtimer * 60 -- convert once, store once
