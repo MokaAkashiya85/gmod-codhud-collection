@@ -2181,8 +2181,8 @@ local function weaponinfo(...)
 			local iW      = CoDHUD_S(ammoCfg.w)
 			local iH      = CoDHUD_S(ammoCfg.h)
 			local iGap    = CoDHUD_S(ammoCfg.gap)
-			local iYOff   = CoDHUD_SY(92+iH*0.5-ammoCfg.y_off)
-			local iXStart = CoDHUD_SX(-291-iW+ammoCfg.x_start)
+			local iYOff   = CoDHUD_SY(92-ammoCfg.y_off)
+			local iXStart = CoDHUD_SX(-291+ammoCfg.x_start)
 
 			surface.SetMaterial(MAT_AMMO[ammoKey])
 
@@ -2210,8 +2210,8 @@ local function weaponinfo(...)
 				local col = i % rowSize
 				local row = math.floor(i / rowSize)
 
-				local xPos = barX + barW + iXStart - (col * (iW + iGap))
-				local yPos = barY + iYOff + (row * (iH + rowGap))
+				local xPos = barX + barW + iXStart - iW - (col * (iW + iGap))
+				local yPos = barY + iYOff + iH * 0.5 + (row * (iH + rowGap))
 
 				surface.DrawTexturedRect(xPos, yPos, iW, iH)
 			end
@@ -2228,8 +2228,8 @@ local function weaponinfo(...)
         local iW      = CoDHUD_S(ammoCfg.w)
         local iH      = CoDHUD_S(ammoCfg.h)
         local iGap    = CoDHUD_S(ammoCfg.gap)
-        local iYOff   = CoDHUD_SY(77+iH*-0.5-ammoCfg.y_off)
-        local iXStart = CoDHUD_SX(-291-iW+ammoCfg.x_start)
+        local iYOff   = CoDHUD_SY(74-ammoCfg.y_off)
+        local iXStart = CoDHUD_SX(-291+ammoCfg.x_start)
 
         surface.SetMaterial(MAT_AMMO[ammoKey])
 
@@ -2257,8 +2257,8 @@ local function weaponinfo(...)
             local col = i % rowSize
             local row = math.floor(i / rowSize)
 
-            local xPos = barX + barW + iXStart - (col * (iW + iGap))
-            local yPos = barY + iYOff - (row * (iH + rowGap))
+            local xPos = barX + barW + iXStart - iW - (col * (iW + iGap))
+            local yPos = barY + iYOff - iH * 0.5 - (row * (iH + rowGap))
 
             surface.DrawTexturedRect(xPos, yPos, iW, iH)
         end
