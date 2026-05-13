@@ -4,6 +4,112 @@
 util.AddNetworkString("CoDHUD_Challenge_Generic")
 util.AddNetworkString("CoDHUD_Challenge_Flyswatter")
 
+-- Stat-tracking network strings
+util.AddNetworkString("CoDHUD_SendFullStats")
+util.AddNetworkString("CoDHUD_ClientFullSync")
+util.AddNetworkString("CoDHUD_ClientStatUpdate")
+util.AddNetworkString("CoDHUD_ClientCompletedChallenge")
+
+-- [[ STAT-TRACKING AND SAVING ]]
+PlayerProfiles = PlayerProfiles or {}
+
+local function GetProfile(ply)
+    PlayerProfiles[ply] = PlayerProfiles[ply] or {}
+
+    local p = PlayerProfiles[ply]
+
+    p.kills = p.kills or 0
+    p.deaths = p.deaths or 0
+    p.headshots = p.headshots or 0
+
+    p.xp = p.xp or 0
+
+    p.weaponkills = p.weaponkills or {}
+    p.weaponheadshots = p.weaponheadshots or {}
+
+    -- challenge counters
+    p.oneShots = p.oneShots or 0
+    p.crouchKills = p.crouchKills or 0
+    p.grenadeKills = p.grenadeKills or 0
+    p.fragMultis = p.fragMultis or 0
+    p.rpgMultis = p.rpgMultis or 0
+    p.rivals = p.rivals or {}
+    p.potatoKills = p.potatoKills or 0
+
+    return p
+end
+
+net.Receive("CoDHUD_SendFullStats", function(_, ply)
+    local data = net.ReadTable()
+
+    ply.CoDHUD_Persistent = data or {}
+end)
+
+local function SendProfile(ply)
+	PrintTable(GetProfile(ply).weaponkills)
+	
+    net.Start("CoDHUD_ClientFullSync")
+        net.WriteTable(GetProfile(ply))
+    net.Send(ply)
+end
+
+local function GetPersistentHUD(ply)
+    ply.CoDHUD_Persistent = ply.CoDHUD_Persistent or {}
+    ply.CoDHUD_Persistent.huds = ply.CoDHUD_Persistent.huds or {}
+
+    local hud = CoDHUD_GetHUDType()
+
+    ply.CoDHUD_Persistent.huds[hud] =
+        ply.CoDHUD_Persistent.huds[hud] or {
+            kills = 0,
+            deaths = 0,
+            headshots = 0,
+            xp = 0,
+
+            level = {
+                level = 1,
+                name = "Private",
+                short = "PVT",
+                nextxp = 1000
+            },
+
+            weaponkills = {},
+            weaponheadshots = {}
+        }
+
+    return ply.CoDHUD_Persistent.huds[hud]
+end
+
+net.Receive("CoDHUD_ClientStatUpdate", function(_, ply)
+    local mode = net.ReadString()
+
+    local stats = GetPersistentHUD(ply)
+
+    if mode == "xp" then
+        local amount = net.ReadInt(32)
+        stats.xp = (stats.xp or 0) + amount
+    end
+
+    if mode == "kill" then
+        local wep = net.ReadString()
+        stats.kills = (stats.kills or 0) + 1
+    end
+
+    if mode == "headshot" then
+        local wep = net.ReadString()
+        stats.headshots = (stats.headshots or 0) + 1
+    end
+end)
+
+net.Receive("CoDHUD_ClientCompletedChallenge", function(_, ply)
+    local id = net.ReadString()
+
+    ply.CoDHUD_Persistent = ply.CoDHUD_Persistent or {}
+    ply.CoDHUD_Persistent.challengescompleted = ply.CoDHUD_Persistent.challengescompleted or {}
+
+    ply.CoDHUD_Persistent.challengescompleted[id] = true
+end)
+
 -- [[ HELPER: TRIGGER CHALLENGE ]]
 local function TriggerChallenge(ply, id, header, level, sub, subval, pts)
     if not IsValid(ply) then return end
@@ -20,19 +126,6 @@ end
 
 -- [[ INITIALIZE SESSION DATA ]]
 hook.Add("PlayerSpawn", "CoDHUD_InitStats", function(ply)
-    ply.CoDHUD_Session = ply.CoDHUD_Session or {
-        kills = 0,
-        headshots = 0,
-        oneShots = 0,
-        grenadeKills = 0,
-        crouchKills = 0,
-        potatoKills = 0,
-        rpgMultis = 0,
-        fragMultis = 0,
-        rivals = {},
-		weaponKills = {},
-		weaponHeadshots = {}
-    }
 
     ply.CoDHUD_Life = {
         weaponsUsed = {},
@@ -47,7 +140,15 @@ hook.Add("PlayerSpawn", "CoDHUD_InitStats", function(ply)
 		weaponKills = {},
 		weaponHeadshots = {}
     }
+	
 end)
+
+-- hook.Add("PlayerInitialSpawn", "CoDHUD_SendStatsBack", function(ply)
+    -- timer.Simple(1, function()
+        -- if not IsValid(ply) then return end
+        -- SendProfile(ply)
+    -- end)
+-- end)
 
 local function GetWeaponClass(ply, inflictor)
     if IsValid(inflictor) and inflictor:IsWeapon() then
@@ -60,21 +161,6 @@ local function GetWeaponClass(ply, inflictor)
     end
 
     return "unknown"
-end
-
-local function RegisterWeaponKill(ply, wepClass, isHeadshot)
-    if not IsValid(ply) or not ply:IsPlayer() then return end
-
-    ply.CoDHUD_Session.weaponKills = ply.CoDHUD_Session.weaponKills or {}
-    ply.CoDHUD_Session.weaponHeadshots = ply.CoDHUD_Session.weaponHeadshots or {}
-
-    ply.CoDHUD_Session.weaponKills[wepClass] =
-        (ply.CoDHUD_Session.weaponKills[wepClass] or 0) + 1
-
-    if isHeadshot then
-        ply.CoDHUD_Session.weaponHeadshots[wepClass] =
-            (ply.CoDHUD_Session.weaponHeadshots[wepClass] or 0) + 1
-    end
 end
 
 local function GetWeaponPrintName(class, ply)
@@ -104,14 +190,16 @@ local function GetWeaponPrintName(class, ply)
 end
 
 local function ProcessWeaponProgress(ply, wepClass, isHeadshot)
-    ply.CoDHUD_Session.weaponKills = ply.CoDHUD_Session.weaponKills or {}
-    ply.CoDHUD_Session.weaponHeadshots = ply.CoDHUD_Session.weaponHeadshots or {}
 
-    local kills = ply.CoDHUD_Session.weaponKills
-    local heads = ply.CoDHUD_Session.weaponHeadshots
+	local prof = GetProfile(ply)
+    local kills = prof.kills
+    local wkills = prof.weaponkills
+    local heads = prof.weaponheadshots
 
-    -- kills[wepClass] = (kills[wepClass] or 0) + 1
-    local weaponKills = kills[wepClass]
+    kills = (kills or 0) + 1
+    wkills[wepClass] = (wkills[wepClass] or 0) + 1
+	
+    local weaponKills = wkills[wepClass]
 
     if isHeadshot then
         heads[wepClass] = (heads[wepClass] or 0) + 1
@@ -149,30 +237,11 @@ hook.Add("PlayerDeath", "CoDHUD_MainTracker", function(victim, inflictor, attack
     if not IsValid(attacker) or not attacker:IsPlayer() or attacker == victim then return end
 
 	local wepClass = GetWeaponClass(attacker, inflictor)
-	
-	attacker.CoDHUD_Session.weaponKills = attacker.CoDHUD_Session.weaponKills or {}
-	attacker.CoDHUD_Session.weaponHeadshots = attacker.CoDHUD_Session.weaponHeadshots or {}
 
-	RegisterWeaponKill(attacker, wepClass, victim:LastHitGroup() == HITGROUP_HEAD)
-
-    attacker.CoDHUD_Session = attacker.CoDHUD_Session or { kills = 0, headshots = 0, oneShots = 0, rivals = {}, grenadeKills = 0, crouchKills = 0, potatoKills = 0, rpgMultis = 0, fragMultis = 0 }
-    attacker.CoDHUD_Life = attacker.CoDHUD_Life or { weaponsUsed = {}, longshots = 0, midAirKills = 0, spawnTime = CurTime(), currentStreak = 0, nearDeathKills = 0, lastKillTick = 0, tickKills = 0, tickHeadshots = 0 }
-
-    -- General Kill Progress
-    attacker.CoDHUD_Session.kills = attacker.CoDHUD_Session.kills + 1
-    attacker.CoDHUD_Life.currentStreak = attacker.CoDHUD_Life.currentStreak + 1
-    
-    local totalKills = attacker.CoDHUD_Session.kills
-	
-    -- if totalKills == 100 then TriggerChallenge( attacker, "marksman1", "MARKSMAN_1", 1, "GET_N_KILLS", 100 )
-    -- elseif totalKills == 250 then TriggerChallenge( attacker, "marksman2", "MARKSMAN_1", 2, "GET_N_KILLS", 250 )
-    -- elseif totalKills == 500 then TriggerChallenge( attacker, "marksman3", "MARKSMAN_1", 3, "GET_N_KILLS", 500 )
-    -- elseif totalKills == 750 then TriggerChallenge( attacker, "marksman4", "MARKSMAN_1", 4, "GET_N_KILLS", 750 )
-    -- elseif totalKills == 1000 then TriggerChallenge( attacker, "marksman5", "MARKSMAN_1", 5, "GET_N_KILLS", 1000 )
-    -- elseif totalKills == 3000 then TriggerChallenge( attacker, "marksman6", "MARKSMAN_1", 6, "GET_N_KILLS", 3000 )
-    -- elseif totalKills == 5000 then TriggerChallenge( attacker, "marksman7", "MARKSMAN_1", 7, "GET_N_KILLS", 5000 )
-    -- elseif totalKills == 10000 then TriggerChallenge( attacker, "marksman8", "MARKSMAN_1", 8, "GET_N_KILLS", 10000 )
-	-- end
+	if victim:IsPlayer() then
+		local prof = GetProfile(victim)
+		prof.deaths = prof.deaths + 1
+	end
 
 	-- Per-Weapon Challenges
 	ProcessWeaponProgress(attacker, wepClass, victim:LastHitGroup() == HITGROUP_HEAD)
@@ -190,28 +259,12 @@ hook.Add("PlayerDeath", "CoDHUD_MainTracker", function(victim, inflictor, attack
         end
     end
 
-    -- 1. HEADSHOTS & ALL PRO
-    if victim:LastHitGroup() == HITGROUP_HEAD then
-		attacker.CoDHUD_Session.headshots = attacker.CoDHUD_Session.headshots + 1
-		attacker.CoDHUD_Session.weaponHeadshots[wepClass] = (attacker.CoDHUD_Session.weaponHeadshots[wepClass] or 0) + 1
-
-        local h = attacker.CoDHUD_Session.headshots
-        -- if h == 50 then TriggerChallenge(attacker, "expert1", "EXPERT_1", 1, "GET_N_HEADSHOTS", 50)
-        -- elseif h == 150 then TriggerChallenge(attacker, "expert2", "EXPERT_1", 2, "GET_N_HEADSHOTS", 150)
-        -- elseif h == 300 then TriggerChallenge(attacker, "expert3", "EXPERT_1", 3, "GET_N_HEADSHOTS", 300)
-        -- elseif h == 750 then TriggerChallenge(attacker, "expert4", "EXPERT_1", 4, "GET_N_HEADSHOTS", 750)
-        -- elseif h == 1500 then TriggerChallenge(attacker, "expert5", "EXPERT_1", 5, "GET_N_HEADSHOTS", 1500)
-        -- elseif h == 2500 then TriggerChallenge(attacker, "expert6", "EXPERT_1", 6, "GET_N_HEADSHOTS", 2500)
-        -- elseif h == 3500 then TriggerChallenge(attacker, "expert7", "EXPERT_1", 7, "GET_N_HEADSHOTS", 3500)
-        -- elseif h == 5000 then TriggerChallenge(attacker, "expert8", "EXPERT_1", 8, "GET_N_HEADSHOTS", 5000)
-		-- end
-    end
-
     -- 2. ONE SHOTS (Ghillie)
     if victim:GetMaxHealth() <= 100 and victim:Health() <= 0 then
-        attacker.CoDHUD_Session.oneShots = attacker.CoDHUD_Session.oneShots + 1
+		local prof = GetProfile(attacker)
+        prof.oneShots = prof.oneShots + 1
 
-        local os = attacker.CoDHUD_Session.oneShots
+        local os = prof.oneShots
         if os == 50 then TriggerChallenge(attacker, "ghillie1", "GHILLIE", 1, "DESC_GHILLIE", 50, 1000)
         elseif os == 100 then TriggerChallenge(attacker, "ghillie2", "GHILLIE", 2, "DESC_GHILLIE", 100, 2500)
         elseif os == 200 then TriggerChallenge(attacker, "ghillie3", "GHILLIE", 3, "DESC_GHILLIE", 200, 5000) end
@@ -228,22 +281,25 @@ hook.Add("PlayerDeath", "CoDHUD_MainTracker", function(victim, inflictor, attack
 
     -- 4. CROUCHING & GRENADES
     if attacker:Crouching() then
-        attacker.CoDHUD_Session.crouchKills = attacker.CoDHUD_Session.crouchKills + 1
-        if attacker.CoDHUD_Session.crouchKills == 5 then TriggerChallenge(attacker, "crouch1", "CROUCH_SHOT", 1, "KILL_N_ENEMIES_WHILE_CROUCHING", 5, 500)
-        elseif attacker.CoDHUD_Session.crouchKills == 15 then TriggerChallenge(attacker, "crouch2", "CROUCH_SHOT", 2, "KILL_N_ENEMIES_WHILE_CROUCHING", 15, 1000)
-        elseif attacker.CoDHUD_Session.crouchKills == 30 then TriggerChallenge(attacker, "crouch3", "CROUCH_SHOT", 3, "KILL_N_ENEMIES_WHILE_CROUCHING", 30, 2500) end
+		local prof = GetProfile(attacker)
+
+        prof.crouchKills = prof.crouchKills + 1
+        if prof.crouchKills == 5 then TriggerChallenge(attacker, "crouch1", "CROUCH_SHOT", 1, "KILL_N_ENEMIES_WHILE_CROUCHING", 5, 500)
+        elseif prof.crouchKills == 15 then TriggerChallenge(attacker, "crouch2", "CROUCH_SHOT", 2, "KILL_N_ENEMIES_WHILE_CROUCHING", 15, 1000)
+        elseif prof.crouchKills == 30 then TriggerChallenge(attacker, "crouch3", "CROUCH_SHOT", 3, "KILL_N_ENEMIES_WHILE_CROUCHING", 30, 2500) end
     end
 
     if inflictor:GetClass() == "npc_grenade_frag" or inflictor:GetClass() == "weapon_frag" then
-        attacker.CoDHUD_Session.grenadeKills = attacker.CoDHUD_Session.grenadeKills + 1
-        if attacker.CoDHUD_Session.grenadeKills == 10 then TriggerChallenge(attacker, "grenade1", "GRENADE_KILL", 1, "KILL_N_ENEMIES_WITH_A_GRENADE", 10, 500)
-        elseif attacker.CoDHUD_Session.grenadeKills == 25 then TriggerChallenge(attacker, "grenade2", "GRENADE_KILL", 2, "KILL_N_ENEMIES_WITH_A_GRENADE", 25, 2500) end
+		local prof = GetProfile(attacker)
+        prof.grenadeKills = prof.grenadeKills + 1
+        if prof.grenadeKills == 10 then TriggerChallenge(attacker, "grenade1", "GRENADE_KILL", 1, "KILL_N_ENEMIES_WITH_A_GRENADE", 10, 500)
+        elseif prof.grenadeKills == 25 then TriggerChallenge(attacker, "grenade2", "GRENADE_KILL", 2, "KILL_N_ENEMIES_WITH_A_GRENADE", 25, 2500) end
 
         -- Hot Potato Check
         if IsValid(attacker:GetActiveWeapon()) and attacker:GetActiveWeapon():GetClass() == "weapon_physcannon" then
-            attacker.CoDHUD_Session.potatoKills = attacker.CoDHUD_Session.potatoKills + 1
-            if attacker.CoDHUD_Session.potatoKills == 5 then TriggerChallenge(attacker, "potato1", "HOT_POTATO", 1, "KILL_N_ENEMIES_WITH_THROWN", 5, 5000)
-            elseif attacker.CoDHUD_Session.potatoKills == 10 then TriggerChallenge(attacker, "potato2", "HOT_POTATO", 2, "KILL_N_ENEMIES_WITH_THROWN", 10, 5000) end
+            prof.potatoKills = prof.potatoKills + 1
+            if prof.potatoKills == 5 then TriggerChallenge(attacker, "potato1", "HOT_POTATO", 1, "KILL_N_ENEMIES_WITH_THROWN", 5, 5000)
+            elseif prof.potatoKills == 10 then TriggerChallenge(attacker, "potato2", "HOT_POTATO", 2, "KILL_N_ENEMIES_WITH_THROWN", 10, 5000) end
         end
     end
 
@@ -282,16 +338,18 @@ hook.Add("PlayerDeath", "CoDHUD_MainTracker", function(victim, inflictor, attack
 
     if attacker.CoDHUD_Life.tickKills == 2 then
         local infClass = inflictor:GetClass()
+		local prof = GetProfile(attacker)
+		
         if infClass == "npc_grenade_frag" or infClass == "weapon_frag" then
-            attacker.CoDHUD_Session.fragMultis = attacker.CoDHUD_Session.fragMultis + 1
-            if attacker.CoDHUD_Session.fragMultis == 5 then TriggerChallenge(attacker, "frag1", "MULTIFRAG", 1, "KILL_2_OR_MORE_ENEMIES2", 5, 2000)
-            elseif attacker.CoDHUD_Session.fragMultis == 25 then TriggerChallenge(attacker, "frag2", "MULTIFRAG", 2, "KILL_2_OR_MORE_ENEMIES2", 25, 5000)
-            elseif attacker.CoDHUD_Session.fragMultis == 50 then TriggerChallenge(attacker, "frag3", "MULTIFRAG", 3, "KILL_2_OR_MORE_ENEMIES2", 50, 10000) end
+            prof.fragMultis = prof.fragMultis + 1
+            if prof.fragMultis == 5 then TriggerChallenge(attacker, "frag1", "MULTIFRAG", 1, "KILL_2_OR_MORE_ENEMIES2", 5, 2000)
+            elseif prof.fragMultis == 25 then TriggerChallenge(attacker, "frag2", "MULTIFRAG", 2, "KILL_2_OR_MORE_ENEMIES2", 25, 5000)
+            elseif prof.fragMultis == 50 then TriggerChallenge(attacker, "frag3", "MULTIFRAG", 3, "KILL_2_OR_MORE_ENEMIES2", 50, 10000) end
         elseif string.find(infClass, "rpg") or string.find(infClass, "rocket") or string.find(infClass, "smg1_grenade") then
-            attacker.CoDHUD_Session.rpgMultis = attacker.CoDHUD_Session.rpgMultis + 1
-            if attacker.CoDHUD_Session.rpgMultis == 5 then TriggerChallenge(attacker, "rpg1", "MULTIRPG", 1, "KILL_2_OR_MORE_ENEMIES", 5, 2000)
-            elseif attacker.CoDHUD_Session.rpgMultis == 25 then TriggerChallenge(attacker, "rpg2", "MULTIRPG", 2, "KILL_2_OR_MORE_ENEMIES", 25, 5000)
-            elseif attacker.CoDHUD_Session.rpgMultis == 50 then TriggerChallenge(attacker, "rpg3", "MULTIRPG", 3, "KILL_2_OR_MORE_ENEMIES", 50, 10000) end
+            prof.rpgMultis = prof.rpgMultis + 1
+            if prof.rpgMultis == 5 then TriggerChallenge(attacker, "rpg1", "MULTIRPG", 1, "KILL_2_OR_MORE_ENEMIES", 5, 2000)
+            elseif prof.rpgMultis == 25 then TriggerChallenge(attacker, "rpg2", "MULTIRPG", 2, "KILL_2_OR_MORE_ENEMIES", 25, 5000)
+            elseif prof.rpgMultis == 50 then TriggerChallenge(attacker, "rpg3", "MULTIRPG", 3, "KILL_2_OR_MORE_ENEMIES", 50, 10000) end
         elseif inflictor:IsWeapon() then
             TriggerChallenge(attacker, "collateral", "COLLATERAL_DAMAGE", nil, "KILL_2_OR_MORE_ENEMIES4", nil, 2000)
             if attacker.CoDHUD_Life.tickHeadshots == 2 then
@@ -302,8 +360,9 @@ hook.Add("PlayerDeath", "CoDHUD_MainTracker", function(victim, inflictor, attack
 
     -- 8. RIVAL
     local vicID = victim:SteamID() or "BOT"
-    attacker.CoDHUD_Session.rivals[vicID] = (attacker.CoDHUD_Session.rivals[vicID] or 0) + 1
-    if attacker.CoDHUD_Session.rivals[vicID] == 5 then TriggerChallenge(attacker, "rival", "RIVAL", nil, "KILL_THE_SAME_ENEMY_5", nil, 3000) end
+	local prof = GetProfile(attacker)
+    prof.rivals[vicID] = (prof.rivals[vicID] or 0) + 1
+    if prof.rivals[vicID] == 5 then TriggerChallenge(attacker, "rival", "RIVAL", nil, "KILL_THE_SAME_ENEMY_5", nil, 3000) end
 end)
 
 -- [[ BACKSTABBER TRACKING ]]
@@ -364,7 +423,6 @@ hook.Add("OnNPCKilled", "CoDHUD_NPCChallenges", function(npc, attacker, inflicto
     if IsValid(attacker) and attacker:IsPlayer() then
         local wepClass = GetWeaponClass(attacker, inflictor or attacker:GetActiveWeapon())
 
-        RegisterWeaponKill(attacker, wepClass, false)
 		ProcessWeaponProgress(attacker, wepClass, false)
 
         local class = npc:GetClass()

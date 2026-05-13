@@ -1,11 +1,37 @@
 ---- [ CLIENT HEADER SYSTEM - MODERN WARFARE 1-3 ] ----
 
+_G.CoDHUD_Presentation = _G.CoDHUD_Presentation or {}
+
+local PRESENT = _G.CoDHUD_Presentation
+
+PRESENT.ActiveType = PRESENT.ActiveType or nil
+
+function PRESENT:IsBusy()
+    return self.ActiveType ~= nil
+end
+
+function PRESENT:Acquire(id)
+    if self.ActiveType and self.ActiveType ~= id then
+        return false
+    end
+
+    self.ActiveType = id
+    return true
+end
+
+function PRESENT:Release(id)
+    if self.ActiveType == id then
+        self.ActiveType = nil
+    end
+end
+
 CoDHUD_Header_MW = {}
 CoDHUD_Header_MW.__index = CoDHUD_Header_MW
 
 CoDHUD_HeaderQueue = CoDHUD_HeaderQueue or {}
 CoDHUD_HeaderQueue.Active = CoDHUD_HeaderQueue.Active or {}
 CoDHUD_HeaderQueue.Queue = {}
+CoDHUD_HeaderQueue.HasPresentationLock = CoDHUD_HeaderQueue.HasPresentationLock or false
 
 local GLITCH = { "a", "¶", "Ð", "ق", "§", "ð", "œ", "ش", "Ф" }
 local BO_SCRAMBLE = { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9" }
@@ -52,6 +78,9 @@ function CoDHUD_Header_MW:New(cfg)
 		sec = "MW2_RE_Sc_Sec",
 		shd = "MW2_RE_Sc_Shd"
 	}
+
+	o.sfx = cfg.sfx or nil
+	o.sfxPlayed = false
 
     o.writeSpeed = cfg.writeSpeed or 16
     o.holdTime   = cfg.holdTime or 2
@@ -668,7 +697,18 @@ end
 -- Draw
 function CoDHUD_Header_MW:Draw()
     if self.phase == "done" then return end
-	
+
+    -- play spawn SFX once
+    if self.sfx and not self.sfxPlayed then
+        if istable(self.sfx) then
+            surface.PlaySound(self.sfx[math.random(#self.sfx)])
+        else
+            surface.PlaySound(self.sfx)
+        end
+
+        self.sfxPlayed = true
+    end
+
 	local outlined = GetConVar("codhud_enable_outlinedtext"):GetBool()
 
 	if self.type == "bo_challenge" then
@@ -1100,19 +1140,23 @@ function CoDHUD_HeaderQueue.Think()
 
     -- spawn next queued header if allowed
 	if #CoDHUD_HeaderQueue.Queue > 0 then
-		local cfg = table.remove(CoDHUD_HeaderQueue.Queue, 1)
-		local new = CoDHUD_Header_MW:New(cfg)
+		local cfg = CoDHUD_HeaderQueue.Queue[1]
 
-		if cfg.multiple then
-			table.insert(CoDHUD_HeaderQueue.Active, new)
-		else
-			-- non-multiple blocks until done
-			if #CoDHUD_HeaderQueue.Active == 0 then
-				table.insert(CoDHUD_HeaderQueue.Active, new)
-			else
-				-- requeue if blocked
-				table.insert(CoDHUD_HeaderQueue.Queue, 1, cfg)
+		local canSpawn = cfg.multiple or #CoDHUD_HeaderQueue.Active == 0
+
+		if canSpawn then
+			if not CoDHUD_HeaderQueue.HasPresentationLock then
+				if not PRESENT:Acquire("header") then
+					return
+				end
+
+				CoDHUD_HeaderQueue.HasPresentationLock = true
 			end
+
+			table.remove(CoDHUD_HeaderQueue.Queue, 1)
+
+			local new = CoDHUD_Header_MW:New(cfg)
+			table.insert(CoDHUD_HeaderQueue.Active, new)
 		end
 	end
 
@@ -1122,9 +1166,14 @@ function CoDHUD_HeaderQueue.Think()
 
         h:Update()
 
-        if h:IsDone() then
-            table.remove(CoDHUD_HeaderQueue.Active, i)
-        end
+		if h:IsDone() then
+			table.remove(CoDHUD_HeaderQueue.Active, i)
+
+			if #CoDHUD_HeaderQueue.Active <= 0 and #CoDHUD_HeaderQueue.Queue <= 0 and CoDHUD_HeaderQueue.HasPresentationLock then
+				PRESENT:Release("header")
+				CoDHUD_HeaderQueue.HasPresentationLock = false
+			end
+		end
     end
 	
 	local groups = {}
@@ -1165,12 +1214,6 @@ hook.Add("DrawOverlay", "CoDHUD_Header_MW_Draw", function()
 	
 	local hud = CoDHUD[CoDHUD_GetHUDType()]
 
-	if hud and hud.MedalsBlockChallenges and _G.CoDHUD_MedalsActive then
-		return
-	end
-
-    -- if _G.CoDHUD_MedalSystem and _G.CoDHUD_MedalSystem.IsBusy() then return end
-	
     if CoDHUD_ShouldHideHUD() then return end
 
     if not CoDHUD_HeaderQueue.Active then return end
