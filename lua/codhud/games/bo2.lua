@@ -1701,7 +1701,7 @@ local function scoreboard( ... )
 	local totalSecs = math.floor(CurTime())
 	local mins, secs = math.floor(totalSecs / 60), totalSecs % 60
 	local timeStr = string.format("%d:%02d", mins, secs)
-	draw.SimpleTextOutlined( timeStr, "BO2_Scoreboard_Timer", CoDHUD_S(CFG.TIMER_X_POS), headerY, Color(255,255,255), TEXT_ALIGN_LEFT, 0, outlined and 1 or 0, Color(0,0,0) )
+	draw.SimpleTextOutlined( timeStr, "BO2_Scoreboard_Timer", headerX + CoDHUD_S(15), headerY, Color(255,255,255), TEXT_ALIGN_LEFT, 0, outlined and 1 or 0, Color(0,0,0) )
 	
 	-- Stats column headers
 	draw.SimpleTextOutlined( language.GetPhrase("BO1_CGAME_SB_PING"), "BO2_Scoreboard_Text", barRight - CoDHUD_SX(CFG.OFF_PING) + CoDHUD_SX(4), headerY, Color(255,255,255), TEXT_ALIGN_RIGHT, 0, outlined and 1 or 0, Color(0,0,0) )
