@@ -1075,6 +1075,7 @@ local function minimap( ... )
 
 	-- 2. LAYER: RADAR BACKGROUND
 	if radar then -- If GMinimap exists
+		local scale = 1 / CoDHUD_GetUIScaleMultiplier()
 		local rx = x + CoDHUD_S(2)
 		local ry = y + CoDHUD_S(2)
 		local rw = w - CoDHUD_S(4)
@@ -1082,7 +1083,7 @@ local function minimap( ... )
 		
 		radar.origin = ply:GetPos()
 		radar.rotation = Angle(0, ply:EyeAngles().y, 0)
-		radar.ratio = 10
+		radar.ratio = 10 * scale
 		
 		if radar._rx ~= rx or radar._ry ~= ry or radar._rw ~= rw or radar._rh ~= rh then
 			radar:SetDimensions(rx, ry, rw, rh)
