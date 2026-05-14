@@ -24,7 +24,7 @@ local function EnsureHUDEntry(hud)
         xp = 0,
 
         level = {
-            level = 0,
+            level = 1,
             name = "",
             short = "0",
             nextxp = 0
@@ -69,15 +69,15 @@ local function GetHUDLevelData(hud)
     return CoDHUD[hud].Levels
 end
 
-local function CalculateLevelFromXP(xp, hud)
-    local levels = GetHUDLevelData(hud)
+function CalculateLevelFromXP(xp, hud)
+    local levels = GetHUDLevelData(hud or CoDHUD_GetHUDType())
 
     if not levels then
-        return 0, nil
+        return 1, nil
     end
 
-    local bestLevel = 0
-    local bestData = levels[0]
+    local bestLevel = 1
+    local bestData = levels[1]
 
     for lvl, data in pairs(levels) do
         local minXP = data[2]
@@ -327,7 +327,7 @@ net.Receive("CoDHUD_OnDeath", function()
     if isLPTar then
         CoDHUD_AddStat(1, "deaths")
     elseif isLPAt then
-        if IsValid( target ) and target:IsNPC() then return end
+        if IsValid( target ) and ( target:IsNPC() or target:IsNextBot() ) then return end
         
         if isHeadshot then
             CoDHUD_AddStat( 1, "headshots" )

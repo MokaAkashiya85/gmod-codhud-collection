@@ -270,11 +270,21 @@ end
 CoDHUD[hudtype].MedalsBlockChallenges = false   -- medals pause challenges
 
 CoDHUD[hudtype].LevelData = {
-	nameprefix = "MW2_",
-	materialpath = "mw2/ranks/cardicon_", -- For icons; followed by the "rank icon" path.
+	nameprefix = "COD4_",
+	materialpath = "cod4/ranks/rank_", -- For icons; followed by the "rank icon" path.
 }
 
-CoDHUD[hudtype].Levels = nil
+CoDHUD[hudtype].Levels = {
+	[1] = { "pvt1", 0, 800, "RANK_PVT_FULL", "1stlt1", 800 } -- testing rank
+}
+
+CoDHUD[hudtype].LevelIcons = {}
+
+if CoDHUD[hudtype].Levels then
+	for k, v in pairs(CoDHUD[hudtype].Levels) do
+		CoDHUD[hudtype].LevelIcons[k] = Material(CoDHUD[hudtype].LevelData.materialpath .. v[5] .. ".png", "smooth")
+	end
+end
 
 local function levelup( ... )
     local rank = select(1, ...)
@@ -1395,6 +1405,11 @@ local function scoreboard( ... )
 		ROW_GAP = 2,
 		TEAM_GAP = 120,
 
+		-- Rank Icon
+		RANK_ICON_SIZE = 30,
+		RANK_ICON_X_OFF = -10,
+		RANK_ICON_Y_OFF = 4,
+
 		-- Faction Icon
 		ICON_SIZE = 77,
 		ICON_X_OFF = 0,
@@ -1438,6 +1453,7 @@ local function scoreboard( ... )
 		OFF_ASSISTS = 120,
 		OFF_KILLS = 225,
 		OFF_SCORE = 335,
+		OFF_XP = 1070,
 	}
 
 	local MAT_GRADIENT_L = Material(hudtype .. "/hud/line_horizontal_scoreboard.png", "mips smooth")
@@ -1480,12 +1496,21 @@ local function scoreboard( ... )
 		local tCol = isMe and Color(255, 200, 50, 255) or Color(255, 255, 255, 255)
 		local pScore = math.max(0, ply:Frags() * 10)
 
+		local level, levelData = CalculateLevelFromXP( ply:GetNW2Float( "CoDHUD_XP", 0 ) )
+
 		-- Text
 		draw.SimpleTextOutlined(string.Replace(ply:Nick(), "0", "O"), "CoD4_Scoreboard_Text", x + CoDHUD_S(110), y + (h / 2), tCol, TEXT_ALIGN_LEFT,  TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0))
 		draw.SimpleTextOutlined(string.Replace(ply:Deaths(), "0", "O"), "CoD4_Scoreboard_Text", barRight - CoDHUD_S(CFG.OFF_DEATHS),  y + (h / 2), tCol, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0))
 		draw.SimpleTextOutlined(string.Replace(ply:GetNWInt("Assists", 0), "0", "O"), "CoD4_Scoreboard_Text", barRight - CoDHUD_S(CFG.OFF_ASSISTS), y + (h / 2), tCol, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0))
 		draw.SimpleTextOutlined(string.Replace(ply:Frags(), "0", "O"), "CoD4_Scoreboard_Text", barRight - CoDHUD_S(CFG.OFF_KILLS),   y + (h / 2), tCol, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0))
 		draw.SimpleTextOutlined(string.Replace(pScore, "0", "O"), "CoD4_Scoreboard_Text", barRight - CoDHUD_S(CFG.OFF_SCORE),   y + (h / 2), tCol, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0))
+		draw.SimpleTextOutlined( string.Replace(tostring(level), "0", "O"), "CoD4_Scoreboard_Text", barRight - CoDHUD_S(CFG.OFF_XP) + CoDHUD_S(50),   y + (h / 2), tCol, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0))
+
+		if CoDHUD[hudtype].LevelIcons[level] then
+			surface.SetMaterial(CoDHUD[hudtype].LevelIcons[level])
+			surface.SetDrawColor(255, 255, 255, 255)
+			surface.DrawTexturedRect(barRight - CoDHUD_S(CFG.OFF_XP) + CoDHUD_S(CFG.RANK_ICON_X_OFF), y + CoDHUD_S(CFG.RANK_ICON_Y_OFF), CoDHUD_S(CFG.RANK_ICON_SIZE), CoDHUD_S(CFG.RANK_ICON_SIZE))
+		end
 
 		-- Ping Indicator
 		local ping = ply:Ping()

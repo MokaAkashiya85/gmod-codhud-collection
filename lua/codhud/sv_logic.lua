@@ -92,7 +92,9 @@ net.Receive("CoDHUD_ClientStatUpdate", function(_, ply)
     if mode == "xp" then
         local amount = net.ReadInt(32)
         stats.xp = (stats.xp or 0) + amount
+        ply:SetNW2Float("CoDHUD_XP", stats.xp)
     end
+    
 
     if mode == "kill" then
         local wep = net.ReadString()

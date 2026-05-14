@@ -302,62 +302,68 @@ CoDHUD[hudtype].LevelData = {
 CoDHUD[hudtype].Levels = {
 	-- [Rank] = { Data Name, XP Needed, XP Required for Next, Rank Name, Rank Icon, Max XP (for that level) }
 
-	[0] = { "pfc1", 0, 800, "RANK_PFC_FULL", "rank_pfc1", 800 },
-	[1] = { "pfc2", 800, 1100, "RANK_PFC_FULL2", "rank_pfc1", 1900 },
-	[2] = { "pfc3", 1900, 1400, "RANK_PFC_FULL3", "rank_pfc1", 3300 },
-	[3] = { "lcpl1", 3300, 2000, "RANK_LCPL_FULL", "rank_lcpl1", 5300 },
-	[4] = { "lcpl2", 5300, 2600, "RANK_LCPL_FULL2", "rank_lcpl1", 7900 },
-	[5] = { "lcpl3", 7900, 3200, "RANK_LCPL_FULL3", "rank_lcpl1", 11100 },
-	[6] = { "cpl1", 11100, 3800, "RANK_CPL_FULL", "rank_cpl1", 14900 },
-	[7] = { "cpl2", 14900, 4400, "RANK_CPL_FULL2", "rank_cpl1", 19300 },
-	[8] = { "cpl3", 19300, 5000, "RANK_CPL_FULL3", "rank_cpl1", 24300 },
-	[9] = { "sgt1", 24300, 5800, "RANK_SGT_FULL", "rank_sgt1", 30100 },
-	[10] = { "sgt2", 30100, 6600, "RANK_SGT_FULL2", "rank_sgt1", 36700 },
-	[11] = { "sgt3", 36700, 7400, "RANK_SGT_FULL3", "rank_sgt1", 44100 },
-	[12] = { "ssgt1", 44100, 8200, "RANK_SSGT_FULL", "rank_ssgt1", 52300 },
-	[13] = { "ssgt2", 52300, 9000, "RANK_SSGT_FULL2", "rank_ssgt1", 61300 },
-	[14] = { "ssgt3", 61300, 9800, "RANK_SSGT_FULL3", "rank_ssgt1", 71100 },
-	[15] = { "gysgt1", 71100, 10600, "RANK_GYSGT_FULL", "rank_gysgt1", 81700 },
-	[16] = { "gysgt2", 81700, 11400, "RANK_GYSGT_FULL2", "rank_gysgt1", 93100 },
-	[17] = { "gysgt3", 93100, 12200, "RANK_GYSGT_FULL3", "rank_gysgt1", 105300 },
-	[18] = { "msgt1", 105300, 13000, "RANK_MSGT_FULL", "rank_msgt1", 118300 },
-	[19] = { "msgt2", 118300, 13800, "RANK_MSGT_FULL2", "rank_msgt1", 132100 },
-	[20] = { "msgt3", 132100, 14600, "RANK_MSGT_FULL3", "rank_msgt1", 146700 },
-	[21] = { "mgysgt1", 146700, 15400, "RANK_MGYSGT_FULL", "rank_mgysgt1", 162100 },
-	[22] = { "mgysgt2", 162100, 16200, "RANK_MGYSGT_FULL2", "rank_mgysgt1", 178300 },
-	[23] = { "mgysgt3", 178300, 17000, "RANK_MGYSGT_FULL3", "rank_mgysgt1", 195300 },
-	[24] = { "2ndlt1", 195300, 17800, "RANK_2NDLT_FULL", "rank_2ndlt1", 213100 },
-	[25] = { "2ndlt2", 213100, 18600, "RANK_2NDLT_FULL2", "rank_2ndlt1", 231700 },
-	[26] = { "2ndlt3", 231700, 19400, "RANK_2NDLT_FULL3", "rank_2ndlt1", 251100 },
-	[27] = { "lt1", 251100, 20200, "RANK_LT_FULL", "rank_1stlt1", 271300 },
-	[28] = { "lt2", 271300, 21000, "RANK_LT_FULL2", "rank_1stlt1", 292300 },
-	[29] = { "lt3", 292300, 21800, "RANK_LT_FULL3", "rank_1stlt1", 314100 },
-	[30] = { "cpt1", 314100, 23000, "RANK_CPT_FULL", "rank_capt1", 337100 },
-	[31] = { "cpt2", 337100, 24200, "RANK_CPT_FULL2", "rank_capt1", 361300 },
-	[32] = { "cpt3", 361300, 25400, "RANK_CPT_FULL3", "rank_capt1", 386700 },
-	[33] = { "maj1", 386700, 26600, "RANK_MAJ_FULL", "rank_maj1", 413300 },
-	[34] = { "maj2", 413300, 27800, "RANK_MAJ_FULL2", "rank_maj1", 441100 },
-	[35] = { "maj3", 441100, 29000, "RANK_MAJ_FULL3", "rank_maj1", 470100 },
-	[36] = { "ltcol1", 470100, 30200, "RANK_LTCOL_FULL", "rank_ltcol1", 500300 },
-	[37] = { "ltcol2", 500300, 31400, "RANK_LTCOL_FULL2", "rank_ltcol1", 531700 },
-	[38] = { "ltcol3", 531700, 32600, "RANK_LTCOL_FULL3", "rank_ltcol1", 564300 },
-	[39] = { "col1", 564300, 33800, "RANK_COL_FULL", "rank_col1", 598100 },
-	[40] = { "col2", 598100, 35000, "RANK_COL_FULL2", "rank_col1", 633100 },
-	[41] = { "col3", 633100, 36200, "RANK_COL_FULL3", "rank_col1", 669300 },
-	[42] = { "bgen1", 669300, 37400, "RANK_BGEN_FULL", "rank_bgen1", 706700 },
-	[43] = { "bgen2", 706700, 38600, "RANK_BGEN_FULL2", "rank_bgen1", 745300 },
-	[44] = { "bgen3", 745300, 39800, "RANK_BGEN_FULL3", "rank_bgen1", 785100 },
-	[45] = { "majgen1", 785100, 41000, "RANK_MAJGEN_FULL", "rank_majgen1", 826100 },
-	[46] = { "majgen2", 826100, 42200, "RANK_MAJGEN_FULL2", "rank_majgen1", 868300 },
-	[47] = { "majgen3", 868300, 43400, "RANK_MAJGEN_FULL3", "rank_majgen1", 911700 },
-	[48] = { "ltgen1", 911700, 44600, "RANK_LTGEN_FULL", "rank_ltgen1", 956300 },
-	[49] = { "ltgen2", 956300, 45800, "RANK_LTGEN_FULL2", "rank_ltgen1", 1002100 },
-	[50] = { "ltgen3", 1002100, 47000, "RANK_LTGEN_FULL3", "rank_ltgen1", 1049100 },
-	[51] = { "gen1", 1049100, 48200, "RANK_GEN_FULL", "rank_gen1", 1097300 },
-	[52] = { "gen2", 1097300, 49400, "RANK_GEN_FULL2", "rank_gen1", 1146700 },
-	[53] = { "gen3", 1146700, 50600, "RANK_GEN_FULL3", "rank_gen1", 1197300 },
-	[54] = { "com1", 1197300, 51800, "RANK_COM_FULL", "rank_comm", 1249100 }
+	[1] = { "pfc1", 0, 800, "RANK_PFC_FULL", "rank_pfc1", 800 },
+	[2] = { "pfc2", 800, 1100, "RANK_PFC_FULL2", "rank_pfc1", 1900 },
+	[3] = { "pfc3", 1900, 1400, "RANK_PFC_FULL3", "rank_pfc1", 3300 },
+	[4] = { "lcpl1", 3300, 2000, "RANK_LCPL_FULL", "rank_lcpl1", 5300 },
+	[5] = { "lcpl2", 5300, 2600, "RANK_LCPL_FULL2", "rank_lcpl1", 7900 },
+	[6] = { "lcpl3", 7900, 3200, "RANK_LCPL_FULL3", "rank_lcpl1", 11100 },
+	[7] = { "cpl1", 11100, 3800, "RANK_CPL_FULL", "rank_cpl1", 14900 },
+	[8] = { "cpl2", 14900, 4400, "RANK_CPL_FULL2", "rank_cpl1", 19300 },
+	[9] = { "cpl3", 19300, 5000, "RANK_CPL_FULL3", "rank_cpl1", 24300 },
+	[10] = { "sgt1", 24300, 5800, "RANK_SGT_FULL", "rank_sgt1", 30100 },
+	[11] = { "sgt2", 30100, 6600, "RANK_SGT_FULL2", "rank_sgt1", 36700 },
+	[12] = { "sgt3", 36700, 7400, "RANK_SGT_FULL3", "rank_sgt1", 44100 },
+	[13] = { "ssgt1", 44100, 8200, "RANK_SSGT_FULL", "rank_ssgt1", 52300 },
+	[14] = { "ssgt2", 52300, 9000, "RANK_SSGT_FULL2", "rank_ssgt1", 61300 },
+	[15] = { "ssgt3", 61300, 9800, "RANK_SSGT_FULL3", "rank_ssgt1", 71100 },
+	[16] = { "gysgt1", 71100, 10600, "RANK_GYSGT_FULL", "rank_gysgt1", 81700 },
+	[17] = { "gysgt2", 81700, 11400, "RANK_GYSGT_FULL2", "rank_gysgt1", 93100 },
+	[18] = { "gysgt3", 93100, 12200, "RANK_GYSGT_FULL3", "rank_gysgt1", 105300 },
+	[19] = { "msgt1", 105300, 13000, "RANK_MSGT_FULL", "rank_msgt1", 118300 },
+	[20] = { "msgt2", 118300, 13800, "RANK_MSGT_FULL2", "rank_msgt1", 132100 },
+	[21] = { "msgt3", 132100, 14600, "RANK_MSGT_FULL3", "rank_msgt1", 146700 },
+	[22] = { "mgysgt1", 146700, 15400, "RANK_MGYSGT_FULL", "rank_mgysgt1", 162100 },
+	[23] = { "mgysgt2", 162100, 16200, "RANK_MGYSGT_FULL2", "rank_mgysgt1", 178300 },
+	[24] = { "mgysgt3", 178300, 17000, "RANK_MGYSGT_FULL3", "rank_mgysgt1", 195300 },
+	[25] = { "2ndlt1", 195300, 17800, "RANK_2NDLT_FULL", "rank_2ndlt1", 213100 },
+	[26] = { "2ndlt2", 213100, 18600, "RANK_2NDLT_FULL2", "rank_2ndlt1", 231700 },
+	[27] = { "2ndlt3", 231700, 19400, "RANK_2NDLT_FULL3", "rank_2ndlt1", 251100 },
+	[28] = { "lt1", 251100, 20200, "RANK_LT_FULL", "rank_1stlt1", 271300 },
+	[29] = { "lt2", 271300, 21000, "RANK_LT_FULL2", "rank_1stlt1", 292300 },
+	[30] = { "lt3", 292300, 21800, "RANK_LT_FULL3", "rank_1stlt1", 314100 },
+	[31] = { "cpt1", 314100, 23000, "RANK_CPT_FULL", "rank_capt1", 337100 },
+	[32] = { "cpt2", 337100, 24200, "RANK_CPT_FULL2", "rank_capt1", 361300 },
+	[33] = { "cpt3", 361300, 25400, "RANK_CPT_FULL3", "rank_capt1", 386700 },
+	[34] = { "maj1", 386700, 26600, "RANK_MAJ_FULL", "rank_maj1", 413300 },
+	[35] = { "maj2", 413300, 27800, "RANK_MAJ_FULL2", "rank_maj1", 441100 },
+	[36] = { "maj3", 441100, 29000, "RANK_MAJ_FULL3", "rank_maj1", 470100 },
+	[37] = { "ltcol1", 470100, 30200, "RANK_LTCOL_FULL", "rank_ltcol1", 500300 },
+	[38] = { "ltcol2", 500300, 31400, "RANK_LTCOL_FULL2", "rank_ltcol1", 531700 },
+	[39] = { "ltcol3", 531700, 32600, "RANK_LTCOL_FULL3", "rank_ltcol1", 564300 },
+	[40] = { "col1", 564300, 33800, "RANK_COL_FULL", "rank_col1", 598100 },
+	[41] = { "col2", 598100, 35000, "RANK_COL_FULL2", "rank_col1", 633100 },
+	[42] = { "col3", 633100, 36200, "RANK_COL_FULL3", "rank_col1", 669300 },
+	[43] = { "bgen1", 669300, 37400, "RANK_BGEN_FULL", "rank_bgen1", 706700 },
+	[44] = { "bgen2", 706700, 38600, "RANK_BGEN_FULL2", "rank_bgen1", 745300 },
+	[45] = { "bgen3", 745300, 39800, "RANK_BGEN_FULL3", "rank_bgen1", 785100 },
+	[46] = { "majgen1", 785100, 41000, "RANK_MAJGEN_FULL", "rank_majgen1", 826100 },
+	[47] = { "majgen2", 826100, 42200, "RANK_MAJGEN_FULL2", "rank_majgen1", 868300 },
+	[48] = { "majgen3", 868300, 43400, "RANK_MAJGEN_FULL3", "rank_majgen1", 911700 },
+	[49] = { "ltgen1", 911700, 44600, "RANK_LTGEN_FULL", "rank_ltgen1", 956300 },
+	[50] = { "ltgen2", 956300, 45800, "RANK_LTGEN_FULL2", "rank_ltgen1", 1002100 },
+	[51] = { "ltgen3", 1002100, 47000, "RANK_LTGEN_FULL3", "rank_ltgen1", 1049100 },
+	[52] = { "gen1", 1049100, 48200, "RANK_GEN_FULL", "rank_gen1", 1097300 },
+	[53] = { "gen2", 1097300, 49400, "RANK_GEN_FULL2", "rank_gen1", 1146700 },
+	[54] = { "gen3", 1146700, 50600, "RANK_GEN_FULL3", "rank_gen1", 1197300 },
+	[55] = { "com1", 1197300, 51800, "RANK_COM_FULL", "rank_comm", 1249100 }
 }
+
+CoDHUD[hudtype].LevelIcons = {}
+
+for k, v in pairs(CoDHUD[hudtype].Levels) do
+	CoDHUD[hudtype].LevelIcons[k] = Material(CoDHUD[hudtype].LevelData.materialpath .. v[5] .. ".png", "smooth")
+end
 
 local function levelup( ... )
     local rank = select(1, ...)
@@ -1594,6 +1600,11 @@ local function scoreboard( ... )
 		ROW_GAP = 0,
 		TEAM_GAP = 30,
 
+		-- Rank Icon
+		RANK_ICON_SIZE = 24,
+		RANK_ICON_X_OFF = 15,
+		RANK_ICON_Y_OFF = 8,
+
 		-- Faction Icon
 		ICON_SIZE = 192,
 		ICON_X_OFF = -240,
@@ -1639,6 +1650,7 @@ local function scoreboard( ... )
 		OFF_DEATHS = 300,
 		OFF_KILLS = 400,
 		OFF_SCORE = 500,
+		OFF_XP = 996,
 	}
 
 	local MAT_BOXFG = Material(hudtype .. "/hud/menu_mp_map_frame.png", "mips smooth")
@@ -1692,6 +1704,8 @@ local function scoreboard( ... )
 
 		local kd = string.format("%.2f", ratio)
 
+		local level, levelData = CalculateLevelFromXP( ply:GetNW2Float( "CoDHUD_XP", 0 ) )
+
 		-- Background on some elements
 		surface.SetDrawColor(bgCol.r, bgCol.g, bgCol.b, CFG.BAR_ALPHA)
 		surface.DrawRect(barRight - CoDHUD_SX(CFG.OFF_ASSISTS) - CoDHUD_SX(50), y, CoDHUD_S(100), h)
@@ -1706,6 +1720,11 @@ local function scoreboard( ... )
 		draw.SimpleTextOutlined(ply:GetNWInt("Assists", 0), "BO2_Scoreboard_Text", barRight - CoDHUD_SX(CFG.OFF_ASSISTS), y + (h / 2), tCol, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0))
 		draw.SimpleTextOutlined(kills, "BO2_Scoreboard_Text", barRight - CoDHUD_SX(CFG.OFF_KILLS),   y + (h / 2), tCol, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0))
 		draw.SimpleTextOutlined(pScore, "BO2_Scoreboard_Text", barRight - CoDHUD_SX(CFG.OFF_SCORE),   y + (h / 2), tCol, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0))
+		draw.SimpleTextOutlined( level, "BO2_Scoreboard_Text", barRight - CoDHUD_S(CFG.OFF_XP) + CoDHUD_S(10),   y + (h / 2), tCol, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0))
+
+		surface.SetMaterial(CoDHUD[hudtype].LevelIcons[level])
+		surface.SetDrawColor(255, 255, 255, 255)
+		surface.DrawTexturedRect(barRight - CoDHUD_S(CFG.OFF_XP) + CoDHUD_S(CFG.RANK_ICON_X_OFF), y + CoDHUD_S(CFG.RANK_ICON_Y_OFF), CoDHUD_S(CFG.RANK_ICON_SIZE), CoDHUD_S(CFG.RANK_ICON_SIZE))
 	end
 
     local scrW, scrH = ScrW(), ScrH()
