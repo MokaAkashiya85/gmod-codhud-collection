@@ -345,10 +345,10 @@ CoDHUD[hudtype].Levels = {
 	[43] = { "majgen1", 832200, 48000, "RANK_MAJGEN_FULL", "rank_majgen1", 880200 },
 	[44] = { "majgen2", 880200, 49600, "RANK_MAJGEN_FULL2", "rank_majgen1", 929800 },
 	[45] = { "majgen3", 929800, 51200, "RANK_MAJGEN_FULL3", "rank_majgen1", 981000 },
-	[46] = { "ltgen1", 981000, 52900, "RANK_LTGEN", "rank_ltgen1", 1033900 },
+	[46] = { "ltgen1", 981000, 52900, "RANK_LTGEN_FULL", "rank_ltgen1", 1033900 },
 	[47] = { "ltgen2", 1033900, 54600, "RANK_LTGEN_FULL2", "rank_ltgen1", 1088500 },
 	[48] = { "ltgen3", 1088500, 56300, "RANK_LTGEN_FULL3", "rank_ltgen1", 1144800 },
-	[49] = { "gen", 1144800, 58000, "RANK_GEN", "rank_gen1", 1202800 },
+	[49] = { "gen", 1144800, 58000, "RANK_GEN_FULL", "rank_gen1", 1202800 },
 	[50] = { "com", 1202800, 59700, "RANK_COM_FULL", "rank_comm", 1262500 }
 }
 

@@ -151,3 +151,47 @@ hook.Add("HUDPaint", "CoDHUD_Scorebar", function()
         end
     end
 end)
+
+hook.Add("HUDPaint", "CoDHUD_XPBar", function()
+    if (not GetConVar("codhud_enable_xp"):GetBool()) or GetConVar("codhud_quickdisable_hud"):GetBool() then return end
+    if not GetConVar("cl_drawhud"):GetBool() then return end
+
+    local ply = LocalPlayer()
+    if not IsValid(ply) then return end
+
+    local hud = CoDHUD_GetHUDType()
+
+    if not CoDHUD[hud] then return end
+    if not CoDHUD[hud].XPBar then return end
+
+    local stats = CoDHUD_GetStats(hud)
+    if not stats then return end
+
+    local xp = stats.xp or 0
+    local level = stats.level or {}
+
+    local currentLevel = level.level or 1
+    local nextXP = level.nextxp or 0
+
+    -- Determine current level floor XP
+    local currentLevelXP = 0
+
+    local levels = CoDHUD[hud].Levels or {}
+
+    if levels[currentLevel] then
+        currentLevelXP = levels[currentLevel][2] or 0
+    end
+
+    -- XP earned inside this level
+    local levelProgressXP = xp - currentLevelXP
+
+    -- XP required to finish this level
+    local levelRequiredXP = math.max(nextXP - currentLevelXP, 1)
+
+    -- Normalized progress (0 -> 1)
+    local progress = math.Clamp(levelProgressXP / levelRequiredXP, 0, 1)
+
+	if CoDHUD[hud] and CoDHUD[hud].XPBar then
+		CoDHUD[hud].XPBar( xp, nextXP, progress, levelProgressXP, levelRequiredXP )
+	end
+end)

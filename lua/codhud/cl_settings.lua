@@ -572,7 +572,31 @@ local CoDHUD_SETTINGS = {
                 }
             }
         }
-    }
+    },
+
+	{ name = "#CoDHUD.Stats", subtabs = (function()
+			local tabs = {}
+
+			for _, hud in pairs(CoDHUD.TypeRegistry or {}) do
+				table.insert(tabs, {
+					name = hud.name,
+					categories = {
+						{
+							name = hud.name,
+							type = "playerstats",
+							hud = hud.codename
+						}
+					}
+				})
+			end
+
+			table.sort(tabs, function(a, b)
+				return a.name < b.name
+			end)
+
+			return tabs
+		end)()
+	},
 }
 
 local function CreateCheckbox(parent, data)
@@ -749,6 +773,44 @@ local function PopulateControls(panel, controls)
     end
 end
 
+local function CoDHUD_GetPlayerStatsLines(hud)
+    local stats = CoDHUD_GetStats(hud) or {}
+
+    local level = stats.level or {}
+
+    local levelIndex = level.level or 1
+
+    local levelName = level.name
+	
+	if CoDHUD[hud].LevelData and CoDHUD[hud].LevelData.nameprefix then
+		levelName = CoDHUD[hud].LevelData.nameprefix .. levelName
+	end
+
+    if not levelName or levelName == CoDHUD[hud].LevelData.nameprefix then
+        levelName = "CoDHUD.Stats.Unknown"
+    end
+
+	levelName = language.GetPhrase(levelName)
+
+    local nextXP = math.max((level.nextxp or 0) - (stats.xp or 0), 0)
+
+    local completedChallenges = 0
+
+    for _ in pairs(CoDHUD_Stats.challengescompleted or {}) do
+        completedChallenges = completedChallenges + 1
+    end
+
+    return {
+        string.format( language.GetPhrase("CoDHUD.Stats.Rank"), levelIndex, tostring(levelName) ),
+        string.format( language.GetPhrase("CoDHUD.Stats.XPNext"), nextXP ),
+        string.format( language.GetPhrase("CoDHUD.Stats.XP"), stats.xp or 0 ),
+        string.format( language.GetPhrase("CoDHUD.Stats.Kills"), stats.kills or 0 ),
+        string.format( language.GetPhrase("CoDHUD.Stats.Headshots"), stats.headshots or 0 ),
+        string.format( language.GetPhrase("CoDHUD.Stats.Deaths"), stats.deaths or 0 ),
+        string.format( language.GetPhrase("CoDHUD.Stats.Challenges"), completedChallenges )
+    }
+end
+
 local function CreateCategory(parent, data)
     if data.adminOnly and not LocalPlayer():IsAdmin() then return end
 
@@ -905,6 +967,28 @@ local function CreateCategory(parent, data)
 
     end
 
+    -- Player Stats
+    if data.type == "playerstats" then
+        local lines = CoDHUD_GetPlayerStatsLines(data.hud)
+
+        for _, line in ipairs(lines) do
+            local lbl = vgui.Create("DLabel", inner)
+
+            lbl:SetText(line)
+            lbl:SetFont("CoDHUD_Settings_Sec")
+
+            lbl:SetWrap(true)
+            lbl:SetAutoStretchVertical(true)
+
+            lbl:Dock(TOP)
+            lbl:DockMargin(5, 4, 5, 4)
+
+            function lbl:PerformLayout()
+                self:SetFGColor(Color(255,255,255))
+            end
+        end
+    end
+	
     -- Controls
     PopulateControls(inner, data.controls)
 

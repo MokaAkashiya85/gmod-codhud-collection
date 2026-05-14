@@ -126,10 +126,7 @@ function CoDHUD_UpdateLevel(forceHUD)
 end
 
 function CoDHUD_SaveStats()
-    file.Write(
-        STATS_FILE,
-        util.TableToJSON(CoDHUD_Stats, true)
-    )
+    file.Write( STATS_FILE, util.TableToJSON(CoDHUD_Stats, true) )
 end
 
 -- LOAD
@@ -233,6 +230,10 @@ concommand.Add("codhud_rank_clear", function()
     CoDHUD_SaveStats()
     print("[CoDHUD] Cleared Client Rank and Stats.")
 	CoDHUD_AddKillfeedMessage("CoDHUD.System.RankReset")
+	
+	net.Start("CoDHUD_SendFullStats")
+		net.WriteTable(CoDHUD_Stats)
+	net.SendToServer()
 end)
 
 ---[[ DEBUGGING AREA ]]
@@ -537,6 +538,6 @@ hook.Add("HUDPaint", "CoDHUD_DebugLevelList", function()
         end
 
         -- TEXT
-        draw.SimpleText( string.format("%02d | %s", lvl + 1, localizedName), "Trebuchet18", drawX + iconSize + 8, drawY + 1, Color(255, 255, 255), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP )
+        draw.SimpleText( string.format("%02d | %s", lvl, localizedName), "Trebuchet18", drawX + iconSize + 8, drawY + 1, Color(255, 255, 255), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP )
     end
 end)

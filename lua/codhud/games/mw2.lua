@@ -676,6 +676,40 @@ local function xp( ... )
 end
 CoDHUD[hudtype].XP = xp
 
+local xpmats = {
+	fill = Material(hudtype .. "/hud/720_xpbar_white.png", "mips smooth"),
+	empty = Material(hudtype .. "/hud/720_xpbar_empty.png", "mips smooth"),
+	outline = Material(hudtype .. "/hud/720_xpbar_outline.png", "mips smooth"),
+	shadow = Material(hudtype .. "/hud/720_xpbar_shadow.png", "mips smooth")
+}
+local function xpbar( ... )
+	local xp = select(1, ...)
+	local nextXP = select(2, ...)
+	local progress = select(3, ...)
+	local levelProgressXP = select(4, ...)
+	local levelRequiredXP = select(5, ...)
+
+	surface.SetDrawColor(255, 255, 255)
+	
+	local y, h = 15, 15
+	
+	surface.SetMaterial(xpmats.empty)
+	surface.DrawTexturedRect(0, ScrH() - CoDHUD_SY(y), ScrW(), CoDHUD_SY(h))
+	
+	surface.SetMaterial(xpmats.outline)
+	surface.DrawTexturedRect(0, ScrH() - CoDHUD_SY(y), ScrW(), CoDHUD_SY(h))
+	
+	surface.SetMaterial(xpmats.shadow)
+	surface.DrawTexturedRect(0, ScrH() - CoDHUD_SY(y), ScrW(), CoDHUD_SY(h))
+	
+	surface.SetDrawColor(255, 255, 0, 150)
+	surface.SetMaterial(xpmats.fill)
+
+	local fillWidth = ScrW() * math.Clamp(progress, 0, 1)
+	surface.DrawTexturedRectUV( 0, ScrH() - CoDHUD_SY(y), fillWidth, CoDHUD_SY(h), 0, 0, progress, 1 )
+end
+CoDHUD[hudtype].XPBar = xpbar
+
 local function dmg_dir( ... )
 	local attackers = select(1, ...)
 	local ply = select(2, ...)

@@ -138,6 +138,7 @@ function CoDHUD_Header_MW:New(cfg)
 		o.fadeInTime   = 0.2
 		o.exitDuration = 0.125
 		o.fadeOutStart = o.holdTime - o.exitDuration
+		o.nobg		   = cfg.nobg or false
 	end
 
 	if o.type == "bo2_challenge" then
@@ -467,7 +468,7 @@ function CoDHUD_Header_MW:Update()
 				1
 			)
 
-			self.textBgAlpha = Lerp(p, 255, 150)
+			self.textBgAlpha = Lerp(p, 255, 0)
 			self.textBgColorLerp = p
 			self.textAlpha = Lerp(p, 0, 255)
 
@@ -483,7 +484,7 @@ function CoDHUD_Header_MW:Update()
 			self.iconBgColorLerp = 1
 			self.iconAlpha = 255
 
-			self.textBgAlpha = 150
+			self.textBgAlpha = 0
 			self.textBgColorLerp = 1
 			self.textAlpha = 255
 
@@ -738,14 +739,16 @@ function CoDHUD_Header_MW:Draw()
 
 		cam.PushModelMatrix(mat)
 
-			-- BACKING
-			surface.SetDrawColor(255,255,255,math.Clamp(alpha,0,125))
-			surface.SetMaterial(bgmat)
-			surface.DrawTexturedRect( cx - bgSize, cy - (bgSize * 0.5), bgSize * 2, bgSize )
+			if not self.nobg then
+				-- BACKING
+				surface.SetDrawColor(255,255,255,math.Clamp(alpha,0,125))
+				surface.SetMaterial(bgmat)
+				surface.DrawTexturedRect( cx - bgSize, cy - (bgSize * 0.5), bgSize * 2, bgSize )
 
-			surface.SetDrawColor(255,255,255,math.Clamp(alpha,0,175))
-			surface.SetMaterial(iconmat)
-			surface.DrawTexturedRect( cx - (iconSize * 0.5), cy - (iconSize * 0.5), iconSize, iconSize )
+				surface.SetDrawColor(255,255,255,math.Clamp(alpha,0,175))
+				surface.SetMaterial(iconmat)
+				surface.DrawTexturedRect( cx - (iconSize * 0.5), cy - (iconSize * 0.5), iconSize, iconSize )
+			end
 
 			-- HEADER TEXT
 			for i, line in ipairs(self.lines) do
@@ -773,7 +776,7 @@ function CoDHUD_Header_MW:Draw()
 				surface.SetMaterial(self.icon)
 				surface.SetDrawColor(255,255,255,alpha)
 
-				surface.DrawTexturedRect( cx - (size / 2), cy - CoDHUD_S(120), size, size )
+				surface.DrawTexturedRect( cx - (size / 2), self.iconY, size, size )
 			end
 
 		cam.PopModelMatrix()

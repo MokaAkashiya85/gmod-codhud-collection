@@ -22,6 +22,7 @@ function CoDHUD_SY(y) return math.Round(y * CoDHUD_GetUIScale()) end
 local function InitiateCoDFonts()
 	-- [ SETTINGS ]
     surface.CreateFont( "CoDHUD_Settings_Main",		{ font = "Conduit ITC", size = CoDHUD_S(42), weight = 10,  antialias = true })
+    surface.CreateFont( "CoDHUD_Settings_Sec",		{ font = "Conduit ITC", size = CoDHUD_S(32), weight = 10,  antialias = true })
 	
 	-- [ CoD4 ]
 	-- Hitmarker / XP

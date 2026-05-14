@@ -371,23 +371,22 @@ local function levelup( ... )
     local logo = select(3, ...)
 
     CoDHUD_HeaderQueue.Push({
-		type = "bo", -- TEMPORARY
-		writeSounds = textype,
-		writeSpeed = 8,
-		writeSoundOnce = true,
+		type = "bo_challenge", -- TEMPORARY
         text = rank .. "\n" .. language.GetPhrase("BO2_RANK_PROMOTED"),
         x = CoDHUD_SX(960),
-        y = CoDHUD_SY(125),
+        y = CoDHUD_SY(200),
         color = Color(0,0,0),
 		sfx = "hud/bo2/mus_rank_02.SN65.pc.snd.wav",
+		holdTime = 2.5,
+		nobg = true,
         fonts = {
-            pri = "BO2_ChalHeader",
-            sec = "BO2_ChalHeader",
-            shd = "BO2_ChalHeader",
+            pri = "BO2_ChalSub",
+            sec = "BO2_ChalSub",
+            shd = "BO2_ChalSub",
         },
 
-		iconY = CoDHUD_SY(180),
-		iconSize = CoDHUD_S(134),
+		iconY = CoDHUD_SY(50),
+		iconSize = CoDHUD_S(128),
 		icon = logo
     })
 end
