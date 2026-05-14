@@ -574,7 +574,7 @@ local CoDHUD_SETTINGS = {
         }
     },
 
-	{ name = "#CoDHUD.Stats", subtabs = (function()
+	{ name = "#CoDHUD.Stats", getSubtabs = function()
 			local tabs = {}
 
 			for _, hud in pairs(CoDHUD.TypeRegistry or {}) do
@@ -595,7 +595,7 @@ local CoDHUD_SETTINGS = {
 			end)
 
 			return tabs
-		end)()
+		end
 	},
 }
 
@@ -1067,7 +1067,13 @@ concommand.Add("codhud_openmenu", function()
 		subSheet:Dock(FILL)
 		subSheet.Paint = nil
 
-		for _, subtab in ipairs(tab.subtabs or {}) do
+		local subtabs = tab.subtabs
+
+		if tab.getSubtabs then
+			subtabs = tab.getSubtabs()
+		end
+
+		for _, subtab in ipairs(subtabs or {}) do
 			local subPanel = vgui.Create("DScrollPanel", subSheet)
 			subPanel.Paint = nil
 
