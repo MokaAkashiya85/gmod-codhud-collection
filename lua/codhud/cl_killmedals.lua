@@ -16,6 +16,7 @@ if CLIENT then
 	function _G.CoDHUD_MedalSystem.Clear()
 		medalQueue = {}
 		activeMedal = nil
+		PRESENT:Release("medal")
 		_G.CoDHUD_MedalsActive = false
 	end
 
