@@ -153,7 +153,49 @@ function CoDHUD_AddXP(amount)
         net.WriteInt(amount, 32)
     net.SendToServer()
 
-    PushClientStats()
+    -- PushClientStats()
+end
+
+function CoDHUD_AddKill(amount)
+    -- local stats = EnsureHUDEntry()
+    -- stats.kills = (stats.kills or 0) + amount
+
+    net.Start("CoDHUD_ClientStatUpdate")
+        net.WriteString("kill")
+        net.WriteInt(amount, 32)
+    net.SendToServer()
+end
+
+function CoDHUD_AddDeath(amount)
+    -- local stats = EnsureHUDEntry()
+    -- stats.deaths = (stats.deaths or 0) + amount
+
+    net.Start("CoDHUD_ClientStatUpdate")
+        net.WriteString("death")
+        net.WriteInt(amount, 32)
+    net.SendToServer()
+end
+
+hook.Add("CoDHUD_StatAdded", "CoDHUD_StatAdded_Handler", function(stat, amount)
+    if stat == "kills" then
+        CoDHUD_AddKill(amount)
+    elseif stat == "deaths" then
+        CoDHUD_AddDeath(amount)
+    elseif stat == "xp" then
+        CoDHUD_AddXP(amount)
+    end
+end)
+
+function CoDHUD_AddStat(amount, stat)
+    local stats = EnsureHUDEntry()
+    stats[stat] = (stats[stat] or 0) + amount
+    
+    -- net.Start("CoDHUD_ClientStatUpdate")
+    --     net.WriteString(stat)
+    --     net.WriteInt(amount, 32)
+    -- net.SendToServer()
+
+    hook.Run("CoDHUD_StatAdded", stat, amount)
 end
 
 function CoDHUD_CompleteChallenge(id)
@@ -235,6 +277,53 @@ local function SecondsSinceLastXP()
 
     return string.format("%.1fs ago", CurTime() - lastXPTime)
 end
+
+net.Receive("CoDHUD_OnDeath", function()
+    local target = net.ReadEntity()
+    local attacker = net.ReadEntity()
+    local inflictor = net.ReadEntity()
+    local isHeadshot = net.ReadBool()
+    local additionalData = net.ReadTable()
+
+    if not IsValid( target ) then return end
+
+    local isLPTar = IsValid( target ) and target:IsPlayer() and target == LocalPlayer()
+    local isLPAt = IsValid( attacker ) and attacker:IsPlayer() and attacker == LocalPlayer()
+
+    if isLPTar then
+        CoDHUD_AddStat(1, "deaths")
+    elseif isLPAt then
+        if IsValid( target ) and target:IsNPC() then return end
+        
+        if isHeadshot then
+            CoDHUD_AddStat( 1, "headshots" )
+        end
+        CoDHUD_AddStat( 1, "kills" )
+    end
+end)
+
+-- net.Receive("CoDHUD_OnDamage", function()
+--     local target = net.ReadEntity()
+--     local attacker = net.ReadEntity()
+--     local isKill = net.ReadBool()
+
+--     print( "OnDamage", target, attacker, isKill )
+
+--     if not IsValid(target) or not IsValid(attacker) then return end
+
+--     local isLPTar = target == LocalPlayer()
+--     local isLPAt = attacker == LocalPlayer()
+
+--     if isLPAt then
+--         if isKill then
+--             CoDHUD_AddStat(1, "kills")
+--         end
+--     elseif isLPTar then
+--         if isKill then
+--             CoDHUD_AddStat(1, "deaths")
+--         end
+--     end
+-- end)
 
 -- DEBUG HUD
 hook.Add("HUDPaint", "CoDHUD_DebugProgressOverlay", function()

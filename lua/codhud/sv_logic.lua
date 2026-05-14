@@ -10,6 +10,10 @@ util.AddNetworkString("CoDHUD_ClientFullSync")
 util.AddNetworkString("CoDHUD_ClientStatUpdate")
 util.AddNetworkString("CoDHUD_ClientCompletedChallenge")
 
+-- Damage tracking network strings
+util.AddNetworkString("CoDHUD_OnDamage")
+util.AddNetworkString("CoDHUD_OnDeath")
+
 -- [[ STAT-TRACKING AND SAVING ]]
 PlayerProfiles = PlayerProfiles or {}
 
@@ -232,8 +236,65 @@ local function ProcessWeaponProgress(ply, wepClass, isHeadshot)
 	end
 end
 
+local function onDamage( target, attacker, isKill, dmgInfo )
+    print( "OnDamage", target, attacker, isKill, dmgInfo )
+    local recipients = {}
+    if target:IsPlayer() then
+        table.insert(recipients, target)
+    end
+    if attacker:IsPlayer() then
+        table.insert(recipients, attacker)
+    end
+
+    net.Start("CoDHUD_OnDamage")
+        net.WriteEntity(target)
+        net.WriteEntity(attacker)
+        net.WriteBool(isKill)
+    net.Send(recipients)
+end
+
+local function onDeath( target, attacker, inflictor, isHeadshot, additionalData )
+    print( "OnDeath", target, attacker, inflictor, isHeadshot, additionalData )
+    local recipients = {}
+    if IsValid(target) and target:IsPlayer() then
+        table.insert(recipients, target)
+    end
+    if IsValid(attacker) and attacker:IsPlayer() then
+        table.insert(recipients, attacker)
+    end
+    
+    net.Start("CoDHUD_OnDeath")
+        net.WriteEntity(target)
+        net.WriteEntity(attacker)
+        net.WriteEntity(inflictor)
+        net.WriteBool(isHeadshot)
+        net.WriteTable(additionalData or {})
+    net.Send(recipients)
+end
+
+hook.Add("CoDHUD_OnDamage", "CoDHUD_OnDamage_Handler", onDamage)
+hook.Add("CoDHUD_OnDeath", "CoDHUD_OnDeath_Handler", onDeath)
+
+hook.Add("PostEntityTakeDamage", "MW2_DAMAGE_HANDLER", function(target, dmginfo, took)
+    local attacker = dmginfo:GetAttacker()
+    
+    -- 1. Validation: Must be a valid hit, attacker must be a player, no self-damage
+    if took and IsValid(attacker) and attacker:IsPlayer() and attacker ~= target then
+        
+        -- 2. Filter: Only living entities (NPCs, Players, Nextbots)
+        if target:IsNPC() or target:IsPlayer() or target:IsNextBot() then
+            hook.Run( "CoDHUD_OnDamage", target, attacker, ( target:Health() <= 0 ), dmginfo )
+        end
+    end
+end)
+
 -- [[ KILL TRACKING LOGIC ]]
 hook.Add("PlayerDeath", "CoDHUD_MainTracker", function(victim, inflictor, attacker)
+    -- Case where they committed suicide or died to fall damage
+    if victim == attacker or attacker:IsWorld() then
+        hook.Run( "CoDHUD_OnDeath", victim, nil, nil, false )
+    end
+
     if not IsValid(attacker) or not attacker:IsPlayer() or attacker == victim then return end
 
 	local wepClass = GetWeaponClass(attacker, inflictor)
@@ -242,6 +303,7 @@ hook.Add("PlayerDeath", "CoDHUD_MainTracker", function(victim, inflictor, attack
 		local prof = GetProfile(victim)
 		prof.deaths = prof.deaths + 1
 	end
+
 
 	-- Per-Weapon Challenges
 	ProcessWeaponProgress(attacker, wepClass, victim:LastHitGroup() == HITGROUP_HEAD)
@@ -363,6 +425,9 @@ hook.Add("PlayerDeath", "CoDHUD_MainTracker", function(victim, inflictor, attack
 	local prof = GetProfile(attacker)
     prof.rivals[vicID] = (prof.rivals[vicID] or 0) + 1
     if prof.rivals[vicID] == 5 then TriggerChallenge(attacker, "rival", "RIVAL", nil, "KILL_THE_SAME_ENEMY_5", nil, 3000) end
+
+    hook.Run( "CoDHUD_OnDeath", victim, attacker, inflictor, victim:LastHitGroup() == HITGROUP_HEAD, {} )
+
 end)
 
 -- [[ BACKSTABBER TRACKING ]]
@@ -430,5 +495,7 @@ hook.Add("OnNPCKilled", "CoDHUD_NPCChallenges", function(npc, attacker, inflicto
         if class == "npc_helicopter" or class == "npc_combinedropship" or class == "npc_combinegunship" then
             TriggerChallenge(attacker, "flyswatter", "FLYSWATTER", nil, "SHOOT_DOWN_AN_ENEMY_HELICOPTER", nil, 1000)
         end
+
+        hook.Run( "CoDHUD_OnDeath", npc, attacker, inflictor, false )
     end
 end)
