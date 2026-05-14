@@ -372,12 +372,12 @@ local function levelup( ... )
         text = rank .. "\n" .. language.GetPhrase("BO2_RANK_PROMOTED"),
         x = CoDHUD_SX(960),
         y = CoDHUD_SY(125),
-        color = Color(0,220,80),
+        color = Color(0,0,0),
 		sfx = "hud/bo2/mus_rank_02.SN65.pc.snd.wav",
         fonts = {
-            pri = "BO2_ChalHeader_Pri",
-            sec = "BO2_ChalHeader_Sec",
-            shd = "BO2_ChalHeader_Shd",
+            pri = "BO2_ChalHeader",
+            sec = "BO2_ChalHeader",
+            shd = "BO2_ChalHeader",
         },
 
 		iconY = CoDHUD_SY(180),
