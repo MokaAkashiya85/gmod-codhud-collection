@@ -410,7 +410,7 @@ local function levelup( ... )
 
     CoDHUD_HeaderQueue.Push({
         text = language.GetPhrase("MW2_RANK_PROMOTED") .. "\n" .. rank,
-        x = CoDHUD_SX(1890),
+        x = ScrW() * 0.99,
         y = CoDHUD_SY(125),
         color = Color(0,220,80),
 		sfx = "hud/mp_levelup_final_2.mp3",
@@ -471,7 +471,7 @@ local function challengecomplete( ... )
     CoDHUD_HeaderQueue.Push({
         text = CoDHUD_ChallengeTitle(header, level),
         subtext = (sub and sub ~= "") and ResolvePrefix("MW2_CHALLENGE_", sub) or nil,
-        x = CoDHUD_SX(1890),
+        x = ScrW() * 0.99,
         y = CoDHUD_SY(120),
         color = Color(0,220,80),
 		sfx = "hud/mp_challengecomplete_metal_2.mp3",
@@ -491,7 +491,7 @@ local function rs_obj( ... )
 
 	CoDHUD_HeaderQueue.Push({
 		text = language.GetPhrase(text),
-		x = CoDHUD_SX(960),
+		x = ScrW() * 0.5,
 		y = CoDHUD_SY(205),
 		color = Color(0, 220, 80),
 		fonts = {
@@ -510,7 +510,7 @@ local function rs_title( ... )
 
 	CoDHUD_HeaderQueue.Push({
 		text = language.GetPhrase(text),
-		x = CoDHUD_SX(960),
+		x = ScrW() * 0.5,
 		y = CoDHUD_SY(150),
 		color = glow,
 
@@ -533,8 +533,7 @@ local function rs_timer( ... )
 	
 	local outlined = GetConVar("codhud_enable_outlinedtext"):GetBool()
 
-    local tx  = CoDHUD_SX(960)
-    -- local ty  = CoDHUD_SY(540)
+    local tx  = ScrW() * 0.5
     local ty  = ScrH() * 0.5
     local syo = CoDHUD_SY(-85)
 
@@ -582,7 +581,7 @@ local function re_teams( ... )
     CoDHUD_HeaderQueue.Push({
         teams = scaledTeams,
 		dmscore = dmScore,
-        x = CoDHUD_SX(960),
+        x = ScrW() * 0.5,
         y = CoDHUD_SY(400),
         multiple = true,
         persist = true,
@@ -602,7 +601,7 @@ local function re_teams( ... )
 	-- Text
 	CoDHUD_HeaderQueue.Push({
 		text = ws_result,
-		x = CoDHUD_SX(960),
+		x = ScrW() * 0.5,
 		y = CoDHUD_SY(240),
 		color = re_result_glow,
 		multiple = true,
@@ -619,7 +618,7 @@ local function re_teams( ... )
 
 	CoDHUD_HeaderQueue.Push({
 		text = ws_limit,
-		x = CoDHUD_SX(960),
+		x = ScrW() * 0.5,
 		y = CoDHUD_SY(330),
 		color = Color(135, 135, 180),
 		multiple = true,
@@ -648,7 +647,7 @@ local function re_bonus( ... )
 
     local iconAlpha = math.floor(math.Clamp(el / 1.0, 0, 1) * 255)
 
-	draw.SimpleTextOutlined( string.format( language.GetPhrase("MW2_MP_MATCH_BONUS_IS"), tostring(re_match_bonus) ), "MW2_RE_Bonus", CoDHUD_SX(960), CoDHUD_SY(720), Color(240, 250, 110, iconAlpha), 1, 1, outlined and 1 or 0, Color(0,0,0, iconAlpha) )
+	draw.SimpleTextOutlined( string.format( language.GetPhrase("MW2_MP_MATCH_BONUS_IS"), tostring(re_match_bonus) ), "MW2_RE_Bonus", ScrW() * 0.5, CoDHUD_SY(720), Color(240, 250, 110, iconAlpha), 1, 1, outlined and 1 or 0, Color(0,0,0, iconAlpha) )
 end
 CoDHUD[hudtype].RoundEndBonus = re_bonus
 

@@ -147,6 +147,7 @@ CoDHUD[hudtype].VoiceCallouts = {
 	
 	leadtaken = "lead_taken",
 	leadlost = "lead_lost",
+	leadtied = "tied",
 	
 	missionwin = "mission_success",
 	missionlose = "mission_fail",
@@ -368,7 +369,7 @@ local function levelup( ... )
 		writeSounds = textype,
 		writeSpeed = 16,
         text = string.format( language.GetPhrase("BO1_RANK_PROMOTED_TO"), level ),
-        x = CoDHUD_SX(960),
+        x = ScrW() * 0.5,
         y = CoDHUD_SY(125),
         color = Color(0,0,0),
 		sfx = "music/bo1/stings/mp_level_up.wav",
@@ -420,7 +421,7 @@ local function challengecomplete( ... )
 		type = "bo_challenge",
         text = CoDHUD_ChallengeTitle(header, level),
         subtext = (sub and sub ~= "") and ResolvePrefix("MW2_CHALLENGE_", sub) or nil,
-        x = CoDHUD_SX(960),
+        x = ScrW() * 0.5,
         y = CoDHUD_SY(125),
 		sfx = "music/bo1/stings/mp_milestone_sting.wav",
 		holdTime = 2.5,
@@ -442,7 +443,7 @@ local function rs_obj( ... )
 		writeSounds = textype,
 		writeSpeed = 8,
 		text = language.GetPhrase(text),
-		x = CoDHUD_SX(960),
+		x = ScrW() * 0.5,
 		y = CoDHUD_SY(170),
 		color = Color(0, 0, 0),
 		fonts = {
@@ -464,7 +465,7 @@ local function rs_title( ... )
 		writeSounds = textype,
 		writeSpeed = 8,
 		text = language.GetPhrase(text),
-		x = CoDHUD_SX(960),
+		x = ScrW() * 0.5,
 		y = CoDHUD_SY(50),
 		color = Color(0,0,0),
 
@@ -487,7 +488,7 @@ local function rs_timer( ... )
 	
 	local outlined = GetConVar("codhud_enable_outlinedtext"):GetBool()
 
-    local tx  = CoDHUD_SX(960)
+    local tx  = ScrW() * 0.5
     -- local ty  = CoDHUD_SY(540)
     local ty  = ScrH() * 0.5
     local syo = CoDHUD_SY(-85)
@@ -539,7 +540,7 @@ local function re_teams( ... )
 		dmscore = dmScore,
 		writeSounds = textype,
 		writeSpeed = 8,
-        x = CoDHUD_SX(960),
+        x = ScrW() * 0.5,
         y = CoDHUD_SY(400),
         multiple = true,
         persist = true,
@@ -562,7 +563,7 @@ local function re_teams( ... )
 		text = ws_result,
 		writeSounds = textype,
 		writeSpeed = 8,
-		x = CoDHUD_SX(960),
+		x = ScrW() * 0.5,
 		y = CoDHUD_SY(240),
 		color = re_result_glow,
 		multiple = true,
@@ -582,7 +583,7 @@ local function re_teams( ... )
 		text = ws_limit,
 		writeSounds = textype,
 		writeSpeed = 8,
-		x = CoDHUD_SX(960),
+		x = ScrW() * 0.5,
 		y = CoDHUD_SY(330),
 		color = Color(135, 135, 180),
 		multiple = true,
@@ -611,7 +612,7 @@ local function re_bonus( ... )
 
     local iconAlpha = math.floor(math.Clamp(el / 1.0, 0, 1) * 255)
 
-	draw.SimpleTextOutlined( string.format( language.GetPhrase("MW2_MP_MATCH_BONUS_IS"), tostring(re_match_bonus) ), "BO1_RE_Bonus", CoDHUD_SX(960), CoDHUD_SY(720), Color(240, 250, 110, iconAlpha), 1, 1, outlined and 1 or 0, Color(0,0,0, iconAlpha) )
+	draw.SimpleTextOutlined( string.format( language.GetPhrase("MW2_MP_MATCH_BONUS_IS"), tostring(re_match_bonus) ), "BO1_RE_Bonus", ScrW() * 0.5, CoDHUD_SY(720), Color(240, 250, 110, iconAlpha), 1, 1, outlined and 1 or 0, Color(0,0,0, iconAlpha) )
 end
 CoDHUD[hudtype].RoundEndBonus = re_bonus
 

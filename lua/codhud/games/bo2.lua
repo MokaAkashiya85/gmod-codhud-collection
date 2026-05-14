@@ -149,6 +149,7 @@ CoDHUD[hudtype].VoiceCallouts = {
 	
 	leadtaken = "lead_taken",
 	leadlost = "lead_lost",
+	leadtied = "tied",
 	
 	missionwin = "mission_success",
 	missionlose = "mission_fail",
@@ -373,7 +374,7 @@ local function levelup( ... )
     CoDHUD_HeaderQueue.Push({
 		type = "bo_challenge", -- TEMPORARY
         text = rank .. "\n" .. language.GetPhrase("BO2_RANK_PROMOTED"),
-        x = CoDHUD_SX(960),
+        x = ScrW() * 0.5,
         y = CoDHUD_SY(200),
         color = Color(0,0,0),
 		sfx = "hud/bo2/mus_rank_02.SN65.pc.snd.wav",
@@ -427,7 +428,7 @@ local function challengecomplete( ... )
 		type = "bo2_challenge",
         text = CoDHUD_ChallengeTitle(header, level),
         subtext = (sub and sub ~= "") and ResolvePrefix("MW2_CHALLENGE_", sub) or nil,
-        x = CoDHUD_SX(960),
+        x = ScrW() * 0.5,
         y = CoDHUD_SY(125),
 		sfx = "hud/bo2/award.SN65.pc.snd.wav",
 		holdTime = 1.5,
@@ -451,7 +452,7 @@ local function rs_obj( ... )
 		writeSpeed = 8,
 		writeSoundOnce = true,
 		text = language.GetPhrase(text),
-		x = CoDHUD_SX(960),
+		x = ScrW() * 0.5,
 		y = CoDHUD_SY(170),
 		color = Color(0, 0, 0),
 		fonts = {
@@ -471,7 +472,7 @@ local function rs_title( ... )
 	CoDHUD_HeaderQueue.Push({
 		type = "bo2_teamheader",
 		text = language.GetPhrase(text .. "_CAPS"),
-		x = CoDHUD_SX(960),
+		x = ScrW() * 0.5,
 		y = CoDHUD_SY(120),
 		flashColor = glow,
 
@@ -494,8 +495,7 @@ local function rs_timer( ... )
 	
 	local outlined = GetConVar("codhud_enable_outlinedtext"):GetBool()
 
-    local tx  = CoDHUD_SX(960)
-    -- local ty  = CoDHUD_SY(540)
+    local tx  = ScrW() * 0.5
     local ty  = ScrH() * 0.5
     local syo = CoDHUD_SY(-85)
 
@@ -546,7 +546,7 @@ local function re_teams( ... )
 		dmscore = dmScore,
 		writeSounds = {""},
 		writeSpeed = 8,
-        x = CoDHUD_SX(960),
+        x = ScrW() * 0.5,
         y = CoDHUD_SY(400),
         multiple = true,
         persist = true,
@@ -570,7 +570,7 @@ local function re_teams( ... )
 		writeSounds = textype,
 		writeSoundOnce = true,
 		writeSpeed = 8,
-		x = CoDHUD_SX(960),
+		x = ScrW() * 0.5,
 		y = CoDHUD_SY(240),
 		color = re_result_glow,
 		multiple = true,
@@ -590,7 +590,7 @@ local function re_teams( ... )
 		text = ws_limit,
 		writeSounds = {""},
 		writeSpeed = 80,
-		x = CoDHUD_SX(960),
+		x = ScrW() * 0.5,
 		y = CoDHUD_SY(330),
 		color = Color(135, 135, 180),
 		multiple = true,
@@ -619,7 +619,7 @@ local function re_bonus( ... )
 
     local iconAlpha = math.floor(math.Clamp(el / 1.0, 0, 1) * 255)
 
-	draw.SimpleTextOutlined( string.format( language.GetPhrase("MW2_MP_MATCH_BONUS_IS"), tostring(re_match_bonus) ), "BO2_RE_Bonus", CoDHUD_SX(960), CoDHUD_SY(720), Color(240, 250, 110, iconAlpha), 1, 1, outlined and 1 or 0, Color(0,0,0, iconAlpha) )
+	draw.SimpleTextOutlined( string.format( language.GetPhrase("MW2_MP_MATCH_BONUS_IS"), tostring(re_match_bonus) ), "BO2_RE_Bonus", ScrW() * 0.5, CoDHUD_SY(720), Color(240, 250, 110, iconAlpha), 1, 1, outlined and 1 or 0, Color(0,0,0, iconAlpha) )
 end
 CoDHUD[hudtype].RoundEndBonus = re_bonus
 
@@ -2188,7 +2188,7 @@ local function weaponinfo(...)
 	local name  = CoDHUD_UpperText(language.GetPhrase(wep:GetPrintName() or wep:GetClass()))
 	local namew, nameh = surface.GetTextSize(name)
 
-	draw.RoundedBox( 4, ScrW() - CoDHUD_SX(CFG.WEP_NAME_X_OFF) - CoDHUD_S(namew), ScrH() - CoDHUD_SY(CFG.WEP_NAME_Y_OFF), CoDHUD_S(namew) + CoDHUD_S(8), CoDHUD_S(nameh), Color( 255, 255, 255, 100 ) )
+	draw.RoundedBox( 4, ScrW() - CoDHUD_SX(CFG.WEP_NAME_X_OFF) - CoDHUD_SX(namew), ScrH() - CoDHUD_SY(CFG.WEP_NAME_Y_OFF), CoDHUD_SY(namew) + CoDHUD_SY(8), CoDHUD_S(nameh), Color( 255, 255, 255, 100 ) )
 	draw.SimpleTextOutlined(name, "BO2_Wep_Name", ScrW() - CoDHUD_SX(CFG.WEP_NAME_X_OFF), ScrH() - CoDHUD_SY(CFG.WEP_NAME_Y_OFF), Color(0, 0, 0,175), 2, 0, 1, Color(0, 0, 0, 10))
 
 	local altCache = (altType == primType or altType == game.GetAmmoID("Grenade") and maxClip2 > 0)
