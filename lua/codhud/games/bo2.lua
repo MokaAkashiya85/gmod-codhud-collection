@@ -294,6 +294,99 @@ end
 -- [[ HUD ELEMENTS ]]
 CoDHUD[hudtype].MedalsBlockChallenges = true   -- medals pause challenges
 
+CoDHUD[hudtype].LevelData = {
+	nameprefix = "BO2_",
+	materialpath = "bo2/ranks/rank_", -- For icons; followed by the "rank icon" path.
+}
+
+CoDHUD[hudtype].Levels = {
+	-- [Rank] = { Data Name, XP Needed, XP Required for Next, Rank Name, Rank Icon, Max XP (for that level) }
+
+	[0] = { "pfc1", 0, 800, "RANK_PFC_FULL", "rank_pvc", 800 },
+	[1] = { "pfc2", 800, 1100, "RANK_PFC_FULL2", "rank_pvc", 1900 },
+	[2] = { "pfc3", 1900, 1400, "RANK_PFC_FULL3", "rank_pvc", 3300 },
+	[3] = { "lcpl1", 3300, 2000, "RANK_LCPL_FULL", "rank_lcpl", 5300 },
+	[4] = { "lcpl2", 5300, 2600, "RANK_LCPL_FULL2", "rank_lcpl", 7900 },
+	[5] = { "lcpl3", 7900, 3200, "RANK_LCPL_FULL3", "rank_lcpl", 11100 },
+	[6] = { "cpl1", 11100, 3800, "RANK_CPL_FULL", "rank_cpl", 14900 },
+	[7] = { "cpl2", 14900, 4400, "RANK_CPL_FULL2", "rank_cpl", 19300 },
+	[8] = { "cpl3", 19300, 5000, "RANK_CPL_FULL3", "rank_cpl", 24300 },
+	[9] = { "sgt1", 24300, 5800, "RANK_SGT_FULL", "rank_sgt", 30100 },
+	[10] = { "sgt2", 30100, 6600, "RANK_SGT_FULL2", "rank_sgt", 36700 },
+	[11] = { "sgt3", 36700, 7400, "RANK_SGT_FULL3", "rank_sgt", 44100 },
+	[12] = { "ssgt1", 44100, 8200, "RANK_SSGT_FULL", "rank_ssgt", 52300 },
+	[13] = { "ssgt2", 52300, 9000, "RANK_SSGT_FULL2", "rank_ssgt", 61300 },
+	[14] = { "ssgt3", 61300, 9800, "RANK_SSGT_FULL3", "rank_ssgt", 71100 },
+	[15] = { "gysgt1", 71100, 10600, "RANK_GYSGT_FULL", "rank_gysgt", 81700 },
+	[16] = { "gysgt2", 81700, 11400, "RANK_GYSGT_FULL2", "rank_gysgt", 93100 },
+	[17] = { "gysgt3", 93100, 12200, "RANK_GYSGT_FULL3", "rank_gysgt", 105300 },
+	[18] = { "msgt1", 105300, 13000, "RANK_MSGT_FULL", "rank_msgt", 118300 },
+	[19] = { "msgt2", 118300, 13800, "RANK_MSGT_FULL2", "rank_msgt", 132100 },
+	[20] = { "msgt3", 132100, 14600, "RANK_MSGT_FULL3", "rank_msgt", 146700 },
+	[21] = { "mgysgt1", 146700, 15400, "RANK_MGYSGT_FULL", "rank_mgysgt", 162100 },
+	[22] = { "mgysgt2", 162100, 16200, "RANK_MGYSGT_FULL2", "rank_mgysgt", 178300 },
+	[23] = { "mgysgt3", 178300, 17000, "RANK_MGYSGT_FULL3", "rank_mgysgt", 195300 },
+	[24] = { "2ndlt1", 195300, 17800, "RANK_2NDLT_FULL", "rank_2ndlt", 213100 },
+	[25] = { "2ndlt2", 213100, 18600, "RANK_2NDLT_FULL2", "rank_2ndlt", 231700 },
+	[26] = { "2ndlt3", 231700, 19400, "RANK_2NDLT_FULL3", "rank_2ndlt", 251100 },
+	[27] = { "lt1", 251100, 20200, "RANK_LT_FULL", "rank_lt", 271300 },
+	[28] = { "lt2", 271300, 21000, "RANK_LT_FULL2", "rank_lt", 292300 },
+	[29] = { "lt3", 292300, 21800, "RANK_LT_FULL3", "rank_lt", 314100 },
+	[30] = { "cpt1", 314100, 23000, "RANK_CPT_FULL", "rank_cpt", 337100 },
+	[31] = { "cpt2", 337100, 24200, "RANK_CPT_FULL2", "rank_cpt", 361300 },
+	[32] = { "cpt3", 361300, 25400, "RANK_CPT_FULL3", "rank_cpt", 386700 },
+	[33] = { "maj1", 386700, 26600, "RANK_MAJ_FULL", "rank_maj", 413300 },
+	[34] = { "maj2", 413300, 27800, "RANK_MAJ_FULL2", "rank_maj", 441100 },
+	[35] = { "maj3", 441100, 29000, "RANK_MAJ_FULL3", "rank_maj", 470100 },
+	[36] = { "ltcol1", 470100, 30200, "RANK_LTCOL_FULL", "rank_ltcol", 500300 },
+	[37] = { "ltcol2", 500300, 31400, "RANK_LTCOL_FULL2", "rank_ltcol", 531700 },
+	[38] = { "ltcol3", 531700, 32600, "RANK_LTCOL_FULL3", "rank_ltcol", 564300 },
+	[39] = { "col1", 564300, 33800, "RANK_COL_FULL", "rank_col", 598100 },
+	[40] = { "col2", 598100, 35000, "RANK_COL_FULL2", "rank_col", 633100 },
+	[41] = { "col3", 633100, 36200, "RANK_COL_FULL3", "rank_col", 669300 },
+	[42] = { "bgen1", 669300, 37400, "RANK_BGEN_FULL", "rank_bgen", 706700 },
+	[43] = { "bgen2", 706700, 38600, "RANK_BGEN_FULL2", "rank_bgen", 745300 },
+	[44] = { "bgen3", 745300, 39800, "RANK_BGEN_FULL3", "rank_bgen", 785100 },
+	[45] = { "majgen1", 785100, 41000, "RANK_MAJGEN_FULL", "rank_majgen", 826100 },
+	[46] = { "majgen2", 826100, 42200, "RANK_MAJGEN_FULL2", "rank_majgen", 868300 },
+	[47] = { "majgen3", 868300, 43400, "RANK_MAJGEN_FULL3", "rank_majgen", 911700 },
+	[48] = { "ltgen1", 911700, 44600, "RANK_LTGEN_FULL", "rank_ltgen", 956300 },
+	[49] = { "ltgen2", 956300, 45800, "RANK_LTGEN_FULL2", "rank_ltgen", 1002100 },
+	[50] = { "ltgen3", 1002100, 47000, "RANK_LTGEN_FULL3", "rank_ltgen", 1049100 },
+	[51] = { "gen1", 1049100, 48200, "RANK_GEN_FULL", "rank_gen", 1097300 },
+	[52] = { "gen2", 1097300, 49400, "RANK_GEN_FULL2", "rank_gen", 1146700 },
+	[53] = { "gen3", 1146700, 50600, "RANK_GEN_FULL3", "rank_gen", 1197300 },
+	[54] = { "com1", 1197300, 51800, "RANK_COM_FULL", "rank_com", 1249100 }
+}
+
+local function levelup( ... )
+    local rank = select(1, ...)
+    local level = select(2, ...)
+    local logo = select(3, ...)
+
+    CoDHUD_HeaderQueue.Push({
+		type = "bo", -- TEMPORARY
+		writeSounds = textype,
+		writeSpeed = 8,
+		writeSoundOnce = true,
+        text = rank .. "\n" .. language.GetPhrase("BO2_RANK_PROMOTED"),
+        x = CoDHUD_SX(960),
+        y = CoDHUD_SY(125),
+        color = Color(0,220,80),
+		sfx = "hud/bo2/mus_rank_02.SN65.pc.snd.wav",
+        fonts = {
+            pri = "BO2_ChalHeader_Pri",
+            sec = "BO2_ChalHeader_Sec",
+            shd = "BO2_ChalHeader_Shd",
+        },
+
+		iconY = CoDHUD_SY(180),
+		iconSize = CoDHUD_S(134),
+		icon = logo
+    })
+end
+CoDHUD[hudtype].Levelup = levelup
+
 local function settingsmenu( ... )
 	local w = select(1, ...)
 	local h = select(2, ...)
@@ -331,6 +424,7 @@ local function challengecomplete( ... )
         subtext = (sub and sub ~= "") and ResolvePrefix("MW2_CHALLENGE_", sub) or nil,
         x = CoDHUD_SX(960),
         y = CoDHUD_SY(125),
+		sfx = "hud/bo2/award.SN65.pc.snd.wav",
 		holdTime = 1.5,
 
         color = Color(0,0,0),
@@ -340,7 +434,6 @@ local function challengecomplete( ... )
         },
     })
 
-    surface.PlaySound("hud/bo2/award.SN65.pc.snd.wav")
 end
 CoDHUD[hudtype].ChallengeComplete = challengecomplete
 
