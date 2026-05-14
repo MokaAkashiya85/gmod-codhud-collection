@@ -192,6 +192,7 @@ local function InitiateCoDFonts()
 		
 	-- Scoreboard
     surface.CreateFont( "MW2_Scoreboard_Text",		{ font = "Conduit ITC Light", size = CoDHUD_S(34), weight = 400, antialias = true, shadow = true, })
+    surface.CreateFont( "MW2_Scoreboard_Rank",		{ font = "Conduit ITC Light", size = CoDHUD_S(28), weight = 400, antialias = true, shadow = true, })
     surface.CreateFont( "MW2_Scoreboard_Timer",		{ font = "BankGothic Md BT", size = CoDHUD_S(34), weight = 400, antialias = true, })
 	
 	-- IFF

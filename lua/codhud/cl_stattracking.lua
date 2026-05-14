@@ -1,6 +1,7 @@
 ---- [ CLIENT CHALLENGE & STAT TRACKING ] ----
 
 CoDHUD_Stats = CoDHUD_Stats or {}
+CoDHUD_LastLevelup = CoDHUD_LastLevelup or nil
 
 local STATS_FILE = "codhud_stats.json"
 
@@ -106,14 +107,20 @@ function CoDHUD_UpdateLevel(forceHUD)
 	}
 
     -- Promotion detected
-    if newLevel > oldLevel then
-        local logoPath = CoDHUD[hud].LevelData.materialpath .. levelData[5]
-        local rankString = CoDHUD[hud].LevelData.nameprefix .. levelData[4]
+	if newLevel > oldLevel then
+		local logoPath = CoDHUD[hud].LevelData.materialpath .. levelData[5]
+		local rankString = CoDHUD[hud].LevelData.nameprefix .. levelData[4]
 
-        if CoDHUD[hud] and CoDHUD[hud].Levelup then
-			CoDHUD[hud].Levelup( language.GetPhrase(rankString), newLevel, Material(logoPath .. ".png", "smooth") )
+		local localizedRank = language.GetPhrase(rankString)
+		local rankMaterial = Material(logoPath .. ".png", "smooth")
+
+		-- STORE LAST PROMOTION
+		CoDHUD_LastLevelup = { hud = hud, name = localizedRank, level = newLevel, material = rankMaterial }
+
+		if CoDHUD[hud] and CoDHUD[hud].Levelup then
+			CoDHUD[hud].Levelup( localizedRank, newLevel, rankMaterial )
 		end
-    end
+	end
 
     CoDHUD_SaveStats()
 end
@@ -230,6 +237,33 @@ end)
 
 ---[[ DEBUGGING AREA ]]
 CreateConVar( "codhud_debug_progress", "0", FCVAR_ARCHIVE )
+
+CreateConVar("codhud_replay_levelup", "0", FCVAR_ARCHIVE)
+
+cvars.AddChangeCallback("codhud_replay_levelup", function(_, _, newValue)
+    if tonumber(newValue) ~= 1 then return end
+
+    if not CoDHUD_LastLevelup then
+        print("[CoDHUD] No cached level-up notification to replay.")
+        return
+    end
+
+    local data = CoDHUD_LastLevelup
+    local hud = data.hud
+
+    if CoDHUD[hud] and CoDHUD[hud].Levelup then
+        CoDHUD[hud].Levelup(
+            data.name,
+            data.level,
+            data.material
+        )
+
+        print("[CoDHUD] Replayed last level-up notification.")
+    end
+
+    RunConsoleCommand("codhud_replay_levelup", "0")
+end, "CoDHUD_ReplayLevelup")
+
 
 local lastXPTime = 0
 local lastXPAmount = 0
@@ -423,5 +457,86 @@ hook.Add("HUDPaint", "CoDHUD_DebugProgressOverlay", function()
     for _, str in ipairs(lines) do
         draw.SimpleText( str, "Trebuchet18", x + padding, ty, Color(255,255,255), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP )
         ty = ty + lineH
+    end
+end)
+
+-- LEVEL LIST DEBUG PANEL
+hook.Add("HUDPaint", "CoDHUD_DebugLevelList", function()
+    if not GetConVar("codhud_debug_progress"):GetBool() then return end
+
+    local hud = CoDHUD_GetHUDType()
+
+    if not CoDHUD[hud] then return end
+    if not CoDHUD[hud].Levels then return end
+    if not CoDHUD[hud].LevelData then return end
+
+    local levels = CoDHUD[hud].Levels
+    local materialPath = CoDHUD[hud].LevelData.materialpath or ""
+
+    -- SORT LEVELS
+    local sorted = {}
+
+    for lvl, data in pairs(levels) do
+        table.insert(sorted, {
+            level = lvl,
+            data = data
+        })
+    end
+
+    table.sort(sorted, function(a, b)
+        return a.level < b.level
+    end)
+
+    -- LAYOUT
+    local rowsPerColumn = #levels / 2 + 1
+
+    local rowH = 14
+    local iconSize = 14
+
+    local padding = 15
+    local titleH = 20
+
+    local columnWidth = 260
+
+    local totalColumns = math.ceil(#sorted / rowsPerColumn)
+
+    local boxW = (columnWidth * totalColumns) + (padding * 2)
+    local boxH = (rowsPerColumn * rowH) + titleH + padding
+
+    local x = 40
+    local y = 200
+
+    -- BACKGROUND
+    draw.RoundedBox(8, x, y, boxW, boxH, Color(0, 0, 0, 220))
+    surface.SetDrawColor(255, 180, 0, 255)
+    surface.DrawOutlinedRect(x, y, boxW, boxH, 2)
+
+    -- TITLE
+    draw.SimpleText( "=== LEVEL LIST ===", "Trebuchet18", x + padding, y + 6, Color(255, 200, 0), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP )
+
+    -- DRAW LEVELS
+    for index, entry in ipairs(sorted) do
+        local lvl = entry.level
+        local data = entry.data
+
+        local localizedName = language.GetPhrase(CoDHUD[hud].LevelData.nameprefix .. data[4] or "UNKNOWN")
+        local icon = Material( materialPath .. (data[5] or "") .. ".png", "smooth" )
+
+        -- COLUMN/POSITION
+        local column = math.floor((index - 1) / rowsPerColumn)
+        local row = (index - 1) % rowsPerColumn
+
+        local drawX = x + padding + (column * columnWidth)
+        local drawY = y + titleH + (row * rowH)
+
+        -- ICON
+        if icon then
+            surface.SetMaterial(icon)
+            surface.SetDrawColor(255, 255, 255, 255)
+            surface.DrawTexturedRect( drawX, drawY + 2, iconSize, iconSize )
+        end
+
+        -- TEXT
+        draw.SimpleText( string.format("%02d | %s", lvl + 1, localizedName), "Trebuchet18", drawX + iconSize + 8, drawY + 1, Color(255, 255, 255), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP )
     end
 end)

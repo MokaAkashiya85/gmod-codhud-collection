@@ -336,9 +336,9 @@ CoDHUD[hudtype].Levels = {
 	[21] = { "msgt1", 177300, 18800, "RANK_MSGT_FULL", "rank_msgt1", 196100 },
 	[22] = { "msgt2", 196100, 19800, "RANK_MSGT_FULL2", "rank_msgt1", 215900 },
 	[23] = { "msgt3", 215900, 20800, "RANK_MSGT_FULL3", "rank_msgt1", 236700 },
-	[24] = { "1stsgt1", 236700, 21800, "RANK_1STSGT_FULL", "rank_1stsgt1", 258500 },
-	[25] = { "1stsgt2", 258500, 22800, "RANK_1STSGT_FULL2", "rank_1stsgt1", 281300 },
-	[26] = { "1stsgt3", 281300, 23800, "RANK_1STSGT_FULL3", "rank_1stsgt1", 305100 },
+	[24] = { "1stsgt1", 236700, 21800, "RANK_1STSGT_FULL", "rank_sgtfc1", 258500 },
+	[25] = { "1stsgt2", 258500, 22800, "RANK_1STSGT_FULL2", "rank_sgtfc1", 281300 },
+	[26] = { "1stsgt3", 281300, 23800, "RANK_1STSGT_FULL3", "rank_sgtfc1", 305100 },
 	[27] = { "sgtmaj1", 305100, 24800, "RANK_SGTMAJ_FULL", "rank_sgtmaj1", 329900 },
 	[28] = { "sgtmaj2", 329900, 25800, "RANK_SGTMAJ_FULL2", "rank_sgtmaj1", 355700 },
 	[29] = { "sgtmaj3", 355700, 27000, "RANK_SGTMAJ_FULL3", "rank_sgtmaj1", 382700 },
@@ -381,7 +381,7 @@ CoDHUD[hudtype].Levels = {
 	[66] = { "gen2", 2199800, 76800, "RANK_GEN_FULL2", "rank_gen1", 2276600 },
 	[67] = { "gen3", 2276600, 78300, "RANK_GEN_FULL3", "rank_gen1", 2354900 },
 	[68] = { "gen4", 2354900, 79800, "RANK_GEN_FULL4", "rank_gen1", 2434700 },
-	[69] = { "comm1", 2434700, 81300, "RANK_COMM_FULL", "rank_comm1", 2516000 }
+	[69] = { "comm1", 2434700, 81300, "RANK_COMM_FULL", "rank_comm", 2516000 }
 }
 
 local function levelup( ... )
@@ -1724,7 +1724,6 @@ local function scoreboard( ... )
 			surface.SetMaterial(MAT_ICON_DEAD)
 			surface.SetDrawColor(255, 255, 255, 255)
 			local iconSz = h * 0.8
-			-- Adjusted X to be right before the name (name starts at 110)
 			surface.DrawTexturedRect(x + CoDHUD_S(75), y + (h / 2) - (iconSz / 2), iconSz, iconSz)
 		end
 
@@ -1732,6 +1731,15 @@ local function scoreboard( ... )
 		local isMe = (ply == lp)
 		local tCol = isMe and Color(255, 200, 50, 255) or Color(255, 255, 255, 255)
 		local pScore = math.max(0, ply:Frags() * 100)
+
+		-- Rank
+		surface.SetMaterial(MAT_ICON_DEAD)
+		surface.SetDrawColor(255, 255, 255, 255)
+		local iconSz = h * 0.8
+		surface.DrawTexturedRect(x, y + (h / 2) - (iconSz / 2), iconSz, iconSz)
+		
+		draw.SimpleTextOutlined("1", "MW2_Scoreboard_Rank", x + CoDHUD_S(iconSz), y + (h / 3), tCol, TEXT_ALIGN_LEFT,  TEXT_ALIGN_TOP, outlined and 1 or 0, Color(0, 0, 0))
+
 
 		-- Text
 		draw.SimpleTextOutlined(ply:Nick(), "MW2_Scoreboard_Text", x + CoDHUD_S(110), y + (h / 2), tCol, TEXT_ALIGN_LEFT,  TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0))
