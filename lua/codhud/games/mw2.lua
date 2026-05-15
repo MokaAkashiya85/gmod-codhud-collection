@@ -1195,7 +1195,7 @@ local function minimap( ... )
         if not isFriendly then
             for _, observer in ipairs(player.GetAll()) do
                 local obsFaction = observer:GetNW2String("CoDHUD_Faction", "")
-                local isObserverFriendly = (localFaction ~= "" and obsFaction == localFaction)
+                local isObserverFriendly = CoDHUD_ActiveGamemodeCL ~= "dm" and (localFaction ~= "" and obsFaction == localFaction)
                 
                 if observer == ply or (isObserverFriendly and observer:Alive()) then
                     local dirToEnt = (ent:WorldSpaceCenter() - observer:EyePos()):GetNormalized()
