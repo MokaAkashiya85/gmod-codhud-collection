@@ -1700,7 +1700,7 @@ local function scoreboard( ... )
     local totalSecs = math.floor(CurTime())
     local mins, secs = math.floor(totalSecs / 60), totalSecs % 60
     local timeStr = string.format("%d:%02d", mins, secs)
-    DrawSqueezedText(timeStr, "BO1_Scoreboard_Timer", scrW - CoDHUD_S(CFG.TIMER_X_POS), CoDHUD_S(CFG.TIMER_Y_OFF), Color(255, 255, 255, 255), CFG.SQUEEZE, CFG.SQUEEZE_ONE, 1, CFG.SQUEEZE_ONE_BEFORE, outlined and 1.5 or 0)
+    DrawSqueezedText(timeStr, "BO1_Scoreboard_Timer", barRight - CoDHUD_S(5), CoDHUD_S(CFG.TIMER_Y_OFF), Color(255, 255, 255, 255), CFG.SQUEEZE, CFG.SQUEEZE_ONE, 0, CFG.SQUEEZE_ONE_BEFORE, outlined and 1.5 or 0)
 end
 CoDHUD[hudtype].Scoreboard = scoreboard
 
@@ -2041,8 +2041,9 @@ local function weaponinfo(...)
     if altType ~= -1 then
 		if altType ~= primType and altType ~= game.GetAmmoID("Grenade") then
 			surface.SetFont("BO1_Ammo_Alt")
-			local altLen = #tostring(altCount)
-			local altw, alth = surface.GetTextSize(altCount)
+			local altAdd = altCount+math.max(clip2, 0)
+			local altLen = #tostring(altAdd)
+			local altw, alth = surface.GetTextSize(altAdd)
 			local altPad = (altw + (altLen * CFG.ALT_TEXT_SQ))
 
 			surface.SetMaterial(MAT_DPAD_LEFT)
@@ -2061,7 +2062,7 @@ local function weaponinfo(...)
 			
 			draw.RoundedBox( 4, ScrW() -  CoDHUD_SX(CFG.ALT_TEXT_X+4) - altPad * 0.5 , ScrH() - CoDHUD_SY(CFG.ALT_TEXT_Y), CoDHUD_S(8) + altPad, CoDHUD_S(alth), Color( 0, 0, 0, 200 ) )
 			
-			DrawSqueezedText(altCount, "BO1_Ammo_Alt", ScrW() -  CoDHUD_SX(CFG.ALT_TEXT_X), ScrH() - CoDHUD_SY(CFG.ALT_TEXT_Y), altCol, CFG.ALT_TEXT_SQ, CFG.ALT_TEXT_SQ, 1, CoDHUD_S(999))
+			DrawSqueezedText(altAdd, "BO1_Ammo_Alt", ScrW() -  CoDHUD_SX(CFG.ALT_TEXT_X), ScrH() - CoDHUD_SY(CFG.ALT_TEXT_Y), altCol, CFG.ALT_TEXT_SQ, CFG.ALT_TEXT_SQ, 1, 0)
 		elseif maxClip2 > 0 and clip2 >= 0 then
 			local perc      = clip2 / maxClip2
 			local isLowClip = (perc <= CFG.STAT_LOW_PERC)
