@@ -8,7 +8,7 @@ CoDHUD.Factions = CoDHUD.Factions or {}
 CoDHUD.Gamemodes = CoDHUD.Gamemodes or {}
 
 local textype = {
-	"hud/bo2/cp_fill.LN65.pc.snd.wav",
+	"hud/bo2/cp_fill.LN65.pc.snd.mp3",
 }
 
 -- [[ SPECIAL KILLFEED ICONS ]]
@@ -19,13 +19,13 @@ end
 
 -- [[ SUSPENSE ]]
 CoDHUD[hudtype].SuspenseTracks = {
-	"music/bo2/underscores/2m01_myanmar_squirreljump_v1_mp_loop.SL65.pc.snd.wav",
-	"music/bo2/underscores/mus_mp_underscore_5m01_no_vox_no_sitar.SN65.pc.snd.wav",
-	"music/bo2/underscores/mus_mp_underscore_5m05_no_vox.SN65.pc.snd.wav",
-	"music/bo2/underscores/mus_mp_underscore_14m04_no_orch.SN65.pc.snd.wav",
-	"music/bo2/underscores/mus_mp_underscore_14m06a_no_orch.SN65.pc.snd.wav",
-	"music/bo2/underscores/mus_mp_underscore_14m09a_master.SN65.pc.snd.wav",
-	"music/bo2/underscores/mus_mp_underscore_14m09b_no_strings.SN65.pc.snd.wav",
+	"music/bo2/underscores/2m01_myanmar_squirreljump_v1_mp_loop.SL65.pc.snd.mp3",
+	"music/bo2/underscores/mus_mp_underscore_5m01_no_vox_no_sitar.SN65.pc.snd.mp3",
+	"music/bo2/underscores/mus_mp_underscore_5m05_no_vox.SN65.pc.snd.mp3",
+	"music/bo2/underscores/mus_mp_underscore_14m04_no_orch.SN65.pc.snd.mp3",
+	"music/bo2/underscores/mus_mp_underscore_14m06a_no_orch.SN65.pc.snd.mp3",
+	"music/bo2/underscores/mus_mp_underscore_14m09a_master.SN65.pc.snd.mp3",
+	"music/bo2/underscores/mus_mp_underscore_14m09b_no_strings.SN65.pc.snd.mp3",
 }
 
 -- [[ FACTIONS ]]
@@ -34,9 +34,9 @@ CoDHUD.Factions[hudtype] = {
 		name = "BO2_MP_SEALS_NAME",
 		short = "BO2_MPUI_SEALS_SHORT",
 		voicepath = "st6/vox_st6_",
-		spawntheme = "spawn/mus_mp_spawn_00.SN65.pc.snd.wav",
-		victorytheme = "spawn/mus_mp_spawn_00_short.SN65.pc.snd.wav",
-		defeattheme = "loss/mus_loss_00.SN65.pc.snd.wav",
+		spawntheme = "spawn/mus_mp_spawn_00.SN65.pc.snd.mp3",
+		victorytheme = "spawn/mus_mp_spawn_00_short.SN65.pc.snd.mp3",
+		defeattheme = "loss/mus_loss_00.SN65.pc.snd.mp3",
 		spawnIcon = hudtype .. "/factions/faction_seals.vtf",
 		scoreIcon = hudtype .. "/factions/faction_seals.vtf",
 		color = Color(116, 158, 182),
@@ -48,9 +48,9 @@ CoDHUD.Factions[hudtype] = {
 		name = "BO2_MP_PLA_NAME",
 		short = "BO2_MPUI_PLA_SHORT",
 		voicepath = "pla/vox_pla_",
-		spawntheme = "spawn/mus_mp_spawn_03.SN65.pc.snd.wav",
-		victorytheme = "spawn/mus_mp_spawn_03_short.SN65.pc.snd.wav",
-		defeattheme = "loss/mus_loss_00.SN65.pc.snd.wav",
+		spawntheme = "spawn/mus_mp_spawn_03.SN65.pc.snd.mp3",
+		victorytheme = "spawn/mus_mp_spawn_03_short.SN65.pc.snd.mp3",
+		defeattheme = "loss/mus_loss_00.SN65.pc.snd.mp3",
 		spawnIcon = hudtype .. "/factions/faction_pla.vtf",
 		scoreIcon = hudtype .. "/factions/faction_pla.vtf",
 		color = Color(167, 14, 16),
@@ -62,9 +62,9 @@ CoDHUD.Factions[hudtype] = {
 		name = "BO2_MP_FBI_NAME",
 		short = "BO2_MPUI_FBI_SHORT",
 		voicepath = "fbi/vox_fbi_",
-		spawntheme = "spawn/mus_mp_spawn_06.SN65.pc.snd.wav",
-		victorytheme = "spawn/mus_mp_spawn_06_short.SN65.pc.snd.wav",
-		defeattheme = "loss/mus_loss_00.SN65.pc.snd.wav",
+		spawntheme = "spawn/mus_mp_spawn_06.SN65.pc.snd.mp3",
+		victorytheme = "spawn/mus_mp_spawn_06_short.SN65.pc.snd.mp3",
+		defeattheme = "loss/mus_loss_00.SN65.pc.snd.mp3",
 		spawnIcon = hudtype .. "/factions/faction_fbi.vtf",
 		scoreIcon = hudtype .. "/factions/faction_fbi.vtf",
 		color = Color(16, 208, 221),
@@ -76,9 +76,9 @@ CoDHUD.Factions[hudtype] = {
 		name = "BO2_MP_PMC_NAME",
 		short = "BO2_MPUI_PMC_SHORT",
 		voicepath = "pmc/vox_pmc_",
-		spawntheme = "spawn/mus_mp_spawn_02.SN65.pc.snd.wav",
-		victorytheme = "spawn/mus_mp_spawn_02_short.SN65.pc.snd.wav",
-		defeattheme = "loss/mus_loss_00.SN65.pc.snd.wav",
+		spawntheme = "spawn/mus_mp_spawn_02.SN65.pc.snd.mp3",
+		victorytheme = "spawn/mus_mp_spawn_02_short.SN65.pc.snd.mp3",
+		defeattheme = "loss/mus_loss_00.SN65.pc.snd.mp3",
 		spawnIcon = hudtype .. "/factions/faction_pmc.vtf",
 		scoreIcon = hudtype .. "/factions/faction_pmc.vtf",
 		color = Color(252, 163, 11),
@@ -90,9 +90,9 @@ CoDHUD.Factions[hudtype] = {
 		name = "BO2_MP_ISA_NAME",
 		short = "BO2_MPUI_ISA_SHORT",
 		voicepath = "isa/vox_isa_",
-		spawntheme = "spawn/mus_mp_spawn_cia_20sec.SN65.pc.snd.wav",
-		victorytheme = "spawn/mus_mp_spawn_cia_10sec.SN65.pc.snd.wav",
-		defeattheme = "loss/mus_loss_00.SN65.pc.snd.wav",
+		spawntheme = "spawn/mus_mp_spawn_cia_20sec.SN65.pc.snd.mp3",
+		victorytheme = "spawn/mus_mp_spawn_cia_10sec.SN65.pc.snd.mp3",
+		defeattheme = "loss/mus_loss_00.SN65.pc.snd.mp3",
 		spawnIcon = hudtype .. "/factions/faction_isa.vtf",
 		scoreIcon = hudtype .. "/factions/faction_isa.vtf",
 		color = Color(84, 149, 115),
@@ -104,9 +104,9 @@ CoDHUD.Factions[hudtype] = {
 		name = "BO2_MP_CD_NAME",
 		short = "BO2_MPUI_CD_SHORT",
 		voicepath = "cia/vox_cda_",
-		spawntheme = "spawn/mus_mp_spawn_05.SN65.pc.snd.wav",
-		victorytheme = "spawn/mus_mp_spawn_05_short.SN65.pc.snd.wav",
-		defeattheme = "loss/mus_loss_00.SN65.pc.snd.wav",
+		spawntheme = "spawn/mus_mp_spawn_05.SN65.pc.snd.mp3",
+		victorytheme = "spawn/mus_mp_spawn_05_short.SN65.pc.snd.mp3",
+		defeattheme = "loss/mus_loss_00.SN65.pc.snd.mp3",
 		spawnIcon = hudtype .. "/factions/faction_cd.vtf",
 		scoreIcon = hudtype .. "/factions/faction_cd.vtf",
 		color = Color(239, 237, 134),
@@ -139,9 +139,9 @@ CoDHUD[hudtype].TextStrings = {
 }
 
 CoDHUD[hudtype].VoiceCallouts = {
-	winningmusic = "music/bo2/timers/mus_mp_timer_00.SN65.pc.snd.wav",
-	losingmusic = "music/bo2/timers/mus_mp_timer_01.SN65.pc.snd.wav",
-	drawmusic = "music/bo2/draw/mus_draw_00.SN65.pc.snd.wav",
+	winningmusic = "music/bo2/timers/mus_mp_timer_00.SN65.pc.snd.mp3",
+	losingmusic = "music/bo2/timers/mus_mp_timer_01.SN65.pc.snd.mp3",
+	drawmusic = "music/bo2/draw/mus_draw_00.SN65.pc.snd.mp3",
 
 	winningfight = "winning",
 	losingfight = "losing",
@@ -157,7 +157,7 @@ CoDHUD[hudtype].VoiceCallouts = {
 }
 
 CoDHUD[hudtype].Timer = {
-	sound = "hud/bo2/timer_00.LN65.pc.snd.wav",
+	sound = "hud/bo2/timer_00.LN65.pc.snd.mp3",
 	timings = {
 		[30] = 2,
 		[10] = 1
@@ -377,7 +377,7 @@ local function levelup( ... )
         x = ScrW() * 0.5,
         y = CoDHUD_SY(200),
         color = Color(0,0,0),
-		sfx = "hud/bo2/mus_rank_02.SN65.pc.snd.wav",
+		sfx = "hud/bo2/mus_rank_02.SN65.pc.snd.mp3",
 		holdTime = 2.5,
 		nobg = true,
         fonts = {
@@ -430,7 +430,7 @@ local function challengecomplete( ... )
         subtext = (sub and sub ~= "") and ResolvePrefix("MW2_CHALLENGE_", sub) or nil,
         x = ScrW() * 0.5,
         y = CoDHUD_SY(125),
-		sfx = "hud/bo2/award.SN65.pc.snd.wav",
+		sfx = "hud/bo2/award.SN65.pc.snd.mp3",
 		holdTime = 1.5,
 
         color = Color(0,0,0),
@@ -1089,7 +1089,7 @@ local function medals( ... )
 	draw.SimpleTextOutlined( language.GetPhrase(activeMedal.text), "BO2_MedalPrimary", cx, cy + CoDHUD_SY(128), colWhite, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, outlined and 1.5 or 0, colBlack )
 end
 CoDHUD[hudtype].Medals = medals
-CoDHUD[hudtype].MedalsSound = "hud/bo2/metal_3.SN65.pc.snd.wav"
+CoDHUD[hudtype].MedalsSound = "hud/bo2/metal_3.SN65.pc.snd.mp3"
 CoDHUD[hudtype].MedalsTable = {
 	["headshot"] = { "BO2_MEDAL_HEADSHOT", nil, "bo2/medals/hud_medals_headshot.png" },
 	["doublekill"] = { "BO2_MEDAL_MULTIKILL_2", nil, "bo2/medals/hud_medals_doublekill.png" },

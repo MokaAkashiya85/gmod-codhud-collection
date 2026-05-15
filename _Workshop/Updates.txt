@@ -37,6 +37,8 @@
 
 [ Update 8 ]
 [ Added ]
+- Heavy compression has been done on all audio files in order to reduce file size
+
 - Added proper TDM & FFA functionality;
   ∟ Team Deathmatch; Faction-based battle with optional friendly fire. Supports multiple factions.
   ∟ Free-for-All; Everyone versus everyone. No allies.

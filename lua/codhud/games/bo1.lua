@@ -8,8 +8,8 @@ CoDHUD.Factions = CoDHUD.Factions or {}
 CoDHUD.Gamemodes = CoDHUD.Gamemodes or {}
 
 local textype = {
-	-- "hud/bo1/type.wav",
-	"hud/bo1/delete.wav",
+	-- "hud/bo1/type.mp3",
+	"hud/bo1/delete.mp3",
 }
 
 -- [[ SPECIAL KILLFEED ICONS ]]
@@ -20,16 +20,16 @@ end
 
 -- [[ SUSPENSE ]]
 CoDHUD[hudtype].SuspenseTracks = {
-	"music/bo1/underscores/arclight_underscore_lp_b.wav",
-	"music/bo1/underscores/blackbird_underscore_lp_a.wav",
-	"music/bo1/underscores/canyonrock_underscore_lp_a.wav",
-	"music/bo1/underscores/chopperintro_underscore_a.wav",
-	"music/bo1/underscores/commies_underscore_a.wav",
-	"music/bo1/underscores/deviant_underscore_a.wav",
-	"music/bo1/underscores/eagleclaw_underscore_a.wav",
-	"music/bo1/underscores/eagleclaw_underscore_b.wav",
-	"music/bo1/underscores/foe_underscore_a.wav",
-	"music/bo1/underscores/pentagon_underscore_a.wav",
+	"music/bo1/underscores/arclight_underscore_lp_b.mp3",
+	"music/bo1/underscores/blackbird_underscore_lp_a.mp3",
+	"music/bo1/underscores/canyonrock_underscore_lp_a.mp3",
+	"music/bo1/underscores/chopperintro_underscore_a.mp3",
+	"music/bo1/underscores/commies_underscore_a.mp3",
+	"music/bo1/underscores/deviant_underscore_a.mp3",
+	"music/bo1/underscores/eagleclaw_underscore_a.mp3",
+	"music/bo1/underscores/eagleclaw_underscore_b.mp3",
+	"music/bo1/underscores/foe_underscore_a.mp3",
+	"music/bo1/underscores/pentagon_underscore_a.mp3",
 }
 
 -- [[ FACTIONS ]]
@@ -38,9 +38,9 @@ CoDHUD.Factions[hudtype] = {
 		name = "BO1_MP_REBELS_NAME",
 		short = "BO1_MPUI_REBELS_SHORT",
 		voicepath = "op4/vox_op4_",
-		spawntheme = "spawn/long/mp_spawn_01.wav",
-		victorytheme = "results/victory/eagleclaw_win_a.wav",
-		defeattheme = "results/loss/foe_loss_a.wav",
+		spawntheme = "spawn/long/mp_spawn_01.mp3",
+		victorytheme = "results/victory/eagleclaw_win_a.mp3",
+		defeattheme = "results/loss/foe_loss_a.mp3",
 		spawnIcon = hudtype .. "/factions/faction_128_op40.png",
 		scoreIcon = hudtype .. "/factions/faction_128_op40.png",
 		color = Color(101, 152, 151),
@@ -51,9 +51,9 @@ CoDHUD.Factions[hudtype] = {
 		name = "BO1_MP_SPECOPS_NAME",
 		short = "BO1_MPUI_SPECOPS_SHORT",
 		voicepath = "ops/vox_ops_",
-		spawntheme = "spawn/long/pentagon_start_a.wav",
-		victorytheme = "results/victory/eagleclaw_win_a.wav",
-		defeattheme = "results/loss/pentagon_sting_b.wav",
+		spawntheme = "spawn/long/pentagon_start_a.mp3",
+		victorytheme = "results/victory/eagleclaw_win_a.mp3",
+		defeattheme = "results/loss/pentagon_sting_b.mp3",
 		spawnIcon = hudtype .. "/factions/faction_128_specops.png",
 		scoreIcon = hudtype .. "/factions/faction_128_specops.png",
 		color = Color(101, 152, 151),
@@ -64,9 +64,9 @@ CoDHUD.Factions[hudtype] = {
 		name = "BO1_MP_MARINE_NAME",
 		short = "BO1_MPUI_MARINE_SHORT",
 		voicepath = "sog/vox_sog_",
-		spawntheme = "spawn/long/chopperintro_spawn_long_a.wav",
-		victorytheme = "results/victory/eagleclaw_win_a.wav",
-		defeattheme = "results/loss/foe_loss_a.wav",
+		spawntheme = "spawn/long/chopperintro_spawn_long_a.mp3",
+		victorytheme = "results/victory/eagleclaw_win_a.mp3",
+		defeattheme = "results/loss/foe_loss_a.mp3",
 		spawnIcon = hudtype .. "/factions/faction_128_marines.png",
 		scoreIcon = hudtype .. "/factions/faction_128_marines.png",
 		color = Color(101, 152, 151),
@@ -77,9 +77,9 @@ CoDHUD.Factions[hudtype] = {
 		name = "BO1_MP_RUSSIAN_NAME",
 		short = "BO1_MPUI_RUSSIAN_SHORT",
 		voicepath = "rus/vox_rus_",
-		spawntheme = "spawn/long/commies_match_start_a.wav",
-		victorytheme = "results/victory/pentagon_treyarch_sting.wav",
-		defeattheme = "results/loss/commies_sting_b.wav",
+		spawntheme = "spawn/long/commies_match_start_a.mp3",
+		victorytheme = "results/victory/pentagon_treyarch_sting.mp3",
+		defeattheme = "results/loss/commies_sting_b.mp3",
 		spawnIcon = hudtype .. "/factions/faction_128_spetsnaz.png",
 		scoreIcon = hudtype .. "/factions/faction_128_spetsnaz.png",
 		color = Color(175, 50, 50),
@@ -90,9 +90,9 @@ CoDHUD.Factions[hudtype] = {
 		name = "BO1_MP_NVA_NAME",
 		short = "BO1_MPUI_NVA_SHORT",
 		voicepath = "nva/vox_nva_",
-		spawntheme = "spawn/long/invictus_spawn_long_a.wav",
-		victorytheme = "results/victory/pentagon_treyarch_sting.wav",
-		defeattheme = "results/loss/foe_loss_a.wav",
+		spawntheme = "spawn/long/invictus_spawn_long_a.mp3",
+		victorytheme = "results/victory/pentagon_treyarch_sting.mp3",
+		defeattheme = "results/loss/foe_loss_a.mp3",
 		spawnIcon = hudtype .. "/factions/faction_128_nva.png",
 		scoreIcon = hudtype .. "/factions/faction_128_nva.png",
 		color = Color(175, 50, 50),
@@ -103,9 +103,9 @@ CoDHUD.Factions[hudtype] = {
 		name = "BO1_MP_TROPAS_NAME",
 		short = "BO1_MPUI_TROPAS_SHORT",
 		voicepath = "cub/vox_cub_",
-		spawntheme = "spawn/long/mus_virus_downhill_perc_mp.wav",
-		victorytheme = "results/victory/pentagon_treyarch_sting.wav",
-		defeattheme = "results/loss/albion_sting_a.wav",
+		spawntheme = "spawn/long/mus_virus_downhill_perc_mp.mp3",
+		victorytheme = "results/victory/pentagon_treyarch_sting.mp3",
+		defeattheme = "results/loss/albion_sting_a.mp3",
 		spawnIcon = hudtype .. "/factions/faction_128_tropas.png",
 		scoreIcon = hudtype .. "/factions/faction_128_tropas.png",
 		color = Color(175, 50, 50),
@@ -137,9 +137,9 @@ CoDHUD[hudtype].TextStrings = {
 }
 
 CoDHUD[hudtype].VoiceCallouts = {
-	winningmusic = "music/bo1/timers/eagleclaw_timer_a.wav",
-	losingmusic = "music/bo1/timers/invictus_time_a.wav",
-	drawmusic = "music/bo1/results/draw/pentagon_lose_a.wav",
+	winningmusic = "music/bo1/timers/eagleclaw_timer_a.mp3",
+	losingmusic = "music/bo1/timers/invictus_time_a.mp3",
+	drawmusic = "music/bo1/results/draw/pentagon_lose_a.mp3",
 
 	winningfight = "winning",
 	losingfight = "losing",
@@ -372,7 +372,7 @@ local function levelup( ... )
         x = ScrW() * 0.5,
         y = CoDHUD_SY(125),
         color = Color(0,0,0),
-		sfx = "music/bo1/stings/mp_level_up.wav",
+		sfx = "music/bo1/stings/mp_level_up.mp3",
         fonts = {
 			pri = "BO1_RS_H_Pri",
 			sec = "BO1_RS_H_Sec",
@@ -423,7 +423,7 @@ local function challengecomplete( ... )
         subtext = (sub and sub ~= "") and ResolvePrefix("MW2_CHALLENGE_", sub) or nil,
         x = ScrW() * 0.5,
         y = CoDHUD_SY(125),
-		sfx = "music/bo1/stings/mp_milestone_sting.wav",
+		sfx = "music/bo1/stings/mp_milestone_sting.mp3",
 		holdTime = 2.5,
 
         color = Color(0,0,0),
@@ -962,7 +962,7 @@ local function medals( ... )
 
 end
 CoDHUD[hudtype].Medals = medals
-CoDHUD[hudtype].MedalsSound = "hud/bo1/repeatable.wav"
+CoDHUD[hudtype].MedalsSound = "hud/bo1/repeatable.mp3"
 CoDHUD[hudtype].MedalsTable = {
 	["headshot"] = { "BO1_MEDAL_HEAD_SHOT", "BO1_MEDAL_HEAD_SHOT_DESC" },
 	["doublekill"] = { "BO1_MEDAL_DOUBLE_KILL", "BO1_MEDAL_DOUBLE_KILL_DESC" },

@@ -124,7 +124,7 @@ function CoDHUD_GetAnnouncerSound(keys)
 				local folder = "announcer/" .. CoDHUD_GetHUDType() .. "/" .. l .. "/" .. string.GetPathFromFilename(voicePath)
 				local prefix = string.GetFileFromFilename(voicePath) .. key
 
-				local files = file.Find("sound/" .. folder .. "*.wav", "GAME")
+				local files = file.Find("sound/" .. folder .. "*.mp3", "GAME")
 				local candidates = {}
 
 				for _, filename in ipairs(files) do
@@ -136,7 +136,7 @@ function CoDHUD_GetAnnouncerSound(keys)
 				end
 
 				-- fallback exact file
-				local exactPath = "announcer/" .. CoDHUD_GetHUDType() .. "/" .. l .. "/" .. voicePath .. key .. filesuffix .. ".wav"
+				local exactPath = "announcer/" .. CoDHUD_GetHUDType() .. "/" .. l .. "/" .. voicePath .. key .. filesuffix .. ".mp3"
 
 				if file.Exists("sound/" .. exactPath, "GAME") then
 					table.insert(candidates, exactPath)

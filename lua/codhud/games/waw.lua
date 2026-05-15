@@ -8,12 +8,12 @@ CoDHUD.Factions = CoDHUD.Factions or {}
 CoDHUD.Gamemodes = CoDHUD.Gamemodes or {}
 
 local textype = {
-	"hud/waw/type_00.wav",
-	"hud/waw/type_01.wav",
-	"hud/waw/type_02.wav",
-	"hud/waw/type_03.wav",
-	"hud/waw/type_04.wav",
-	"hud/waw/type_05.wav",
+	"hud/waw/type_00.mp3",
+	"hud/waw/type_01.mp3",
+	"hud/waw/type_02.mp3",
+	"hud/waw/type_03.mp3",
+	"hud/waw/type_04.mp3",
+	"hud/waw/type_05.mp3",
 }
 
 -- [[ SPECIAL KILLFEED ICONS ]]
@@ -24,9 +24,9 @@ end
 
 -- [[ SUSPENSE ]]
 CoDHUD[hudtype].SuspenseTracks = {
-    "music/waw/mp_suspense_00.wav",
-    "music/waw/mp_suspense_01.wav",
-    "music/waw/mp_suspense_02.wav",
+    "music/waw/mp_suspense_00.mp3",
+    "music/waw/mp_suspense_01.mp3",
+    "music/waw/mp_suspense_02.mp3",
 }
 
 -- [[ FACTIONS ]]
@@ -35,9 +35,9 @@ CoDHUD.Factions[hudtype] = {
 		name = "WAW_MPUI_MARINE",
 		short = "WAW_MPUI_MARINE_SHORT",
 		voicepath = "us/us_1mc_",
-		spawntheme = "spawn/ja_spawn_airfield.wav",
-		victorytheme = "global/mx_victory_am.wav",
-		defeattheme = "mp_defeat.wav",
+		spawntheme = "spawn/ja_spawn_airfield.mp3",
+		victorytheme = "global/mx_victory_am.mp3",
+		defeattheme = "mp_defeat.mp3",
 		spawnIcon = hudtype .. "/factions/faction_128_american.png",
 		scoreIcon = hudtype .. "/factions/faction_128_american.png",
 		color = Color(255*0.5, 255*0.5, 255*0.5),
@@ -50,9 +50,9 @@ CoDHUD.Factions[hudtype] = {
 		name = "WAW_MPUI_RUSSIAN",
 		short = "WAW_MPUI_RUSSIAN_SHORT",
 		voicepath = "ru/ru_1mc_",
-		spawntheme = "spawn/ru_spawn_light.wav",
-		victorytheme = "global/mx_victory_rs.wav",
-		defeattheme = "mp_defeat.wav",
+		spawntheme = "spawn/ru_spawn_light.mp3",
+		victorytheme = "global/mx_victory_rs.mp3",
+		defeattheme = "mp_defeat.mp3",
 		spawnIcon = hudtype .. "/factions/faction_128_soviet.png",
 		scoreIcon = hudtype .. "/factions/faction_128_soviet.png",
 		color = Color(255*0.52, 255*0.28, 255*0.28),
@@ -65,9 +65,9 @@ CoDHUD.Factions[hudtype] = {
 		name = "WAW_MPUI_GERMAN",
 		short = "WAW_MPUI_GERMAN_SHORT",
 		voicepath = "ge/ge_1mc_",
-		spawntheme = "spawn/ru_spawn_tension.wav",
-		victorytheme = "global/mp_victory_german.wav",
-		defeattheme = "mp_defeat.wav",
+		spawntheme = "spawn/ru_spawn_tension.mp3",
+		victorytheme = "global/mp_victory_german.mp3",
+		defeattheme = "mp_defeat.mp3",
 		spawnIcon = hudtype .. "/factions/faction_128_german.png",
 		scoreIcon = hudtype .. "/factions/faction_128_german.png",
 		color = Color(255*0.65, 255*0.57, 255*0.41),
@@ -80,9 +80,9 @@ CoDHUD.Factions[hudtype] = {
 		name = "WAW_MPUI_JAPANESE",
 		short = "WAW_MPUI_JAPANESE_SHORT",
 		voicepath = "jp/jp_1mc_",
-		spawntheme = "spawn/ja_spawn_jungle.wav",
-		victorytheme = "global/mx_victory_jp.wav",
-		defeattheme = "mp_defeat.wav",
+		spawntheme = "spawn/ja_spawn_jungle.mp3",
+		victorytheme = "global/mx_victory_jp.mp3",
+		defeattheme = "mp_defeat.mp3",
 		spawnIcon = hudtype .. "/factions/faction_128_japan.png",
 		scoreIcon = hudtype .. "/factions/faction_128_japan.png",
 		color = Color(255*0.52, 255*0.28, 255*0.28),
@@ -118,9 +118,9 @@ CoDHUD[hudtype].TextStrings = {
 CoDHUD[hudtype].VoiceCallouts = {
 	usewav = true,
 	
-	winningmusic = "music/waw/campaign/mx_match_ending_jp.wav",
-	losingmusic = "music/waw/campaign/mx_match_ending_jp.wav",
-	drawmusic = "music/waw/mp_defeat.wav",
+	winningmusic = "music/waw/campaign/mx_match_ending_jp.mp3",
+	losingmusic = "music/waw/campaign/mx_match_ending_jp.mp3",
+	drawmusic = "music/waw/mp_defeat.mp3",
 
 	winningfight = "winning",
 	losingfight = "losing",
@@ -136,7 +136,7 @@ CoDHUD[hudtype].VoiceCallouts = {
 }
 
 CoDHUD[hudtype].Timer = {
-	sound = "hud/waw/timer_00.wav",
+	sound = "hud/waw/timer_00.mp3",
 	timings = {
 		[30] = 2,
 		[10] = 1
@@ -369,7 +369,7 @@ local function levelup( ... )
         x = ScrW() * 0.5,
         y = CoDHUD_SY(125),
         color = Color(0,0,0),
-		sfx = "music/waw/achievement/mp_level_up.wav",
+		sfx = "music/waw/achievement/mp_level_up.mp3",
         fonts = {
             pri = "WaW_RS_O_Pri",
             sec = "WaW_RS_O_Sec",
@@ -426,7 +426,7 @@ local function challengecomplete( ... )
         text = language.GetPhrase("CoD4_MP_CHALLENGE_COMPLETED") .. "\n" .. CoDHUD_ChallengeTitle(header, level),
         x = ScrW() * 0.5,
         y = CoDHUD_SY(205),
-		sfx = "music/waw/achievement/mp_achievement.wav",
+		sfx = "music/waw/achievement/mp_achievement.mp3",
         color = Color(0,0,0),
 		holdTime = 4,
         fonts = {
