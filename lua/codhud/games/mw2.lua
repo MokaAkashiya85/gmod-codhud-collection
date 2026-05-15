@@ -657,20 +657,16 @@ local function xp( ... )
 	local scoreScale = select(4, ...)
 	local currentPulseAlpha = select(5, ...)
 	local scoreVal = select(6, ...)
-
 	local outlined = GetConVar("codhud_enable_outlinedtext"):GetBool()
-
 	local cx, cy = ScrW() / 2, ScrH() / 2
 	local drawAlpha = (currentPulseAlpha / 255) * finalAlpha
 	local drawY     = cy - CoDHUD_SY(140)
-
 	local mat = Matrix()
 	mat:Translate(Vector(cx, drawY, 0))
 	mat:Scale(Vector(scoreScale, scoreScale, 1))
 	mat:Translate(Vector(-cx, -drawY, 0))
-
 	cam.PushModelMatrix(mat)
-		DrawSqueezedScore(scoreVal, cx, drawY, drawAlpha)
+	DrawSqueezedScore(scoreVal, cx, drawY, drawAlpha)
 	cam.PopModelMatrix()
 end
 CoDHUD[hudtype].XP = xp
@@ -681,31 +677,72 @@ local xpmats = {
 	outline = Material(hudtype .. "/hud/720_xpbar_outline.png", "mips smooth"),
 	shadow = Material(hudtype .. "/hud/720_xpbar_shadow.png", "mips smooth")
 }
+
 local function xpbar( ... )
 	local xp = select(1, ...)
 	local nextXP = select(2, ...)
 	local progress = select(3, ...)
 	local levelProgressXP = select(4, ...)
 	local levelRequiredXP = select(5, ...)
-
 	surface.SetDrawColor(255, 255, 255)
-	
-	local y, h = 15, 15
-	
+
+	local y, h = 15, 16
+
 	surface.SetMaterial(xpmats.empty)
 	surface.DrawTexturedRect(0, ScrH() - CoDHUD_SY(y), ScrW(), CoDHUD_SY(h))
-	
+
 	surface.SetMaterial(xpmats.outline)
 	surface.DrawTexturedRect(0, ScrH() - CoDHUD_SY(y), ScrW(), CoDHUD_SY(h))
-	
+
 	surface.SetMaterial(xpmats.shadow)
 	surface.DrawTexturedRect(0, ScrH() - CoDHUD_SY(y), ScrW(), CoDHUD_SY(h))
-	
-	surface.SetDrawColor(255, 255, 0, 150)
-	surface.SetMaterial(xpmats.fill)
 
-	local fillWidth = ScrW() * math.Clamp(progress, 0, 1)
-	surface.DrawTexturedRectUV( 0, ScrH() - CoDHUD_SY(y), fillWidth, CoDHUD_SY(h), 0, 0, progress, 1 )
+	local clampedProgress = math.Clamp(progress, 0, 1)
+	local fillWidth = ScrW() * clampedProgress
+
+	if fillWidth > 0 then
+		local barTop = ScrH() - CoDHUD_SY(y)
+		local barBottom = barTop + CoDHUD_SY(h)
+		local slantOffset = 10
+		local steps = 50
+		
+		local lR, lG, lB = 110, 100, 40
+		local rR, rG, rB = 210, 190, 120
+		local a = 200
+
+		surface.SetMaterial(xpmats.fill)
+
+		for i = 1, steps do
+			local f1 = (i - 1) / steps
+			local f2 = i / steps
+
+			local x1 = fillWidth * f1
+			local x2 = fillWidth * f2
+
+			local cR = lR + (rR - lR) * f1
+			local cG = lG + (rG - lG) * f1
+			local cB = lB + (rB - lB) * f1
+
+			surface.SetDrawColor(cR, cG, cB, a)
+
+			local tOff2 = (i == steps) and slantOffset or 0
+			local bOff2 = (i == steps) and -slantOffset or 0
+
+			local px1_top = x1
+			local px2_top = x2 + tOff2
+			local px2_bot = x2 + bOff2
+			local px1_bot = x1
+
+			local poly = {
+				{ x = px1_top, y = barTop,    u = px1_top / ScrW(), v = 0 },
+				{ x = px2_top, y = barTop,    u = px2_top / ScrW(), v = 0 },
+				{ x = px2_bot, y = barBottom, u = px2_bot / ScrW(), v = 1 },
+				{ x = px1_bot, y = barBottom, u = px1_bot / ScrW(), v = 1 },
+			}
+			
+			surface.DrawPoly(poly)
+		end
+	end
 end
 CoDHUD[hudtype].XPBar = xpbar
 
