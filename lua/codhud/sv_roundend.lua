@@ -93,7 +93,7 @@ local function CoDHUD_DoRoundEnd(winnerFaction, loserFaction, winnerScore, loser
     -- Respawn all players 10 seconds after the client screen triggers
     timer.Simple(15, function()
 		if GetConVar("codhud_enable_roundend_startnext"):GetBool() then
-			local gamemode = GetConVar("codhud_selected_gamemode"):GetString()
+			local gamemode = CoDHUD_ActiveGamemode or "war"
 			local matchtimer = GetConVar("codhud_matchstart_timer"):GetInt()
 			local maxtimer = GetConVar("codhud_time_limit"):GetFloat()
 

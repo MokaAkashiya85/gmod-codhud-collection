@@ -9,7 +9,7 @@ if CLIENT then
         NEAR_DISTANCE       = 500, 
         MIN_SCALE           = 0.6, 
         MAX_SCALE           = 1.0, 
-        FOCUS_TIME          = 0.4, 
+        FOCUS_TIME          = 0.1, 
         
         -- Death Icon Settings
         DEATH_ICON_DURATION = 3.7, 
@@ -26,6 +26,22 @@ if CLIENT then
     local focusTimers  = {} 
     local deathMarkers = {} 
     local playerAliveState = {}
+
+	local function CoDHUD_IsFriendly(lp, ent)
+		local gm = CoDHUD_ActiveGamemodeCL or "war"
+
+		-- FFA
+		if gm == "dm" then
+			if ent == lp then return true end
+			return false
+		end
+
+		-- TDM
+		local myFaction = lp:GetNW2String("CoDHUD_Faction", "rangers")
+		local entFaction = ent:GetNW2String("CoDHUD_Faction", "none")
+
+		return (entFaction ~= "none" and entFaction == myFaction)
+	end
 
     hook.Add("HUDDrawTargetID", "MW2_SuppressDefaultHealth", function() return false end)
     local hide = { ["CHudTargetID"] = true, ["CHudSecondaryWeaponAmmo"] = true }
@@ -70,7 +86,7 @@ if CLIENT then
         local screenCenter = Vector(scrW / 2, scrH / 2, 0)
 
         -- Handle Death Icons
-        if GetConVar("codhud_enable_deathicon"):GetBool() and not GetConVar("codhud_quickdisable_hud"):GetBool() then
+        if CoDHUD_ActiveGamemodeCL ~= "dm" and GetConVar("codhud_enable_deathicon"):GetBool() and not GetConVar("codhud_quickdisable_hud"):GetBool() then
             for i = #deathMarkers, 1, -1 do
                 local m = deathMarkers[i]
                 local elapsed = CurTime() - m.time
@@ -131,16 +147,19 @@ if CLIENT then
             local canSee = focusTimers[entID] >= CFG.FOCUS_TIME
             
             if canSee then
-                targetAlphas[entID] = math.Approach(targetAlphas[entID], CFG.GLOBAL_ALPHA, FrameTime() * 700)
+				if CoDHUD_IsFriendly(LocalPlayer(), ent) then
+					targetAlphas[entID] = 255
+				else
+					targetAlphas[entID] = math.Approach(targetAlphas[entID], CFG.GLOBAL_ALPHA, FrameTime() * 700)
+				end
             else
                 targetAlphas[entID] = math.Approach(targetAlphas[entID], 0, FrameTime() * 500)
             end
 
             if targetAlphas[entID] > 0 then
                 local alpha = targetAlphas[entID]
-                local targetFaction = ent:GetNW2String("CoDHUD_Faction", "none")
-                local isFriendly = (targetFaction != "none" and targetFaction == myFaction)
-                local factionColor = isFriendly and FRIENDLY_COLOR or ENEMY_COLOR
+                local isFriendly = CoDHUD_IsFriendly(lp, ent)
+				local factionColor = isFriendly and FRIENDLY_COLOR or ENEMY_COLOR
                 
                 local displayName = ""
                 if ent:IsPlayer() then

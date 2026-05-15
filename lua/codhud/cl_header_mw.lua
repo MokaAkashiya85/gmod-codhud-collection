@@ -1,11 +1,37 @@
 ---- [ CLIENT HEADER SYSTEM - MODERN WARFARE 1-3 ] ----
 
+_G.CoDHUD_Presentation = _G.CoDHUD_Presentation or {}
+
+local PRESENT = _G.CoDHUD_Presentation
+
+PRESENT.ActiveType = PRESENT.ActiveType or nil
+
+function PRESENT:IsBusy()
+    return self.ActiveType ~= nil
+end
+
+function PRESENT:Acquire(id)
+    if self.ActiveType and self.ActiveType ~= id then
+        return false
+    end
+
+    self.ActiveType = id
+    return true
+end
+
+function PRESENT:Release(id)
+    if self.ActiveType == id then
+        self.ActiveType = nil
+    end
+end
+
 CoDHUD_Header_MW = {}
 CoDHUD_Header_MW.__index = CoDHUD_Header_MW
 
 CoDHUD_HeaderQueue = CoDHUD_HeaderQueue or {}
 CoDHUD_HeaderQueue.Active = CoDHUD_HeaderQueue.Active or {}
 CoDHUD_HeaderQueue.Queue = {}
+CoDHUD_HeaderQueue.HasPresentationLock = CoDHUD_HeaderQueue.HasPresentationLock or false
 
 local GLITCH = { "a", "¶", "Ð", "ق", "§", "ð", "œ", "ش", "Ф" }
 local BO_SCRAMBLE = { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9" }
@@ -53,6 +79,9 @@ function CoDHUD_Header_MW:New(cfg)
 		shd = "MW2_RE_Sc_Shd"
 	}
 
+	o.sfx = cfg.sfx or nil
+	o.sfxPlayed = false
+
     o.writeSpeed = cfg.writeSpeed or 16
     o.holdTime   = cfg.holdTime or 2
     o.eraseTime  = cfg.eraseTime or 0.7
@@ -95,6 +124,7 @@ function CoDHUD_Header_MW:New(cfg)
 	o.iconFadeOutSpeed = cfg.iconFadeOutSpeed or 400
 	
 	o.teams = cfg.teams or nil
+	o.dmscore = cfg.dmscore or nil
 	o.scoreY = cfg.scoreY or (cfg.y + 100)
 
 	o.challengeDesc   = cfg.challengeDesc or nil
@@ -108,6 +138,7 @@ function CoDHUD_Header_MW:New(cfg)
 		o.fadeInTime   = 0.2
 		o.exitDuration = 0.125
 		o.fadeOutStart = o.holdTime - o.exitDuration
+		o.nobg		   = cfg.nobg or false
 	end
 
 	if o.type == "bo2_challenge" then
@@ -437,7 +468,7 @@ function CoDHUD_Header_MW:Update()
 				1
 			)
 
-			self.textBgAlpha = Lerp(p, 255, 150)
+			self.textBgAlpha = Lerp(p, 255, 0)
 			self.textBgColorLerp = p
 			self.textAlpha = Lerp(p, 0, 255)
 
@@ -453,7 +484,7 @@ function CoDHUD_Header_MW:Update()
 			self.iconBgColorLerp = 1
 			self.iconAlpha = 255
 
-			self.textBgAlpha = 150
+			self.textBgAlpha = 0
 			self.textBgColorLerp = 1
 			self.textAlpha = 255
 
@@ -667,7 +698,18 @@ end
 -- Draw
 function CoDHUD_Header_MW:Draw()
     if self.phase == "done" then return end
-	
+
+    -- play spawn SFX once
+    if self.sfx and not self.sfxPlayed then
+        if istable(self.sfx) then
+            surface.PlaySound(self.sfx[math.random(#self.sfx)])
+        else
+            surface.PlaySound(self.sfx)
+        end
+
+        self.sfxPlayed = true
+    end
+
 	local outlined = GetConVar("codhud_enable_outlinedtext"):GetBool()
 
 	if self.type == "bo_challenge" then
@@ -697,14 +739,16 @@ function CoDHUD_Header_MW:Draw()
 
 		cam.PushModelMatrix(mat)
 
-			-- BACKING
-			surface.SetDrawColor(255,255,255,math.Clamp(alpha,0,125))
-			surface.SetMaterial(bgmat)
-			surface.DrawTexturedRect( cx - bgSize, cy - (bgSize * 0.5), bgSize * 2, bgSize )
+			if not self.nobg then
+				-- BACKING
+				surface.SetDrawColor(255,255,255,math.Clamp(alpha,0,125))
+				surface.SetMaterial(bgmat)
+				surface.DrawTexturedRect( cx - bgSize, cy - (bgSize * 0.5), bgSize * 2, bgSize )
 
-			surface.SetDrawColor(255,255,255,math.Clamp(alpha,0,175))
-			surface.SetMaterial(iconmat)
-			surface.DrawTexturedRect( cx - (iconSize * 0.5), cy - (iconSize * 0.5), iconSize, iconSize )
+				surface.SetDrawColor(255,255,255,math.Clamp(alpha,0,175))
+				surface.SetMaterial(iconmat)
+				surface.DrawTexturedRect( cx - (iconSize * 0.5), cy - (iconSize * 0.5), iconSize, iconSize )
+			end
 
 			-- HEADER TEXT
 			for i, line in ipairs(self.lines) do
@@ -732,7 +776,7 @@ function CoDHUD_Header_MW:Draw()
 				surface.SetMaterial(self.icon)
 				surface.SetDrawColor(255,255,255,alpha)
 
-				surface.DrawTexturedRect( cx - (size / 2), cy - CoDHUD_S(120), size, size )
+				surface.DrawTexturedRect( cx - (size / 2), self.iconY, size, size )
 			end
 
 		cam.PopModelMatrix()
@@ -966,7 +1010,7 @@ function CoDHUD_Header_MW:Draw()
 	end
 	
 	-- TEAMS
-	if self.teams then
+	if self.teams and CoDHUD_ActiveGamemodeCL ~= "dm" then
 		local count = #self.teams
 		if count <= 0 then return end
 
@@ -1029,6 +1073,48 @@ function CoDHUD_Header_MW:Draw()
 		end
 	end
 
+	-- DM SCORE
+	if self.dmscore and CoDHUD_ActiveGamemodeCL == "dm" then
+		local size = self.iconSize or 128
+		local gap  = self.iconGap or 60
+
+		local ordered = {}
+
+		for _, p in ipairs(self.dmscore) do
+			table.insert(ordered, p)
+		end
+
+		table.sort(ordered, function(a, b)
+			return (a.score or 0) > (b.score or 0)
+		end)
+
+		local suffix = {
+			[1] = "MW2_MP_FIRSTPLACE_NAME",
+			[2] = "MW2_MP_SECONDPLACE_NAME",
+			[3] = "MW2_MP_THIRDPLACE_NAME"
+		}
+
+		local max = math.min(3, #ordered)
+
+		local step = (self.iconSize or 128 + (self.iconGap or 60)) * 0.5
+
+		local startY = self.iconY + CoDHUD_SY(90) - ((max - 1) * step) / 2
+
+		for i = 1, max do
+			local p = ordered[i]
+			if not p then break end
+
+			local suf = language.GetPhrase(suffix[i]) or i .. ". %s"
+
+			local text = string.format(suf, p.name or "Unknown")
+
+			local x = self.x
+			local y = startY + (i - 1) * step
+
+			DrawCODText( text, text, self.fonts.pri, self.fonts.sec, self.fonts.shd, x, y, GetSafeColor(Color(0,0,0)) )
+		end
+	end
+
 end
 
 function CoDHUD_Header_MW:IsDone()
@@ -1057,19 +1143,23 @@ function CoDHUD_HeaderQueue.Think()
 
     -- spawn next queued header if allowed
 	if #CoDHUD_HeaderQueue.Queue > 0 then
-		local cfg = table.remove(CoDHUD_HeaderQueue.Queue, 1)
-		local new = CoDHUD_Header_MW:New(cfg)
+		local cfg = CoDHUD_HeaderQueue.Queue[1]
 
-		if cfg.multiple then
-			table.insert(CoDHUD_HeaderQueue.Active, new)
-		else
-			-- non-multiple blocks until done
-			if #CoDHUD_HeaderQueue.Active == 0 then
-				table.insert(CoDHUD_HeaderQueue.Active, new)
-			else
-				-- requeue if blocked
-				table.insert(CoDHUD_HeaderQueue.Queue, 1, cfg)
+		local canSpawn = cfg.multiple or #CoDHUD_HeaderQueue.Active == 0
+
+		if canSpawn then
+			if not CoDHUD_HeaderQueue.HasPresentationLock then
+				if not PRESENT:Acquire("header") then
+					return
+				end
+
+				CoDHUD_HeaderQueue.HasPresentationLock = true
 			end
+
+			table.remove(CoDHUD_HeaderQueue.Queue, 1)
+
+			local new = CoDHUD_Header_MW:New(cfg)
+			table.insert(CoDHUD_HeaderQueue.Active, new)
 		end
 	end
 
@@ -1079,9 +1169,14 @@ function CoDHUD_HeaderQueue.Think()
 
         h:Update()
 
-        if h:IsDone() then
-            table.remove(CoDHUD_HeaderQueue.Active, i)
-        end
+		if h:IsDone() then
+			table.remove(CoDHUD_HeaderQueue.Active, i)
+
+			if #CoDHUD_HeaderQueue.Active <= 0 and #CoDHUD_HeaderQueue.Queue <= 0 and CoDHUD_HeaderQueue.HasPresentationLock then
+				PRESENT:Release("header")
+				CoDHUD_HeaderQueue.HasPresentationLock = false
+			end
+		end
     end
 	
 	local groups = {}
@@ -1122,12 +1217,6 @@ hook.Add("DrawOverlay", "CoDHUD_Header_MW_Draw", function()
 	
 	local hud = CoDHUD[CoDHUD_GetHUDType()]
 
-	if hud and hud.MedalsBlockChallenges and _G.CoDHUD_MedalsActive then
-		return
-	end
-
-    -- if _G.CoDHUD_MedalSystem and _G.CoDHUD_MedalSystem.IsBusy() then return end
-	
     if CoDHUD_ShouldHideHUD() then return end
 
     if not CoDHUD_HeaderQueue.Active then return end

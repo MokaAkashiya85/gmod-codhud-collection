@@ -245,6 +245,8 @@ function CoDHUD.Factions.BuildFactionPool(factionTable)
     if limit <= 0 or limit >= #all then
         return all -- no restriction
     end
+	
+	if CoDHUD_ActiveGamemode == "dm" then return all end
 
     for i = 1, limit do
         table.insert(pool, all[i])
@@ -446,24 +448,16 @@ hook.Add( "player_activate", "CoDHUD_JoinRoundSync", function(data)
 	local ply = Player(id)
 
     if not IsValid(ply) then return end
-		
-	-- print("CoDHUD DEBUG: Player " .. ply:Nick() .. " is in faction " .. ply:GetNW2String("CoDHUD_Faction", "rangers"))
 
 	CoDHUD_AssignFaction(ply)
-	
-	-- print("Player " .. ply:Nick() .. " assigned to a new faction! (" .. ply:GetNW2String("CoDHUD_Faction", "rangers") .. ")")
 
     timer.Simple(0.1, function()
-
-        -- print("[CoDHUD] Checking round sync for " .. ply:Nick())
-
         -- No active round
         if not CoDHUD_RoundEndTimeSV and not CoDHUD_RoundStarting then
-            -- print("[CoDHUD] No active round.")
             return
         end
 
-        local gamemode = GetConVar("codhud_selected_gamemode"):GetString()
+        local gamemode = CoDHUD_ActiveGamemode or "dm"
         local maxtimer = GetConVar("codhud_time_limit"):GetFloat()
 
         local remaining = 0
@@ -471,17 +465,6 @@ hook.Add( "player_activate", "CoDHUD_JoinRoundSync", function(data)
         if CoDHUD_RoundStarting and CoDHUD_RoundStartTimer then
             remaining = math.max(0, math.ceil(CoDHUD_RoundStartTimer - CurTime()))
         end
-
-        -- print("[CoDHUD] Syncing " .. ply:Nick())
-        -- print("Remaining countdown: " .. remaining)
-        -- print("Faction: " .. tostring(ply.CoDHUD_StoredFaction))
-		
-		-- if ply:Alive() then
-			-- ply:KillSilent()
-		-- end
-		
-		-- ply:SetFrags(0)
-		-- ply:SetDeaths(0)
 
 		ply:Spawn() -- Force a respawn, just in case
 
@@ -506,6 +489,7 @@ hook.Add("PlayerDisconnected", "CoDHUD_ResetLateJoinFlag", function(ply)
 end)
 
 hook.Add("PlayerSelectSpawn", "CoDHUD_TwoFactionSpawns", function(ply)
+	if CoDHUD_ActiveGamemode == "dm" then return end
     if not CoDHUD.Factions.IsTwoFactionMode() then return end
 
     local map = CoDHUD.Factions.GetTwoFactionMap()

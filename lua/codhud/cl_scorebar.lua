@@ -19,96 +19,118 @@ local function GetScorebarData()
     local str = CoDHUD[CoDHUD_GetHUDType()].TextStrings
     local data = {}
 
-    -- RAW TIME (use this for logic)
+    local gm = CoDHUD_ActiveGamemodeCL or "war"
+    local isDM = (gm == "dm")
+
+    -- RAW TIME
     local remaining = math.max(0, CoDHUD_RoundEndTime - CurTime())
-    data.timeRaw = remaining -- precise float for comparisons
-    data.timeAlive = remaining > 0 -- simple boolean check
+    data.timeRaw = remaining
+    data.timeAlive = remaining > 0
 
-    -- DISPLAY TIME
-	local mins = math.floor(remaining / 60)
-	local secs = math.floor(remaining % 60)
+    -- TIME STRING
+    local mins = math.floor(remaining / 60)
+    local secs = math.floor(remaining % 60)
+    local baseTime = string.format("%d:%02d", mins, secs)
 
-	-- base string (always mm:ss)
-	local baseTime = string.format("%d:%02d", mins, secs)
+    if remaining < 30 and remaining > 0 then
+        local tenths = math.floor((remaining % 1) * 10)
+        data.timeStr = string.format("%s.%d", baseTime, tenths)
+    else
+        data.timeStr = baseTime
+    end
 
-	-- add tenths when under 30 seconds
-	if remaining < 30 and remaining > 0 then
-		local tenths = math.floor((remaining % 1) * 10)
-		data.timeStr = string.format("%s.%d", baseTime, tenths)
-	else
-		data.timeStr = baseTime
-	end
+    data.mins = mins
 
-	data.mins = mins
+	if isDM then -- FFA
+		local players = {}
 
-	-- BUILD FACTION SCORE TABLE
-	local factionScores = {}
-
-	for _, p in ipairs(player.GetAll()) do
-		local f = p:GetNW2String("CoDHUD_Faction", "")
-		if f ~= "" then
-			factionScores[f] = (factionScores[f] or 0) + math.max(0, p:Frags())
+		for _, p in ipairs(player.GetAll()) do
+			if IsValid(p) then
+				table.insert(players, { ply = p, score = math.max(0, p:Frags()) })
+			end
 		end
-	end
 
-	-- CONVERT TO SORTABLE ARRAY
-	local sortedFactions = {}
-	for faction, score in pairs(factionScores) do
-		table.insert(sortedFactions, {
-			faction = faction,
-			score = score
-		})
-	end
+		table.sort(players, function(a, b)
+			return a.score > b.score
+		end)
 
-	-- SORT DESCENDING (highest score first)
-	table.sort(sortedFactions, function(a, b)
-		return a.score > b.score
-	end)
+		data.dmLeaderboard = players
 
-	-- FIND MY FACTION INDEX
-	local myFaction = ply:GetNW2String("CoDHUD_Faction", "")
-	local myIndex = nil
+		local myScore = math.max(0, ply:Frags())
+		data.clientScore = myScore
 
-	for i, v in ipairs(sortedFactions) do
-		if v.faction == myFaction then
-			myIndex = i
-			break
+		local myIndex = 1
+		for i, v in ipairs(players) do
+			if v.ply == ply then
+				myIndex = i
+				break
+			end
 		end
-	end
 
-	-- GET MY SCORE
-	data.clientScore = factionScores[myFaction] or 0
+		data.dmPlacement = myIndex
 
-	-- GET NEXT FACTION BELOW ME (2nd place relative)
-	local enemyFactionData = nil
+		local first = players[1]
+		local second = players[2]
 
-	for _, v in ipairs(sortedFactions) do
-		if v.faction ~= myFaction then
-			enemyFactionData = v
-			break
+		-- 🧠 IMPORTANT FIX: NEVER overwrite clientScore
+
+		if myIndex == 1 then
+			data.enemyScore = second and second.score or 0
+			data.enemyPlayer = second and second.ply or nil
+		else
+			data.enemyScore = first and first.score or 0
+			data.enemyPlayer = first and first.ply or nil
 		end
-	end
+    else -- TDM
+        local factionScores = {}
 
-	data.enemyScore = enemyFactionData and enemyFactionData.score or 0
-	data.enemyFaction = enemyFactionData and enemyFactionData.faction or nil
+        for _, p in ipairs(player.GetAll()) do
+            local f = p:GetNW2String("CoDHUD_Faction", "")
+            if f ~= "" then
+                factionScores[f] = (factionScores[f] or 0) + math.max(0, p:Frags())
+            end
+        end
 
-    -- STATUS COLORS
+        local sortedFactions = {}
+        for faction, score in pairs(factionScores) do
+            table.insert(sortedFactions, { faction = faction, score = score })
+        end
+
+        table.sort(sortedFactions, function(a, b)
+            return a.score > b.score
+        end)
+
+        local myFaction = ply:GetNW2String("CoDHUD_Faction", "")
+        data.clientScore = factionScores[myFaction] or 0
+
+        local enemyFactionData = nil
+        for _, v in ipairs(sortedFactions) do
+            if v.faction ~= myFaction then
+                enemyFactionData = v
+                break
+            end
+        end
+
+        data.enemyScore = enemyFactionData and enemyFactionData.score or 0
+        data.enemyFaction = enemyFactionData and enemyFactionData.faction or nil
+    end
+
+    -- STATUS (shared)
     local COL_WINNING = Color(110, 220, 120, 255)
     local COL_LOSING  = Color(215, 110, 120, 255)
     local COL_TIE     = Color(230, 230, 110, 255)
 
     data.statusText = str.scorebar.tied or "MW2_MPUI_TIED_CAPS"
     data.statusCol  = COL_TIE
-	data.statusLosing = false
+    data.statusLosing = false
 
     if data.clientScore > data.enemyScore then
         data.statusText = str.scorebar.winning or "MW2_MPUI_WINNING_CAPS"
         data.statusCol  = COL_WINNING
-		data.statusLosing = false
     elseif data.clientScore < data.enemyScore then
         data.statusText = str.scorebar.losing or "MW2_MPUI_LOSING_CAPS"
         data.statusCol  = COL_LOSING
-		data.statusLosing = true
+        data.statusLosing = true
     end
 
     return data
@@ -128,4 +150,48 @@ hook.Add("HUDPaint", "CoDHUD_Scorebar", function()
             CoDHUD[CoDHUD_GetHUDType()].Scorebar(data)
         end
     end
+end)
+
+hook.Add("HUDPaint", "CoDHUD_XPBar", function()
+    if (not GetConVar("codhud_enable_xp"):GetBool()) or GetConVar("codhud_quickdisable_hud"):GetBool() then return end
+    if not GetConVar("cl_drawhud"):GetBool() then return end
+
+    local ply = LocalPlayer()
+    if not IsValid(ply) then return end
+
+    local hud = CoDHUD_GetHUDType()
+
+    if not CoDHUD[hud] then return end
+    if not CoDHUD[hud].XPBar then return end
+
+    local stats = CoDHUD_GetStats(hud)
+    if not stats then return end
+
+    local xp = stats.xp or 0
+    local level = stats.level or {}
+
+    local currentLevel = level.level or 1
+    local nextXP = level.nextxp or 0
+
+    -- Determine current level floor XP
+    local currentLevelXP = 0
+
+    local levels = CoDHUD[hud].Levels or {}
+
+    if levels[currentLevel] then
+        currentLevelXP = levels[currentLevel][2] or 0
+    end
+
+    -- XP earned inside this level
+    local levelProgressXP = xp - currentLevelXP
+
+    -- XP required to finish this level
+    local levelRequiredXP = math.max(nextXP - currentLevelXP, 1)
+
+    -- Normalized progress (0 -> 1)
+    local progress = math.Clamp(levelProgressXP / levelRequiredXP, 0, 1)
+
+	if CoDHUD[hud] and CoDHUD[hud].XPBar then
+		CoDHUD[hud].XPBar( xp, nextXP, progress, levelProgressXP, levelRequiredXP )
+	end
 end)

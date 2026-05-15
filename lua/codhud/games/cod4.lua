@@ -136,17 +136,6 @@ CoDHUD[hudtype].Timer = {
 	}
 }
 
-local function GetFactionColor(ent)
-    if not IsValid(ent) then return Color(255,255,255) end
-    local faction = ent:GetNW2String("CoDHUD_Faction", "marines")
-
-    if CoDHUD.Factions[hudtype][faction] and CoDHUD.Factions[hudtype][faction].killfeedcol then 
-		return CoDHUD.Factions[hudtype][faction].killfeedcol
-	end
-
-    return Color(255,255,255)
-end
-
 -- [[ GAMEMODES ]]
 CoDHUD.Gamemodes[hudtype] = {
 	{ "#MW2_MPUI_WAR", "war" },
@@ -156,6 +145,11 @@ CoDHUD.Gamemodes[hudtype] = {
 	{ "#MW2_MPUI_SABOTAGE", "sab" },
 	{ "#MW2_MPUI_CAPTURE_THE_FLAG", "ctf" },
 	{ "#MW2_MPUI_HEADQUARTERS", "hq" },
+}
+
+CoDHUD.Gamemodes[hudtype].Names = {
+    war = "MW2_MPUI_WAR",
+    dm  = "MW2_MPUI_DEATHMATCH",
 }
 
 CoDHUD.Gamemodes[hudtype].Hints = {
@@ -275,6 +269,48 @@ end
 -- [[ HUD ELEMENTS ]]
 CoDHUD[hudtype].MedalsBlockChallenges = false   -- medals pause challenges
 
+CoDHUD[hudtype].LevelData = {
+	nameprefix = "COD4_",
+	materialpath = "cod4/ranks/rank_", -- For icons; followed by the "rank icon" path.
+}
+
+CoDHUD[hudtype].Levels = {
+	[1] = { "pvt1", 0, 800, "RANK_PVT_FULL", "1stlt1", 800 } -- testing rank
+}
+
+CoDHUD[hudtype].LevelIcons = {}
+
+if CoDHUD[hudtype].Levels then
+	for k, v in pairs(CoDHUD[hudtype].Levels) do
+		CoDHUD[hudtype].LevelIcons[k] = Material(CoDHUD[hudtype].LevelData.materialpath .. v[5] .. ".png", "smooth")
+	end
+end
+
+local function levelup( ... )
+    local rank = select(1, ...)
+    local level = select(2, ...)
+    local logo = select(3, ...)
+
+    CoDHUD_HeaderQueue.Push({
+        text = language.GetPhrase("MW2_RANK_PROMOTED") .. "\n" .. rank,
+        x = ScrW() * 0.5,
+        y = CoDHUD_SY(125),
+        color = Color(0,220,80),
+		sfx = "hud/mp_levelup_final.mp3",
+        fonts = {
+            pri = "MW2_ChalHeader_Pri",
+            sec = "MW2_ChalHeader_Sec",
+            shd = "MW2_ChalHeader_Shd",
+            sub = "MW2_ChalSub"
+        },
+
+		iconY = CoDHUD_SY(180),
+		iconSize = CoDHUD_S(134),
+		icon = logo
+    })
+end
+CoDHUD[hudtype].Levelup = levelup
+
 local function settingsmenu( ... )
 	local w = select(1, ...)
 	local h = select(2, ...)
@@ -319,9 +355,10 @@ local function challengecomplete( ... )
 	
     CoDHUD_HeaderQueue.Push({
         text = language.GetPhrase("CoD4_MP_CHALLENGE_COMPLETED") .. "\n" .. CoDHUD_ChallengeTitle(header, level),
-        x = CoDHUD_SX(960),
+        x = ScrW() * 0.5,
         y = CoDHUD_SY(205),
         color = Color(0,220,80),
+		sfx = "hud/mp_challengecomplete_metal_2.mp3",
         fonts = {
             pri = "MW2_ChalHeader_Pri",
             sec = "MW2_ChalHeader_Sec",
@@ -330,8 +367,6 @@ local function challengecomplete( ... )
         },
 		align = align or nil
     })
-
-    surface.PlaySound("hud/mp_challengecomplete_metal_2.mp3")
 end
 CoDHUD[hudtype].ChallengeComplete = challengecomplete
 
@@ -340,7 +375,7 @@ local function rs_obj( ... )
 
 	CoDHUD_HeaderQueue.Push({
 		text = language.GetPhrase(text),
-		x = CoDHUD_SX(960),
+		x = ScrW() * 0.5,
 		y = CoDHUD_SY(205),
 		color = Color(0, 220, 80),
 		fonts = {
@@ -359,7 +394,7 @@ local function rs_title( ... )
 
 	CoDHUD_HeaderQueue.Push({
 		text = language.GetPhrase(text),
-		x = CoDHUD_SX(960),
+		x = ScrW() * 0.5,
 		y = CoDHUD_SY(150),
 		color = glow,
 
@@ -384,7 +419,7 @@ local function rs_timer( ... )
 	
 	local outlined = GetConVar("codhud_enable_outlinedtext"):GetBool()
 
-    local tx  = CoDHUD_SX(960)
+    local tx  = ScrW() * 0.5
     -- local ty  = CoDHUD_SY(540)
     local ty  = ScrH() * 0.5
     local syo = CoDHUD_SY(-85)
@@ -416,6 +451,7 @@ local function re_teams( ... )
     local ws_limit = select(3, ...)
     local re_result_glow = select(4, ...)
     local CFG = select(5, ...)
+    local dmScore = select(6, ...)
 
     local multiplier = 10
 
@@ -430,8 +466,9 @@ local function re_teams( ... )
 
     -- Teams
     CoDHUD_HeaderQueue.Push({
-        teams = scaledTeams, -- use scaled version
-        x = CoDHUD_SX(960),
+        teams = scaledTeams,
+		dmscore = dmScore,
+        x = ScrW() * 0.5,
         y = CoDHUD_SY(400),
         multiple = true,
         persist = true,
@@ -451,7 +488,7 @@ local function re_teams( ... )
 	-- Text
 	CoDHUD_HeaderQueue.Push({
 		text = ws_result,
-		x = CoDHUD_SX(960),
+		x = ScrW() * 0.5,
 		y = CoDHUD_SY(240),
 		color = re_result_glow,
 		multiple = true,
@@ -468,7 +505,7 @@ local function re_teams( ... )
 
 	CoDHUD_HeaderQueue.Push({
 		text = ws_limit,
-		x = CoDHUD_SX(960),
+		x = ScrW() * 0.5,
 		y = CoDHUD_SY(330),
 		color = Color(135, 135, 180),
 		multiple = true,
@@ -499,7 +536,7 @@ local function re_bonus( ... )
 
     local iconAlpha = math.floor(math.Clamp(el / 1.0, 0, 1) * 255)
 
-	draw.SimpleTextOutlined( string.format( language.GetPhrase("MW2_MP_MATCH_BONUS_IS"), tostring(re_match_bonus) ), "CoD4_RE_Bonus", CoDHUD_SX(960), CoDHUD_SY(720), Color(255, 255, 255, iconAlpha), 1, 1, outlined and 1 or 0, Color(0,0,0, iconAlpha) )
+	draw.SimpleTextOutlined( string.format( language.GetPhrase("MW2_MP_MATCH_BONUS_IS"), tostring(re_match_bonus) ), "CoD4_RE_Bonus", ScrW() * 0.5, CoDHUD_SY(720), Color(255, 255, 255, iconAlpha), 1, 1, outlined and 1 or 0, Color(0,0,0, iconAlpha) )
 end
 CoDHUD[hudtype].RoundEndBonus = re_bonus
 
@@ -701,8 +738,8 @@ local function killfeed( ... )
 		local attackerEnt = data.attackerEnt
 		local victimEnt = data.victimEnt
 
-		local aColBase = GetFactionColor(attackerEnt)
-		local vColBase = GetFactionColor(victimEnt)
+		local aColBase = CoDHUD_GetFactionColor(attackerEnt)
+		local vColBase = CoDHUD_GetFactionColor(victimEnt)
 
 		local aCol = Color(aColBase.r, aColBase.g, aColBase.b, finalTxtAlpha)
 		local vCol = Color(vColBase.r, vColBase.g, vColBase.b, finalTxtAlpha)
@@ -755,7 +792,7 @@ local function killfeed( ... )
 end
 CoDHUD[hudtype].Killfeed = killfeed
 
-CoDHUD[hudtype].Medals = nil
+CoDHUD[hudtype].Medals = function() return true end
 CoDHUD[hudtype].MedalsSound = nil
 
 local function minimap( ... )
@@ -891,7 +928,7 @@ local function minimap( ... )
         
         local isAlive = (ent:IsPlayer() and ent:Alive()) or (ent:IsNPC() and ent:Health() > 0)
         local targetFaction = ent:GetNW2String("CoDHUD_Faction", "")
-        local isFriendly = (localFaction ~= "" and targetFaction == localFaction)
+        local isFriendly = (CoDHUD_ActiveGamemodeCL ~= "dm") and (localFaction ~= "" and targetFaction == localFaction)
         local entIdx = ent:EntIndex()
 
         -- Visibility / Shared Vision Check (Enemies only)
@@ -1214,12 +1251,21 @@ local function scorebar(data)
 		DrawSqueezedText( timeStr, "CoD4_Timer", barX + CoDHUD_SX(CFG.TIMER_X) + xShift, barY + CoDHUD_SY(CFG.TIMER_Y), timecol, CFG.SQUEEZE, CFG.SQUEEZE_ONE, 2, CFG.SQUEEZE_ONE_BEFORE, CoDHUD_SX(CFG.TIMER_OUTLINE_W) )
 	end
 	
-	-- Status Colors
-	data.tiedCol = Color(110, 220, 120, 255)
-	data.winningCol = Color(215, 110, 120, 255)
-	data.losingCol = Color(230, 230, 110, 255)
+	-- Status
+	local text = language.GetPhrase(data.statusText)
+	local textcol = data.statusCol
 
-    -- draw.SimpleTextOutlined( language.GetPhrase(data.statusText), "MW2_Status", barX + CoDHUD_SX(CFG.STATUS_X), CoDHUD_SY(CFG.STATUS_Y), data.statusCol, TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP, outlined and 1 or 0, Color(0,0,0) )
+	local alt = math.floor(CurTime() / 10) % 2 == 1
+
+	local gm = CoDHUD_ActiveGamemodeCL
+	local gmname = language.GetPhrase(CoDHUD.Gamemodes[hudtype].Names[gm] or gm)
+
+	if alt then
+		text = gmname
+		textcol = Color(230, 230, 110)
+	end
+
+    -- draw.SimpleTextOutlined( text, "MW2_Status", barX + CoDHUD_SX(CFG.STATUS_X), barY + CoDHUD_SY(CFG.STATUS_Y), textcol, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP, outlined and 1 or 0, Color(0,0,0) )
 
     -- SCORE BARS (UNCHANGED)
     local clientKills   = data.clientScore
@@ -1359,6 +1405,11 @@ local function scoreboard( ... )
 		ROW_GAP = 2,
 		TEAM_GAP = 120,
 
+		-- Rank Icon
+		RANK_ICON_SIZE = 30,
+		RANK_ICON_X_OFF = -10,
+		RANK_ICON_Y_OFF = 4,
+
 		-- Faction Icon
 		ICON_SIZE = 77,
 		ICON_X_OFF = 0,
@@ -1402,6 +1453,7 @@ local function scoreboard( ... )
 		OFF_ASSISTS = 120,
 		OFF_KILLS = 225,
 		OFF_SCORE = 335,
+		OFF_XP = 1070,
 	}
 
 	local MAT_GRADIENT_L = Material(hudtype .. "/hud/line_horizontal_scoreboard.png", "mips smooth")
@@ -1444,12 +1496,21 @@ local function scoreboard( ... )
 		local tCol = isMe and Color(255, 200, 50, 255) or Color(255, 255, 255, 255)
 		local pScore = math.max(0, ply:Frags() * 10)
 
+		local level, levelData = CalculateLevelFromXP( ply:GetNW2Float( "CoDHUD_XP", 0 ) )
+
 		-- Text
 		draw.SimpleTextOutlined(string.Replace(ply:Nick(), "0", "O"), "CoD4_Scoreboard_Text", x + CoDHUD_S(110), y + (h / 2), tCol, TEXT_ALIGN_LEFT,  TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0))
 		draw.SimpleTextOutlined(string.Replace(ply:Deaths(), "0", "O"), "CoD4_Scoreboard_Text", barRight - CoDHUD_S(CFG.OFF_DEATHS),  y + (h / 2), tCol, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0))
 		draw.SimpleTextOutlined(string.Replace(ply:GetNWInt("Assists", 0), "0", "O"), "CoD4_Scoreboard_Text", barRight - CoDHUD_S(CFG.OFF_ASSISTS), y + (h / 2), tCol, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0))
 		draw.SimpleTextOutlined(string.Replace(ply:Frags(), "0", "O"), "CoD4_Scoreboard_Text", barRight - CoDHUD_S(CFG.OFF_KILLS),   y + (h / 2), tCol, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0))
 		draw.SimpleTextOutlined(string.Replace(pScore, "0", "O"), "CoD4_Scoreboard_Text", barRight - CoDHUD_S(CFG.OFF_SCORE),   y + (h / 2), tCol, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0))
+		draw.SimpleTextOutlined( string.Replace(tostring(level), "0", "O"), "CoD4_Scoreboard_Text", barRight - CoDHUD_S(CFG.OFF_XP) + CoDHUD_S(50),   y + (h / 2), tCol, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0))
+
+		if CoDHUD[hudtype].LevelIcons[level] then
+			surface.SetMaterial(CoDHUD[hudtype].LevelIcons[level])
+			surface.SetDrawColor(255, 255, 255, 255)
+			surface.DrawTexturedRect(barRight - CoDHUD_S(CFG.OFF_XP) + CoDHUD_S(CFG.RANK_ICON_X_OFF), y + CoDHUD_S(CFG.RANK_ICON_Y_OFF), CoDHUD_S(CFG.RANK_ICON_SIZE), CoDHUD_S(CFG.RANK_ICON_SIZE))
+		end
 
 		-- Ping Indicator
 		local ping = ply:Ping()
@@ -1502,38 +1563,38 @@ local function scoreboard( ... )
     local lp = LocalPlayer()
 
     -- 1. IDENTIFY FACTIONS & PLAYERS
-	local factions = {}
+	local groups = {}
 
-	for _, p in ipairs(player.GetAll()) do
-		local fac = p:GetNW2String("CoDHUD_Faction", "rangers")
-		if fac == "" then fac = "rangers" end
+	if CoDHUD_ActiveGamemodeCL == "dm" then
+		local allPlayers = player.GetAll()
+		table.sort(allPlayers, SortLogic)
+		groups = { { key = "dm", players = allPlayers, score = 0 } }
+	else
+		local factions = {}
 
-		factions[fac] = factions[fac] or {}
-		table.insert(factions[fac], p)
-	end
+		for _, p in ipairs(player.GetAll()) do
+			local fac = p:GetNW2String("CoDHUD_Faction", "rangers")
+			if fac == "" then fac = "rangers" end
 
-    -- 2. SORT PLAYERS
-	local factionList = {}
-
-	for fac, players in pairs(factions) do
-		table.sort(players, SortLogic)
-
-		table.insert(factionList, {
-			key = fac,
-			players = players,
-			score = 0
-		})
-	end
-
-	for _, f in ipairs(factionList) do
-		local score = 0
-		for _, p in ipairs(f.players) do
-			score = score + math.max(0, p:Frags() * 10)
+			factions[fac] = factions[fac] or {}
+			table.insert(factions[fac], p)
 		end
-		f.score = score
+
+		for fac, players in pairs(factions) do
+			table.sort(players, SortLogic)
+			table.insert(groups, { key = fac, players = players, score = 0 })
+		end
 	end
 
-	table.sort(factionList, function(a, b)
+	for _, g in ipairs(groups) do
+		local score = 0
+		for _, p in ipairs(g.players) do
+			score = score + math.max(0, p:Frags())
+		end
+		g.score = score
+	end
+
+	table.sort(groups, function(a, b)
 		return a.score > b.score
 	end)
 
@@ -1545,7 +1606,7 @@ local function scoreboard( ... )
 	
 	CoDHUD.Scoreboard.ContentHeight = 0
 
-	for _, facData in ipairs(factionList) do
+	for _, facData in ipairs(groups) do
 		local factionHeight = CoDHUD_S(CFG.ICON_SIZE) + (#facData.players * (barH + CoDHUD_S(CFG.ROW_GAP))) + CoDHUD_S(CFG.TEAM_GAP)
 
 		CoDHUD.Scoreboard.ContentHeight = CoDHUD.Scoreboard.ContentHeight + factionHeight
@@ -1566,26 +1627,30 @@ local function scoreboard( ... )
 		draw.SimpleTextOutlined( language.GetPhrase("MW2_CGAME_SB_KILLS"), "CoD4_Scoreboard_Headers", barRight - CoDHUD_S(CFG.OFF_KILLS), headerY, Color(255,255,255), TEXT_ALIGN_RIGHT, 0, outlined and 1 or 0, Color(0,0,0) )
 		draw.SimpleTextOutlined( language.GetPhrase("MW2_CGAME_SB_SCORE"), "CoD4_Scoreboard_Headers", barRight - CoDHUD_S(CFG.OFF_SCORE), headerY, Color(255,255,255), TEXT_ALIGN_RIGHT, 0, outlined and 1 or 0, Color(0,0,0) )
 		
-		for fi, facData in ipairs(factionList) do
+		for fi, facData in ipairs(groups) do
 			local players = facData.players
 			local facKey = facData.key
-			local fData = CoDHUD.Factions[hudtype] and CoDHUD.Factions[hudtype][facKey] or {
-				name = facKey,
-				short = facKey,
-				color = Color(120,120,120)
-			}
+			local fData
+
+			if CoDHUD_ActiveGamemodeCL == "dm" then
+				fData = { name = "DM", short = "DM", color = Color(200, 200, 0), glow = Color(255, 255, 255) }
+			else
+				fData = CoDHUD.Factions[hudtype] and CoDHUD.Factions[hudtype][facKey] or { name = facKey, short = facKey, color = Color(120,120,120), glow = Color(255,255,255) }
+			end
 
 			local sectionY = startY
 
-			-- ICON
-			local iconPath = CoDHUD.Factions[hudtype][facKey].spawnIcon
-			local mat = Material(iconPath, "smooth")
+			if CoDHUD_ActiveGamemodeCL ~= "dm" then
+				-- ICON
+				local iconPath = CoDHUD.Factions[hudtype][facKey].spawnIcon
+				local mat = Material(iconPath, "smooth")
 
-			surface.SetMaterial(mat)
-			surface.SetDrawColor(255,255,255,255)
-			surface.DrawTexturedRect(barX + CoDHUD_S(CFG.ICON_X_OFF), sectionY + CoDHUD_S(CFG.ICON_Y_OFF), CoDHUD_S(CFG.ICON_SIZE), CoDHUD_S(CFG.ICON_SIZE))
+				surface.SetMaterial(mat)
+				surface.SetDrawColor(255,255,255,255)
+				surface.DrawTexturedRect(barX + CoDHUD_S(CFG.ICON_X_OFF), sectionY + CoDHUD_S(CFG.ICON_Y_OFF), CoDHUD_S(CFG.ICON_SIZE), CoDHUD_S(CFG.ICON_SIZE))
 
-			draw.SimpleTextOutlined( language.GetPhrase(fData.short) .. " (" .. #players .. ")", "CoD4_Scoreboard_Text", barX + CoDHUD_S(CFG.FAC_NAME_X), sectionY + CoDHUD_S(CFG.FAC_NAME_Y), Color(255,255,255), 0,0, outlined and 1 or 0, Color(0,0,0) )
+				draw.SimpleTextOutlined( language.GetPhrase(fData.short) .. " (" .. #players .. ")", "CoD4_Scoreboard_Text", barX + CoDHUD_S(CFG.FAC_NAME_X), sectionY + CoDHUD_S(CFG.FAC_NAME_Y), Color(255,255,255), 0,0, outlined and 1 or 0, Color(0,0,0) )
+			end
 
 			-- rows
 			for i, ply in ipairs(players) do
@@ -1602,8 +1667,6 @@ local function scoreboard( ... )
 	local lp = LocalPlayer()
 	local myFaction = lp:GetNW2String("CoDHUD_Faction", "rangers")
 	if myFaction == "" then myFaction = "rangers" end
-	
-    -- surface.SetDrawColor(110, 110, 110, CFG.HEADER_ALPHA)
 	
 	local myFactionCol = CoDHUD.Factions[hudtype][myFaction].color
 	
@@ -1625,7 +1688,7 @@ local function scoreboard( ... )
     local timeStr = string.format("%d:%02d", mins, secs)
     DrawSqueezedText(timeStr, "CoD4_Timer", scrW - CoDHUD_S(CFG.TIMER_X_POS), CoDHUD_S(CFG.TIMER_Y_OFF), Color(255, 255, 255, 255), CFG.SQUEEZE, CFG.SQUEEZE_ONE, 2, CFG.SQUEEZE_ONE_BEFORE, outlined and 1.5 or 0)
 
-	table.sort(factionList, function(a, b)
+	table.sort(groups, function(a, b)
 		if a.key == myFaction then return true end
 		if b.key == myFaction then return false end
 		return a.score > b.score
@@ -1641,7 +1704,9 @@ local function scoreboard( ... )
 
 	surface.SetFont("CoD4_Scoreboard_Text")
 
-	for _, fac in ipairs(factionList) do
+	if CoDHUD_ActiveGamemodeCL == "dm" then return end
+
+	for _, fac in ipairs(groups) do
 		local key = fac.key
 		local players = fac.players
 		local score = fac.score or 0

@@ -9,6 +9,9 @@ if CLIENT then
 
     _G.CoDHUD_AddScore = function(amount)
         local ct = CurTime()
+		
+		CoDHUD_AddXP(amount)
+		
         scoreVal   = scoreVal + amount
         scoreAlpha = 255
         scoreTime  = ct + 1.5

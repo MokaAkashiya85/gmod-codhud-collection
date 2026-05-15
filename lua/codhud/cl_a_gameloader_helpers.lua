@@ -22,6 +22,7 @@ function CoDHUD_SY(y) return math.Round(y * CoDHUD_GetUIScale()) end
 local function InitiateCoDFonts()
 	-- [ SETTINGS ]
     surface.CreateFont( "CoDHUD_Settings_Main",		{ font = "Conduit ITC", size = CoDHUD_S(42), weight = 10,  antialias = true })
+    surface.CreateFont( "CoDHUD_Settings_Sec",		{ font = "Conduit ITC", size = CoDHUD_S(32), weight = 10,  antialias = true })
 	
 	-- [ CoD4 ]
 	-- Hitmarker / XP
@@ -192,6 +193,7 @@ local function InitiateCoDFonts()
 		
 	-- Scoreboard
     surface.CreateFont( "MW2_Scoreboard_Text",		{ font = "Conduit ITC Light", size = CoDHUD_S(34), weight = 400, antialias = true, shadow = true, })
+    surface.CreateFont( "MW2_Scoreboard_Rank",		{ font = "Conduit ITC Light", size = CoDHUD_S(28), weight = 400, antialias = true, shadow = true, })
     surface.CreateFont( "MW2_Scoreboard_Timer",		{ font = "BankGothic Md BT", size = CoDHUD_S(34), weight = 400, antialias = true, })
 	
 	-- IFF
@@ -355,3 +357,61 @@ InitiateCoDFonts()
 hook.Add("OnScreenSizeChanged", "CoDHUD_ReinitChallengeFonts", function()
     InitiateCoDFonts()
 end)
+
+function CoDHUD_GetFactionColor(ent)
+    if not IsValid(ent) then return Color(255,255,255) end
+    local faction = ent:GetNW2String("CoDHUD_Faction", "rangers")
+
+	if CoDHUD_ActiveGamemodeCL == "dm" then return Color(255,255,255) end
+
+    if CoDHUD.Factions[CoDHUD_GetHUDType()][faction] and CoDHUD.Factions[CoDHUD_GetHUDType()][faction].killfeedcol then 
+		return CoDHUD.Factions[CoDHUD_GetHUDType()][faction].killfeedcol
+	end
+
+    return Color(255,255,255)
+end
+
+local utf8_upper_map = {
+-- This shit sucks but it's necessary due to GMod's bullshit
+
+-- Latin-1 Supplement
+["à"]="À",["á"]="Á",["â"]="Â",["ã"]="Ã",["ä"]="Ä",["å"]="Å",["æ"]="Æ",["ç"]="Ç",["è"]="È",["é"]="É",["ê"]="Ê",
+["ë"]="Ë",["ì"]="Ì",["í"]="Í",["î"]="Î",["ï"]="Ï",["ð"]="Ð",["ñ"]="Ñ",["ò"]="Ò",["ó"]="Ó",["ô"]="Ô",
+["õ"]="Õ", ["ö"]="Ö", ["ø"]="Ø", ["ù"]="Ù", ["ú"]="Ú", ["û"]="Û", ["ü"]="Ü", ["ý"]="Ý", ["þ"]="Þ", ["ß"]="SS",
+
+-- Latin Extended-A (common EU letters)
+["ą"]="Ą",["ć"]="Ć",["ę"]="Ę",["ł"]="Ł",["ń"]="Ń",["ś"]="Ś",["ź"]="Ź",["ż"]="Ż",["č"]="Č",["ď"]="Ď",
+["ě"]="Ě",["ň"]="Ň",["ř"]="Ř",["š"]="Š",["ť"]="Ť",["ů"]="Ů",["ž"]="Ž",["ā"]="Ā",["ē"]="Ē",["ī"]="Ī",["ū"]="Ū",["ō"]="Ō",
+
+-- Greek
+["α"]="Α",["β"]="Β",["γ"]="Γ",["δ"]="Δ",["ε"]="Ε",["ζ"]="Ζ",["η"]="Η",["θ"]="Θ",["ι"]="Ι",["κ"]="Κ",["λ"]="Λ",["μ"]="Μ",
+["ν"]="Ν",["ξ"]="Ξ",["ο"]="Ο",["π"]="Π",["ρ"]="Ρ",["σ"]="Σ",["ς"]="Σ",["τ"]="Τ",["υ"]="Υ",["φ"]="Φ",["χ"]="Χ",["ψ"]="Ψ",["ω"]="Ω",
+
+-- Cyrillic
+["а"]="А",["б"]="Б",["в"]="В",["г"]="Г",["д"]="Д",["е"]="Е",["ё"]="Ё",["ж"]="Ж",["з"]="З",["и"]="И",["й"]="Й",["к"]="К",["л"]="Л",
+["м"]="М",["н"]="Н",["о"]="О",["п"]="П",["р"]="Р",["с"]="С",["т"]="Т",["у"]="У",["ф"]="Ф",["х"]="Х",["ц"]="Ц",["ч"]="Ч",["ш"]="Ш",["щ"]="Щ",
+["ъ"]="Ъ",["ы"]="Ы",["ь"]="Ь",["э"]="Э",["ю"]="Ю",["я"]="Я",
+}
+
+function CoDHUD_UpperText(str)
+    if not str then return "" end
+
+    -- First pass: ASCII upper (fast + handles A-Z)
+    str = string.upper(str)
+
+    -- UTF-8 pass
+    return (str:gsub("[%z\1-\127\194-\244][\128-\191]*", function(c)
+        return utf8_upper_map[c] or c
+    end))
+end
+function CoDHUD_UpperText(str)
+    if not str then return "" end
+
+    -- first handle ASCII quickly
+    str = string.upper(str)
+
+    -- then fix known UTF-8 chars
+    return (str:gsub("[%z\1-\127\194-\244][\128-\191]*", function(c)
+        return utf8_upper_map[c] or c
+    end))
+end

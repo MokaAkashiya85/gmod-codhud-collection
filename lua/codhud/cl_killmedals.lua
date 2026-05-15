@@ -5,6 +5,8 @@
 _G.CoDHUD_MedalsActive = _G.CoDHUD_MedalsActive or false
 _G.CoDHUD_MedalSystem = _G.CoDHUD_MedalSystem or {}
 
+local PRESENT = _G.CoDHUD_Presentation
+
 if CLIENT then
     -- [[ TINKERING MENU ]]
     local medalQueue  = {}
@@ -14,6 +16,7 @@ if CLIENT then
 	function _G.CoDHUD_MedalSystem.Clear()
 		medalQueue = {}
 		activeMedal = nil
+		PRESENT:Release("medal")
 		_G.CoDHUD_MedalsActive = false
 	end
 
@@ -149,16 +152,19 @@ if CLIENT then
 		_G.CoDHUD_MedalsActive = busy
 
 		if not activeMedal and #medalQueue > 0 then
-			activeMedal = table.remove(medalQueue, 1)
-			activeMedal.start = ct
-			
-			local cv_fast_medals = GetConVar("codhud_enable_medal_faster")
+			if PRESENT:Acquire("medal") then
 
-			local faster = cv_fast_medals:GetBool()
+				activeMedal = table.remove(medalQueue, 1)
+				activeMedal.start = ct
 
-			if (not faster) or (#medalQueue < 3) then
-				if CoDHUD[CoDHUD_GetHUDType()] and CoDHUD[CoDHUD_GetHUDType()].MedalsSound then
-					surface.PlaySound(CoDHUD[CoDHUD_GetHUDType()].MedalsSound)
+				local cv_fast_medals = GetConVar("codhud_enable_medal_faster")
+
+				local faster = cv_fast_medals:GetBool()
+
+				if (not faster) or (#medalQueue < 3) then
+					if CoDHUD[CoDHUD_GetHUDType()] and CoDHUD[CoDHUD_GetHUDType()].MedalsSound then
+						surface.PlaySound(CoDHUD[CoDHUD_GetHUDType()].MedalsSound)
+					end
 				end
 			end
 		end
@@ -173,6 +179,7 @@ if CLIENT then
 
 			if finished then
 				activeMedal = nil
+				PRESENT:Release("medal")
 			end
 		end
 	end)

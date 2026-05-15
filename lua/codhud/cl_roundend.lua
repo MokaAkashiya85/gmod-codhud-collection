@@ -1,7 +1,7 @@
 ---- [ CLIENT ROUND END ] ----
 
 -- ============================================================
---  Config
+--  Config & Helpers
 -- ============================================================
 local CFG = {
     DURATION         = 15.0,
@@ -17,6 +17,29 @@ local CFG = {
 
     ICON_FADE_TIME   = 1.0,
 }
+
+local function CoDHUD_GetDMPlacements()
+    local players = {}
+
+    for _, p in ipairs(player.GetAll()) do
+        if IsValid(p) then
+            table.insert(players, {
+                ply = p,
+                score = math.max(0, p:Frags())
+            })
+        end
+    end
+
+	table.sort(players, function(a, b)
+		if a.score == b.score then
+			return a.ply:Nick() < b.ply:Nick()
+		end
+
+		return a.score > b.score
+	end)
+
+    return players
+end
 
 -- ============================================================
 --  Match Bonus
@@ -87,36 +110,16 @@ net.Receive("CoDHUD_RoundEnd", function()
     local ply = LocalPlayer()
     if not IsValid(ply) then return end
 
+	local gm = CoDHUD_ActiveGamemodeCL or "war"
+	local isDM = (gm == "dm")
+
     local localFac  = ply:GetNW2String("CoDHUD_Faction", "rangers")
     if localFac == "" then localFac = cookie.GetString("CoDHUD_SelectedFaction", "rangers") end
 
     local kills     = math.max(0, ply:Frags())
     local fdata     = CoDHUD.Factions[CoDHUD_GetHUDType()] and CoDHUD.Factions[CoDHUD_GetHUDType()][localFac]
     local voiceTag  = fdata and fdata.voice or nil
-    local isVictory = (localFac == winnerFac)
     local hasTwo    = (loserFac ~= "" and CoDHUD.Factions[CoDHUD_GetHUDType()] and CoDHUD.Factions[CoDHUD_GetHUDType()][loserFac] ~= nil)
-
-    local leftFac   = localFac
-    local rightFac  = isVictory and loserFac or winnerFac
-    local leftSc    = isVictory and winnerSc or loserSc
-    local rightSc   = isVictory and loserSc  or winnerSc
-
-    local now = CurTime()
-
-    -- Core state
-    re_active      = true
-    re_lock_time   = now
-    re_bw          = 0
-    re_winner      = winnerFac
-    re_loser       = loserFac
-    re_has_two     = hasTwo
-    re_left_fac    = leftFac
-    re_right_fac   = rightFac
-    re_match_bonus = CalcMatchBonus(kills)
-    re_mvlock      = true
-    re_locked_ang  = nil
-	
-	_G.CoDHUD_IsRoundEnding = true
 
 	-- Team Scores
 	local teamsMap = {}
@@ -147,6 +150,50 @@ net.Receive("CoDHUD_RoundEnd", function()
 		return (a.score or 0) > (b.score or 0)
 	end)
 
+	local gm = CoDHUD_ActiveGamemodeCL or "war"
+	local isDM = (gm == "dm")
+
+	local resultState
+	local placement = nil
+	local dmScore = {}
+
+	if isDM then
+		local placements = CoDHUD_GetDMPlacements()
+
+		for i, data in ipairs(placements) do
+			local entry = {
+				name  = IsValid(data.ply) and data.ply:Nick() or "Unknown",
+				pos   = i,
+				score = data.score or 0,
+				ply   = data.ply -- optional, useful later if needed
+			}
+
+			table.insert(dmScore, entry)
+
+			-- local player's placement
+			if data.ply == ply then
+				placement = i
+			end
+		end
+	end
+
+    local now = CurTime()
+
+    -- Core state
+    re_active      = true
+    re_lock_time   = now
+    re_bw          = 0
+    re_winner      = winnerFac
+    re_loser       = loserFac
+    re_has_two     = hasTwo
+    -- re_left_fac    = leftFac
+    -- re_right_fac   = rightFac
+    re_match_bonus = CalcMatchBonus(kills)
+    re_mvlock      = true
+    re_locked_ang  = nil
+	
+	_G.CoDHUD_IsRoundEnding = true
+
 	-- ============================================================
 	--  Draw detection
 	-- ============================================================
@@ -164,20 +211,52 @@ net.Receive("CoDHUD_RoundEnd", function()
 		end
 	end
 
-    -- Result text + glow color
-	if isDraw or winnerFac == "" then
-		ws_result = str.re.draw or "MW2_MP_DRAW"
+	-- RESULT RESOLUTION (single source of truth)
+	if isDM then
+		if placement == 1 then
+			resultState = "win"
+			re_result_glow = Color(0, 220, 80)
+		elseif placement and placement <= 3 then
+			resultState = "win"
+			re_result_glow = Color(0, 220, 80)
+		else
+			resultState = "lose"
+			re_result_glow = Color(220, 60, 60)
+		end
+
+	elseif isDraw or winnerFac == "" then
+		resultState = "draw"
 		re_result_glow = Color(255, 255, 255)
-	elseif isVictory then
-		ws_result = str.re.win or "MW2_MP_VICTORY"
-		re_result_glow = Color(0, 220, 80)
 
 	else
+		local localFac = ply:GetNW2String("CoDHUD_Faction", "rangers")
+
+		if localFac == winnerFac then
+			resultState = "win"
+			re_result_glow = Color(0, 220, 80)
+		else
+			resultState = "lose"
+			re_result_glow = Color(220, 60, 60)
+		end
+	end
+
+    local leftFac   = localFac
+    local rightFac  = resultState == "win" and loserFac or winnerFac
+    local leftSc    = resultState == "win" and winnerSc or loserSc
+    local rightSc   = resultState == "win" and loserSc  or winnerSc
+	
+    re_left_fac    = leftFac
+    re_right_fac   = rightFac
+	
+	if resultState == "win" then
+		ws_result = str.re.win or "MW2_MP_VICTORY"
+	elseif resultState == "draw" then
+		ws_result = str.re.draw or "MW2_MP_DRAW"
+	else
 		ws_result = str.re.lose or "MW2_MP_DEFEAT"
-		re_result_glow = Color(220, 60, 60)
 	end
 	
-    ws_result = language.GetPhrase(ws_result)
+	ws_result = language.GetPhrase(ws_result)
 
     -- Write-in state reset
 	local timeLeft = (CoDHUD_RoundEndTime or 0) - CurTime()
@@ -192,18 +271,19 @@ net.Receive("CoDHUD_RoundEnd", function()
 	timer.Simple(0.1, function() CoDHUD_RoundEndTime = 0 end)
 
 	if CoDHUD[CoDHUD_GetHUDType()] and CoDHUD[CoDHUD_GetHUDType()].RoundEnd then
-		CoDHUD[CoDHUD_GetHUDType()].RoundEnd(teams, ws_result, ws_limit, re_result_glow, CFG)
+		CoDHUD[CoDHUD_GetHUDType()].RoundEnd(teams, ws_result, ws_limit, re_result_glow, CFG, dmScore)
 	end
 
     -- Music
 	timer.Simple( CFG.MUSIC_DELAY, function()
 		local theme
 
-		if isDraw then
+		if isDM then
+			theme = "music/" .. CoDHUD_GetHUDType() .. "/" .. ((placement and placement <= 3) and fdata.victorytheme or fdata.defeattheme)
+		elseif isDraw then
 			theme = voicefile.drawmusic
-			print(voicefile.drawmusic)
 		else
-			theme = "music/" .. CoDHUD_GetHUDType() .. "/" .. (isVictory and fdata.victorytheme or fdata.defeattheme)
+			theme = "music/" .. CoDHUD_GetHUDType() .. "/" .. (resultState == "win" and fdata.victorytheme or fdata.defeattheme)
 		end
 
 		if GetConVar("codhud_enable_music"):GetBool() and theme then
@@ -212,18 +292,20 @@ net.Receive("CoDHUD_RoundEnd", function()
 	end)
 	
     -- Voiceline
-	timer.Simple( CFG.VOICE_DELAY, function()
-		local voiceline
+	if not isDM then
+		timer.Simple( CFG.VOICE_DELAY, function()
+			local voiceline
 
-		if isDraw then
-			voiceline = voicefile.missiondraw
-		else
-			voiceline = isVictory and voicefile.missionwin or voicefile.missionlose
-		end
+			if isDraw then
+				voiceline = voicefile.missiondraw
+			else
+				voiceline = resultState == "win" and voicefile.missionwin or voicefile.missionlose
+			end
 
-		local sound = CoDHUD_GetAnnouncerSound(voiceline or nil)
-		if sound then CoDHUD_PlayAnnouncerSound(sound, false) end
-	end)
+			local sound = CoDHUD_GetAnnouncerSound(voiceline or nil)
+			if sound then CoDHUD_PlayAnnouncerSound(sound, false) end
+		end)
+	end
 
     -- Scoreboard opens at 6s, overlay drawing stops at 6s
     timer.Create("MW2_RE_Board", CFG.SCOREBOARD_DELAY, 1, function()

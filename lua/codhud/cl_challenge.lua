@@ -1,23 +1,5 @@
 ---- [ CLIENT CHALLENGE NOTIFICATIONS & TRACKING ] ----
 
--- [[ TRACKING DATA & PERSISTENCE ]]
-local STATS_FILE = "codhud_challenges.json"
-local defaultStats = {
-    completed = {} 
-}
-
-if file.Exists(STATS_FILE, "DATA") then
-    local readData = file.Read(STATS_FILE, "DATA")
-    CoDHUD_Stats = util.JSONToTable(readData) or table.Copy(defaultStats)
-    if not CoDHUD_Stats.completed then CoDHUD_Stats.completed = {} end
-else
-    CoDHUD_Stats = table.Copy(defaultStats)
-end
-
-local function SaveCoDHUDStats()
-    file.Write(STATS_FILE, util.TableToJSON(CoDHUD_Stats, true))
-end
-
 -- [[ HELPERS ]]
 function CoDHUD_ChallengeTitle(header, level, prefix)
     local name = header
@@ -63,7 +45,7 @@ local activeNotif = nil
 local queuedChallenge = false
 
 local function QueueNotification(id, header, level, sub, subval, pts, align)
-    if id ~= "debug" and CoDHUD_Stats.completed[id] then return end
+    if id ~= "debug" and CoDHUD_Stats.challengescompleted[id] then return end
 
     if _G.CoDHUD_AddScore and pts and pts > 0 then
         timer.Simple(0.25, function()
@@ -72,8 +54,8 @@ local function QueueNotification(id, header, level, sub, subval, pts, align)
     end
 
     if id ~= "debug" then
-        CoDHUD_Stats.completed[id] = true
-        SaveCoDHUDStats()
+        CoDHUD_CompleteChallenge(id)
+        -- CoDHUD_SaveStats()
     end
 
     if (not GetConVar("codhud_enable_challenges"):GetBool()) or GetConVar("codhud_quickdisable_hud"):GetBool() then return end
@@ -132,13 +114,10 @@ concommand.Add("codhud_challenge_debug", function(ply, cmd, args)
     local key = args[1]
 	local randomchal = ""
     local challenges = {
-		["ghillie1"] = { "GHILLIE", 1, "DESC_GHILLIE", 50, 1000},
-		["ghillie2"] = { "GHILLIE", 2, "DESC_GHILLIE", 100, 2500},
-		["ghillie3"] = { "GHILLIE", 3, "DESC_GHILLIE", 200, 5000},
-		["flyswatter"] = { "FLYSWATTER", nil, "SHOOT_DOWN_AN_ENEMY_HELICOPTER", nil, 5000},
-		
-		-- ["2header"] = { "Challenge Complete!\nVery Long Title to Test If Header Works", nil, nil, nil, 1},
-		-- ["3header"] = { "Challenge Complete!\nVery Long Title to Test If Header Works\nGood job!", nil, nil, nil, 1},
+		["ghillie1"] = { "GHILLIE", 1, "DESC_GHILLIE", 50, 0},
+		["ghillie2"] = { "GHILLIE", 2, "DESC_GHILLIE", 100, 0},
+		["ghillie3"] = { "GHILLIE", 3, "DESC_GHILLIE", 200, 0},
+		["flyswatter"] = { "FLYSWATTER", nil, "SHOOT_DOWN_AN_ENEMY_HELICOPTER", nil, 0},
     }
 	
     if challenges[key] then QueueNotification("debug", challenges[key][1], challenges[key][2], challenges[key][3], challenges[key][4], challenges[key][5]) end
@@ -174,8 +153,8 @@ concommand.Add("codhud_challenge_debug", function(ply, cmd, args)
 end)
 
 concommand.Add("codhud_challenge_clear", function()
-    CoDHUD_Stats.completed = {}
-    SaveCoDHUDStats()
+    CoDHUD_Stats.challengescompleted = {}
+    CoDHUD_SaveStats()
     print("[CoDHUD] Cleared Client Challenges.")
 	CoDHUD_AddKillfeedMessage("CoDHUD.System.ChallengeReset")
 end)

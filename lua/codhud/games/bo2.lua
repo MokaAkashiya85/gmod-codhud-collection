@@ -8,7 +8,7 @@ CoDHUD.Factions = CoDHUD.Factions or {}
 CoDHUD.Gamemodes = CoDHUD.Gamemodes or {}
 
 local textype = {
-	"hud/bo2/cp_fill.LN65.pc.snd.wav",
+	"hud/bo2/cp_fill.LN65.pc.snd.mp3",
 }
 
 -- [[ SPECIAL KILLFEED ICONS ]]
@@ -19,13 +19,13 @@ end
 
 -- [[ SUSPENSE ]]
 CoDHUD[hudtype].SuspenseTracks = {
-	"music/bo2/underscores/2m01_myanmar_squirreljump_v1_mp_loop.SL65.pc.snd.wav",
-	"music/bo2/underscores/mus_mp_underscore_5m01_no_vox_no_sitar.SN65.pc.snd.wav",
-	"music/bo2/underscores/mus_mp_underscore_5m05_no_vox.SN65.pc.snd.wav",
-	"music/bo2/underscores/mus_mp_underscore_14m04_no_orch.SN65.pc.snd.wav",
-	"music/bo2/underscores/mus_mp_underscore_14m06a_no_orch.SN65.pc.snd.wav",
-	"music/bo2/underscores/mus_mp_underscore_14m09a_master.SN65.pc.snd.wav",
-	"music/bo2/underscores/mus_mp_underscore_14m09b_no_strings.SN65.pc.snd.wav",
+	"music/bo2/underscores/2m01_myanmar_squirreljump_v1_mp_loop.SL65.pc.snd.mp3",
+	"music/bo2/underscores/mus_mp_underscore_5m01_no_vox_no_sitar.SN65.pc.snd.mp3",
+	"music/bo2/underscores/mus_mp_underscore_5m05_no_vox.SN65.pc.snd.mp3",
+	"music/bo2/underscores/mus_mp_underscore_14m04_no_orch.SN65.pc.snd.mp3",
+	"music/bo2/underscores/mus_mp_underscore_14m06a_no_orch.SN65.pc.snd.mp3",
+	"music/bo2/underscores/mus_mp_underscore_14m09a_master.SN65.pc.snd.mp3",
+	"music/bo2/underscores/mus_mp_underscore_14m09b_no_strings.SN65.pc.snd.mp3",
 }
 
 -- [[ FACTIONS ]]
@@ -34,9 +34,9 @@ CoDHUD.Factions[hudtype] = {
 		name = "BO2_MP_SEALS_NAME",
 		short = "BO2_MPUI_SEALS_SHORT",
 		voicepath = "st6/vox_st6_",
-		spawntheme = "spawn/mus_mp_spawn_00.SN65.pc.snd.wav",
-		victorytheme = "spawn/mus_mp_spawn_00_short.SN65.pc.snd.wav",
-		defeattheme = "loss/mus_loss_00.SN65.pc.snd.wav",
+		spawntheme = "spawn/mus_mp_spawn_00.SN65.pc.snd.mp3",
+		victorytheme = "spawn/mus_mp_spawn_00_short.SN65.pc.snd.mp3",
+		defeattheme = "loss/mus_loss_00.SN65.pc.snd.mp3",
 		spawnIcon = hudtype .. "/factions/faction_seals.vtf",
 		scoreIcon = hudtype .. "/factions/faction_seals.vtf",
 		color = Color(116, 158, 182),
@@ -48,9 +48,9 @@ CoDHUD.Factions[hudtype] = {
 		name = "BO2_MP_PLA_NAME",
 		short = "BO2_MPUI_PLA_SHORT",
 		voicepath = "pla/vox_pla_",
-		spawntheme = "spawn/mus_mp_spawn_03.SN65.pc.snd.wav",
-		victorytheme = "spawn/mus_mp_spawn_03_short.SN65.pc.snd.wav",
-		defeattheme = "loss/mus_loss_00.SN65.pc.snd.wav",
+		spawntheme = "spawn/mus_mp_spawn_03.SN65.pc.snd.mp3",
+		victorytheme = "spawn/mus_mp_spawn_03_short.SN65.pc.snd.mp3",
+		defeattheme = "loss/mus_loss_00.SN65.pc.snd.mp3",
 		spawnIcon = hudtype .. "/factions/faction_pla.vtf",
 		scoreIcon = hudtype .. "/factions/faction_pla.vtf",
 		color = Color(167, 14, 16),
@@ -62,9 +62,9 @@ CoDHUD.Factions[hudtype] = {
 		name = "BO2_MP_FBI_NAME",
 		short = "BO2_MPUI_FBI_SHORT",
 		voicepath = "fbi/vox_fbi_",
-		spawntheme = "spawn/mus_mp_spawn_06.SN65.pc.snd.wav",
-		victorytheme = "spawn/mus_mp_spawn_06_short.SN65.pc.snd.wav",
-		defeattheme = "loss/mus_loss_00.SN65.pc.snd.wav",
+		spawntheme = "spawn/mus_mp_spawn_06.SN65.pc.snd.mp3",
+		victorytheme = "spawn/mus_mp_spawn_06_short.SN65.pc.snd.mp3",
+		defeattheme = "loss/mus_loss_00.SN65.pc.snd.mp3",
 		spawnIcon = hudtype .. "/factions/faction_fbi.vtf",
 		scoreIcon = hudtype .. "/factions/faction_fbi.vtf",
 		color = Color(16, 208, 221),
@@ -76,9 +76,9 @@ CoDHUD.Factions[hudtype] = {
 		name = "BO2_MP_PMC_NAME",
 		short = "BO2_MPUI_PMC_SHORT",
 		voicepath = "pmc/vox_pmc_",
-		spawntheme = "spawn/mus_mp_spawn_02.SN65.pc.snd.wav",
-		victorytheme = "spawn/mus_mp_spawn_02_short.SN65.pc.snd.wav",
-		defeattheme = "loss/mus_loss_00.SN65.pc.snd.wav",
+		spawntheme = "spawn/mus_mp_spawn_02.SN65.pc.snd.mp3",
+		victorytheme = "spawn/mus_mp_spawn_02_short.SN65.pc.snd.mp3",
+		defeattheme = "loss/mus_loss_00.SN65.pc.snd.mp3",
 		spawnIcon = hudtype .. "/factions/faction_pmc.vtf",
 		scoreIcon = hudtype .. "/factions/faction_pmc.vtf",
 		color = Color(252, 163, 11),
@@ -90,9 +90,9 @@ CoDHUD.Factions[hudtype] = {
 		name = "BO2_MP_ISA_NAME",
 		short = "BO2_MPUI_ISA_SHORT",
 		voicepath = "isa/vox_isa_",
-		spawntheme = "spawn/mus_mp_spawn_cia_20sec.SN65.pc.snd.wav",
-		victorytheme = "spawn/mus_mp_spawn_cia_10sec.SN65.pc.snd.wav",
-		defeattheme = "loss/mus_loss_00.SN65.pc.snd.wav",
+		spawntheme = "spawn/mus_mp_spawn_cia_20sec.SN65.pc.snd.mp3",
+		victorytheme = "spawn/mus_mp_spawn_cia_10sec.SN65.pc.snd.mp3",
+		defeattheme = "loss/mus_loss_00.SN65.pc.snd.mp3",
 		spawnIcon = hudtype .. "/factions/faction_isa.vtf",
 		scoreIcon = hudtype .. "/factions/faction_isa.vtf",
 		color = Color(84, 149, 115),
@@ -104,9 +104,9 @@ CoDHUD.Factions[hudtype] = {
 		name = "BO2_MP_CD_NAME",
 		short = "BO2_MPUI_CD_SHORT",
 		voicepath = "cia/vox_cda_",
-		spawntheme = "spawn/mus_mp_spawn_05.SN65.pc.snd.wav",
-		victorytheme = "spawn/mus_mp_spawn_05_short.SN65.pc.snd.wav",
-		defeattheme = "loss/mus_loss_00.SN65.pc.snd.wav",
+		spawntheme = "spawn/mus_mp_spawn_05.SN65.pc.snd.mp3",
+		victorytheme = "spawn/mus_mp_spawn_05_short.SN65.pc.snd.mp3",
+		defeattheme = "loss/mus_loss_00.SN65.pc.snd.mp3",
 		spawnIcon = hudtype .. "/factions/faction_cd.vtf",
 		scoreIcon = hudtype .. "/factions/faction_cd.vtf",
 		color = Color(239, 237, 134),
@@ -139,9 +139,9 @@ CoDHUD[hudtype].TextStrings = {
 }
 
 CoDHUD[hudtype].VoiceCallouts = {
-	winningmusic = "music/bo1/timers/eagleclaw_timer_a.wav",
-	losingmusic = "music/bo1/timers/invictus_time_a.wav",
-	drawmusic = "music/bo1/results/draw/pentagon_lose_a.wav",
+	winningmusic = "music/bo2/timers/mus_mp_timer_00.SN65.pc.snd.mp3",
+	losingmusic = "music/bo2/timers/mus_mp_timer_01.SN65.pc.snd.mp3",
+	drawmusic = "music/bo2/draw/mus_draw_00.SN65.pc.snd.mp3",
 
 	winningfight = "winning",
 	losingfight = "losing",
@@ -149,6 +149,7 @@ CoDHUD[hudtype].VoiceCallouts = {
 	
 	leadtaken = "lead_taken",
 	leadlost = "lead_lost",
+	leadtied = "tied",
 	
 	missionwin = "mission_success",
 	missionlose = "mission_fail",
@@ -156,23 +157,12 @@ CoDHUD[hudtype].VoiceCallouts = {
 }
 
 CoDHUD[hudtype].Timer = {
-	sound = "hud/bo2/timer_00.LN65.pc.snd.wav",
+	sound = "hud/bo2/timer_00.LN65.pc.snd.mp3",
 	timings = {
 		[30] = 2,
 		[10] = 1
 	}
 }
-
-local function GetFactionColor(ent)
-    if not IsValid(ent) then return Color(255,255,255) end
-    local faction = ent:GetNW2String("CoDHUD_Faction", "rangers")
-
-    if CoDHUD.Factions[hudtype][faction] and CoDHUD.Factions[hudtype][faction].killfeedcol then 
-		return CoDHUD.Factions[hudtype][faction].killfeedcol
-	end
-
-    return Color(255,255,255)
-end
 
 -- [[ GAMEMODES ]]
 CoDHUD.Gamemodes[hudtype] = {
@@ -184,6 +174,11 @@ CoDHUD.Gamemodes[hudtype] = {
 	{ "#MW2_MPUI_CAPTURE_THE_FLAG", "ctf" },
 	{ "#MW2_MPUI_HEADQUARTERS", "hq" },
 	{ "#MW2_MPUI_DD", "dd" },
+}
+
+CoDHUD.Gamemodes[hudtype].Names = {
+    war = "MW2_MPUI_WAR",
+    dm  = "MW2_MPUI_DEATHMATCH",
 }
 
 CoDHUD.Gamemodes[hudtype].Hints = {
@@ -300,6 +295,104 @@ end
 -- [[ HUD ELEMENTS ]]
 CoDHUD[hudtype].MedalsBlockChallenges = true   -- medals pause challenges
 
+CoDHUD[hudtype].LevelData = {
+	nameprefix = "BO2_",
+	materialpath = "bo2/ranks/", -- For icons; followed by the "rank icon" path.
+}
+
+CoDHUD[hudtype].Levels = {
+	-- [Rank] = { Data Name, XP Needed, XP Required for Next, Rank Name, Rank Icon, Max XP (for that level) }
+
+	[1] = { "pfc1", 0, 800, "RANK_PFC_FULL", "rank_pfc1", 800 },
+	[2] = { "pfc2", 800, 1100, "RANK_PFC_FULL2", "rank_pfc1", 1900 },
+	[3] = { "pfc3", 1900, 1400, "RANK_PFC_FULL3", "rank_pfc1", 3300 },
+	[4] = { "lcpl1", 3300, 2000, "RANK_LCPL_FULL", "rank_lcpl1", 5300 },
+	[5] = { "lcpl2", 5300, 2600, "RANK_LCPL_FULL2", "rank_lcpl1", 7900 },
+	[6] = { "lcpl3", 7900, 3200, "RANK_LCPL_FULL3", "rank_lcpl1", 11100 },
+	[7] = { "cpl1", 11100, 3800, "RANK_CPL_FULL", "rank_cpl1", 14900 },
+	[8] = { "cpl2", 14900, 4400, "RANK_CPL_FULL2", "rank_cpl1", 19300 },
+	[9] = { "cpl3", 19300, 5000, "RANK_CPL_FULL3", "rank_cpl1", 24300 },
+	[10] = { "sgt1", 24300, 5800, "RANK_SGT_FULL", "rank_sgt1", 30100 },
+	[11] = { "sgt2", 30100, 6600, "RANK_SGT_FULL2", "rank_sgt1", 36700 },
+	[12] = { "sgt3", 36700, 7400, "RANK_SGT_FULL3", "rank_sgt1", 44100 },
+	[13] = { "ssgt1", 44100, 8200, "RANK_SSGT_FULL", "rank_ssgt1", 52300 },
+	[14] = { "ssgt2", 52300, 9000, "RANK_SSGT_FULL2", "rank_ssgt1", 61300 },
+	[15] = { "ssgt3", 61300, 9800, "RANK_SSGT_FULL3", "rank_ssgt1", 71100 },
+	[16] = { "gysgt1", 71100, 10600, "RANK_GYSGT_FULL", "rank_gysgt1", 81700 },
+	[17] = { "gysgt2", 81700, 11400, "RANK_GYSGT_FULL2", "rank_gysgt1", 93100 },
+	[18] = { "gysgt3", 93100, 12200, "RANK_GYSGT_FULL3", "rank_gysgt1", 105300 },
+	[19] = { "msgt1", 105300, 13000, "RANK_MSGT_FULL", "rank_msgt1", 118300 },
+	[20] = { "msgt2", 118300, 13800, "RANK_MSGT_FULL2", "rank_msgt1", 132100 },
+	[21] = { "msgt3", 132100, 14600, "RANK_MSGT_FULL3", "rank_msgt1", 146700 },
+	[22] = { "mgysgt1", 146700, 15400, "RANK_MGYSGT_FULL", "rank_mgysgt1", 162100 },
+	[23] = { "mgysgt2", 162100, 16200, "RANK_MGYSGT_FULL2", "rank_mgysgt1", 178300 },
+	[24] = { "mgysgt3", 178300, 17000, "RANK_MGYSGT_FULL3", "rank_mgysgt1", 195300 },
+	[25] = { "2ndlt1", 195300, 17800, "RANK_2NDLT_FULL", "rank_2ndlt1", 213100 },
+	[26] = { "2ndlt2", 213100, 18600, "RANK_2NDLT_FULL2", "rank_2ndlt1", 231700 },
+	[27] = { "2ndlt3", 231700, 19400, "RANK_2NDLT_FULL3", "rank_2ndlt1", 251100 },
+	[28] = { "lt1", 251100, 20200, "RANK_LT_FULL", "rank_1stlt1", 271300 },
+	[29] = { "lt2", 271300, 21000, "RANK_LT_FULL2", "rank_1stlt1", 292300 },
+	[30] = { "lt3", 292300, 21800, "RANK_LT_FULL3", "rank_1stlt1", 314100 },
+	[31] = { "cpt1", 314100, 23000, "RANK_CPT_FULL", "rank_capt1", 337100 },
+	[32] = { "cpt2", 337100, 24200, "RANK_CPT_FULL2", "rank_capt1", 361300 },
+	[33] = { "cpt3", 361300, 25400, "RANK_CPT_FULL3", "rank_capt1", 386700 },
+	[34] = { "maj1", 386700, 26600, "RANK_MAJ_FULL", "rank_maj1", 413300 },
+	[35] = { "maj2", 413300, 27800, "RANK_MAJ_FULL2", "rank_maj1", 441100 },
+	[36] = { "maj3", 441100, 29000, "RANK_MAJ_FULL3", "rank_maj1", 470100 },
+	[37] = { "ltcol1", 470100, 30200, "RANK_LTCOL_FULL", "rank_ltcol1", 500300 },
+	[38] = { "ltcol2", 500300, 31400, "RANK_LTCOL_FULL2", "rank_ltcol1", 531700 },
+	[39] = { "ltcol3", 531700, 32600, "RANK_LTCOL_FULL3", "rank_ltcol1", 564300 },
+	[40] = { "col1", 564300, 33800, "RANK_COL_FULL", "rank_col1", 598100 },
+	[41] = { "col2", 598100, 35000, "RANK_COL_FULL2", "rank_col1", 633100 },
+	[42] = { "col3", 633100, 36200, "RANK_COL_FULL3", "rank_col1", 669300 },
+	[43] = { "bgen1", 669300, 37400, "RANK_BGEN_FULL", "rank_bgen1", 706700 },
+	[44] = { "bgen2", 706700, 38600, "RANK_BGEN_FULL2", "rank_bgen1", 745300 },
+	[45] = { "bgen3", 745300, 39800, "RANK_BGEN_FULL3", "rank_bgen1", 785100 },
+	[46] = { "majgen1", 785100, 41000, "RANK_MAJGEN_FULL", "rank_majgen1", 826100 },
+	[47] = { "majgen2", 826100, 42200, "RANK_MAJGEN_FULL2", "rank_majgen1", 868300 },
+	[48] = { "majgen3", 868300, 43400, "RANK_MAJGEN_FULL3", "rank_majgen1", 911700 },
+	[49] = { "ltgen1", 911700, 44600, "RANK_LTGEN_FULL", "rank_ltgen1", 956300 },
+	[50] = { "ltgen2", 956300, 45800, "RANK_LTGEN_FULL2", "rank_ltgen1", 1002100 },
+	[51] = { "ltgen3", 1002100, 47000, "RANK_LTGEN_FULL3", "rank_ltgen1", 1049100 },
+	[52] = { "gen1", 1049100, 48200, "RANK_GEN_FULL", "rank_gen1", 1097300 },
+	[53] = { "gen2", 1097300, 49400, "RANK_GEN_FULL2", "rank_gen1", 1146700 },
+	[54] = { "gen3", 1146700, 50600, "RANK_GEN_FULL3", "rank_gen1", 1197300 },
+	[55] = { "com1", 1197300, 51800, "RANK_COM_FULL", "rank_comm", 1249100 }
+}
+
+CoDHUD[hudtype].LevelIcons = {}
+
+for k, v in pairs(CoDHUD[hudtype].Levels) do
+	CoDHUD[hudtype].LevelIcons[k] = Material(CoDHUD[hudtype].LevelData.materialpath .. v[5] .. ".png", "smooth")
+end
+
+local function levelup( ... )
+    local rank = select(1, ...)
+    local level = select(2, ...)
+    local logo = select(3, ...)
+
+    CoDHUD_HeaderQueue.Push({
+		type = "bo_challenge", -- TEMPORARY
+        text = rank .. "\n" .. language.GetPhrase("BO2_RANK_PROMOTED"),
+        x = ScrW() * 0.5,
+        y = CoDHUD_SY(200),
+        color = Color(0,0,0),
+		sfx = "hud/bo2/mus_rank_02.SN65.pc.snd.mp3",
+		holdTime = 2.5,
+		nobg = true,
+        fonts = {
+            pri = "BO2_ChalSub",
+            sec = "BO2_ChalSub",
+            shd = "BO2_ChalSub",
+        },
+
+		iconY = CoDHUD_SY(50),
+		iconSize = CoDHUD_S(128),
+		icon = logo
+    })
+end
+CoDHUD[hudtype].Levelup = levelup
+
 local function settingsmenu( ... )
 	local w = select(1, ...)
 	local h = select(2, ...)
@@ -335,8 +428,9 @@ local function challengecomplete( ... )
 		type = "bo2_challenge",
         text = CoDHUD_ChallengeTitle(header, level),
         subtext = (sub and sub ~= "") and ResolvePrefix("MW2_CHALLENGE_", sub) or nil,
-        x = CoDHUD_SX(960),
+        x = ScrW() * 0.5,
         y = CoDHUD_SY(125),
+		sfx = "hud/bo2/award.SN65.pc.snd.mp3",
 		holdTime = 1.5,
 
         color = Color(0,0,0),
@@ -346,7 +440,6 @@ local function challengecomplete( ... )
         },
     })
 
-    surface.PlaySound("hud/bo2/award.SN65.pc.snd.wav")
 end
 CoDHUD[hudtype].ChallengeComplete = challengecomplete
 
@@ -359,7 +452,7 @@ local function rs_obj( ... )
 		writeSpeed = 8,
 		writeSoundOnce = true,
 		text = language.GetPhrase(text),
-		x = CoDHUD_SX(960),
+		x = ScrW() * 0.5,
 		y = CoDHUD_SY(170),
 		color = Color(0, 0, 0),
 		fonts = {
@@ -379,7 +472,7 @@ local function rs_title( ... )
 	CoDHUD_HeaderQueue.Push({
 		type = "bo2_teamheader",
 		text = language.GetPhrase(text .. "_CAPS"),
-		x = CoDHUD_SX(960),
+		x = ScrW() * 0.5,
 		y = CoDHUD_SY(120),
 		flashColor = glow,
 
@@ -402,8 +495,7 @@ local function rs_timer( ... )
 	
 	local outlined = GetConVar("codhud_enable_outlinedtext"):GetBool()
 
-    local tx  = CoDHUD_SX(960)
-    -- local ty  = CoDHUD_SY(540)
+    local tx  = ScrW() * 0.5
     local ty  = ScrH() * 0.5
     local syo = CoDHUD_SY(-85)
 
@@ -434,6 +526,7 @@ local function re_teams( ... )
     local ws_limit = select(3, ...)
     local re_result_glow = select(4, ...)
     local CFG = select(5, ...)
+    local dmScore = select(6, ...)
 
     local multiplier = 1
 
@@ -449,10 +542,11 @@ local function re_teams( ... )
     -- Teams
     CoDHUD_HeaderQueue.Push({
 		type = "bo",
-        teams = scaledTeams, -- use scaled version
+        teams = scaledTeams,
+		dmscore = dmScore,
 		writeSounds = {""},
 		writeSpeed = 8,
-        x = CoDHUD_SX(960),
+        x = ScrW() * 0.5,
         y = CoDHUD_SY(400),
         multiple = true,
         persist = true,
@@ -476,7 +570,7 @@ local function re_teams( ... )
 		writeSounds = textype,
 		writeSoundOnce = true,
 		writeSpeed = 8,
-		x = CoDHUD_SX(960),
+		x = ScrW() * 0.5,
 		y = CoDHUD_SY(240),
 		color = re_result_glow,
 		multiple = true,
@@ -496,7 +590,7 @@ local function re_teams( ... )
 		text = ws_limit,
 		writeSounds = {""},
 		writeSpeed = 80,
-		x = CoDHUD_SX(960),
+		x = ScrW() * 0.5,
 		y = CoDHUD_SY(330),
 		color = Color(135, 135, 180),
 		multiple = true,
@@ -525,7 +619,7 @@ local function re_bonus( ... )
 
     local iconAlpha = math.floor(math.Clamp(el / 1.0, 0, 1) * 255)
 
-	draw.SimpleTextOutlined( string.format( language.GetPhrase("MW2_MP_MATCH_BONUS_IS"), tostring(re_match_bonus) ), "BO2_RE_Bonus", CoDHUD_SX(960), CoDHUD_SY(720), Color(240, 250, 110, iconAlpha), 1, 1, outlined and 1 or 0, Color(0,0,0, iconAlpha) )
+	draw.SimpleTextOutlined( string.format( language.GetPhrase("MW2_MP_MATCH_BONUS_IS"), tostring(re_match_bonus) ), "BO2_RE_Bonus", ScrW() * 0.5, CoDHUD_SY(720), Color(240, 250, 110, iconAlpha), 1, 1, outlined and 1 or 0, Color(0,0,0, iconAlpha) )
 end
 CoDHUD[hudtype].RoundEndBonus = re_bonus
 
@@ -798,8 +892,8 @@ local function killfeed( ... )
 		local attackerEnt = data.attackerEnt
 		local victimEnt = data.victimEnt
 
-		local aColBase = GetFactionColor(attackerEnt)
-		local vColBase = GetFactionColor(victimEnt)
+		local aColBase = CoDHUD_GetFactionColor(attackerEnt)
+		local vColBase = CoDHUD_GetFactionColor(victimEnt)
 
 		local aCol = Color(aColBase.r, aColBase.g, aColBase.b, finalTxtAlpha)
 		local vCol = Color(vColBase.r, vColBase.g, vColBase.b, finalTxtAlpha)
@@ -995,7 +1089,7 @@ local function medals( ... )
 	draw.SimpleTextOutlined( language.GetPhrase(activeMedal.text), "BO2_MedalPrimary", cx, cy + CoDHUD_SY(128), colWhite, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, outlined and 1.5 or 0, colBlack )
 end
 CoDHUD[hudtype].Medals = medals
-CoDHUD[hudtype].MedalsSound = "hud/bo2/metal_3.SN65.pc.snd.wav"
+CoDHUD[hudtype].MedalsSound = "hud/bo2/metal_3.SN65.pc.snd.mp3"
 CoDHUD[hudtype].MedalsTable = {
 	["headshot"] = { "BO2_MEDAL_HEADSHOT", nil, "bo2/medals/hud_medals_headshot.png" },
 	["doublekill"] = { "BO2_MEDAL_MULTIKILL_2", nil, "bo2/medals/hud_medals_doublekill.png" },
@@ -1145,7 +1239,7 @@ local function minimap( ... )
         
         local isAlive = (ent:IsPlayer() and ent:Alive()) or (ent:IsNPC() and ent:Health() > 0)
         local targetFaction = ent:GetNW2String("CoDHUD_Faction", "")
-        local isFriendly = (localFaction ~= "" and targetFaction == localFaction)
+        local isFriendly = (CoDHUD_ActiveGamemodeCL ~= "dm") and (localFaction ~= "" and targetFaction == localFaction)
         local entIdx = ent:EntIndex()
 
         -- Visibility / Shared Vision Check (Enemies only)
@@ -1505,6 +1599,11 @@ local function scoreboard( ... )
 		ROW_GAP = 0,
 		TEAM_GAP = 30,
 
+		-- Rank Icon
+		RANK_ICON_SIZE = 24,
+		RANK_ICON_X_OFF = 15,
+		RANK_ICON_Y_OFF = 8,
+
 		-- Faction Icon
 		ICON_SIZE = 192,
 		ICON_X_OFF = -240,
@@ -1539,6 +1638,10 @@ local function scoreboard( ... )
 		SQUEEZE_ONE = -0,
 		SQUEEZE_ONE_BEFORE = -0,
 
+		-- GM and Map Name
+		MAPNAME_X_POS = 425,
+		MAPNAME_Y_OFF = 150,
+		
 		-- Stat Offsets (from barRight, going left)
 		OFF_PING = 10,
 		OFF_ASSISTS = 100,
@@ -1546,6 +1649,7 @@ local function scoreboard( ... )
 		OFF_DEATHS = 300,
 		OFF_KILLS = 400,
 		OFF_SCORE = 500,
+		OFF_XP = 996,
 	}
 
 	local MAT_BOXFG = Material(hudtype .. "/hud/menu_mp_map_frame.png", "mips smooth")
@@ -1599,6 +1703,8 @@ local function scoreboard( ... )
 
 		local kd = string.format("%.2f", ratio)
 
+		local level, levelData = CalculateLevelFromXP( ply:GetNW2Float( "CoDHUD_XP", 0 ) )
+
 		-- Background on some elements
 		surface.SetDrawColor(bgCol.r, bgCol.g, bgCol.b, CFG.BAR_ALPHA)
 		surface.DrawRect(barRight - CoDHUD_SX(CFG.OFF_ASSISTS) - CoDHUD_SX(50), y, CoDHUD_S(100), h)
@@ -1607,50 +1713,55 @@ local function scoreboard( ... )
 
 		-- Text
 		draw.SimpleTextOutlined(ply:Nick(), "BO2_Scoreboard_Text", x + CoDHUD_SX(80), y + (h / 2), tCol, TEXT_ALIGN_LEFT,  TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0))
-		draw.SimpleTextOutlined(ply:Ping(), "BO2_Scoreboard_Text", barRight - CoDHUD_SX(CFG.OFF_PING),  y + (h / 2), tCol, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0))
+		draw.SimpleTextOutlined(ply:Ping(), "BO2_Scoreboard_Text", barRight - CoDHUD_SX(CFG.OFF_PING),  y + (h / 2), tCol, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0))
 		draw.SimpleTextOutlined(deaths, "BO2_Scoreboard_Text", barRight - CoDHUD_SX(CFG.OFF_DEATHS),  y + (h / 2), tCol, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0))
 		draw.SimpleTextOutlined(kd, "BO2_Scoreboard_Text", barRight - CoDHUD_SX(CFG.OFF_RATIO),  y + (h / 2), tCol, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0))
 		draw.SimpleTextOutlined(ply:GetNWInt("Assists", 0), "BO2_Scoreboard_Text", barRight - CoDHUD_SX(CFG.OFF_ASSISTS), y + (h / 2), tCol, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0))
 		draw.SimpleTextOutlined(kills, "BO2_Scoreboard_Text", barRight - CoDHUD_SX(CFG.OFF_KILLS),   y + (h / 2), tCol, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0))
 		draw.SimpleTextOutlined(pScore, "BO2_Scoreboard_Text", barRight - CoDHUD_SX(CFG.OFF_SCORE),   y + (h / 2), tCol, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0))
+		draw.SimpleTextOutlined( level, "BO2_Scoreboard_Text", barRight - CoDHUD_S(CFG.OFF_XP) + CoDHUD_S(10),   y + (h / 2), tCol, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0))
+
+		surface.SetMaterial(CoDHUD[hudtype].LevelIcons[level])
+		surface.SetDrawColor(255, 255, 255, 255)
+		surface.DrawTexturedRect(barRight - CoDHUD_S(CFG.OFF_XP) + CoDHUD_S(CFG.RANK_ICON_X_OFF), y + CoDHUD_S(CFG.RANK_ICON_Y_OFF), CoDHUD_S(CFG.RANK_ICON_SIZE), CoDHUD_S(CFG.RANK_ICON_SIZE))
 	end
 
     local scrW, scrH = ScrW(), ScrH()
     local lp = LocalPlayer()
 
     -- 1. IDENTIFY FACTIONS & PLAYERS
-	local factions = {}
+	local groups = {}
 
-	for _, p in ipairs(player.GetAll()) do
-		local fac = p:GetNW2String("CoDHUD_Faction", "rangers")
-		if fac == "" then fac = "rangers" end
+	if CoDHUD_ActiveGamemodeCL == "dm" then
+		local allPlayers = player.GetAll()
+		table.sort(allPlayers, SortLogic)
+		groups = { { key = "dm", players = allPlayers, score = 0 } }
+	else
+		local factions = {}
 
-		factions[fac] = factions[fac] or {}
-		table.insert(factions[fac], p)
+		for _, p in ipairs(player.GetAll()) do
+			local fac = p:GetNW2String("CoDHUD_Faction", "rangers")
+			if fac == "" then fac = "rangers" end
+
+			factions[fac] = factions[fac] or {}
+			table.insert(factions[fac], p)
+		end
+
+		for fac, players in pairs(factions) do
+			table.sort(players, SortLogic)
+			table.insert(groups, { key = fac, players = players, score = 0 })
+		end
 	end
 
-    -- 2. SORT PLAYERS
-	local factionList = {}
-
-	for fac, players in pairs(factions) do
-		table.sort(players, SortLogic)
-
-		table.insert(factionList, {
-			key = fac,
-			players = players,
-			score = 0
-		})
-	end
-
-	for _, f in ipairs(factionList) do
+	for _, g in ipairs(groups) do
 		local score = 0
-		for _, p in ipairs(f.players) do
+		for _, p in ipairs(g.players) do
 			score = score + math.max(0, p:Frags())
 		end
-		f.score = score
+		g.score = score
 	end
 
-	table.sort(factionList, function(a, b)
+	table.sort(groups, function(a, b)
 		return a.score > b.score
 	end)
 
@@ -1662,7 +1773,7 @@ local function scoreboard( ... )
 	
 	CoDHUD.Scoreboard.ContentHeight = 0
 
-	for _, facData in ipairs(factionList) do
+	for _, facData in ipairs(groups) do
 		local visualPlayers = math.max(#facData.players, 2)
 		local factionHeight = (visualPlayers * (barH + CoDHUD_S(CFG.ROW_GAP))) + CoDHUD_S(CFG.TEAM_GAP)
 
@@ -1700,6 +1811,11 @@ local function scoreboard( ... )
 	local timeStr = string.format("%d:%02d", mins, secs)
 	draw.SimpleTextOutlined( timeStr, "BO2_Scoreboard_Timer", CoDHUD_S(CFG.TIMER_X_POS), headerY, Color(255,255,255), TEXT_ALIGN_LEFT, 0, outlined and 1 or 0, Color(0,0,0) )
 	
+	local gm = CoDHUD_ActiveGamemodeCL
+	local gmname = language.GetPhrase(CoDHUD.Gamemodes[hudtype].Names[gm] or gm)
+	
+	draw.SimpleTextOutlined( gmname .. " : " .. game:GetMap(), "BO2_Scoreboard_Timer", CoDHUD_S(CFG.MAPNAME_X_POS), headerY, Color(255,255,255), TEXT_ALIGN_LEFT, 0, outlined and 1 or 0, Color(0,0,0) )
+	
 	-- Stats column headers
 	draw.SimpleTextOutlined( language.GetPhrase("BO1_CGAME_SB_PING"), "BO2_Scoreboard_Text", barRight - CoDHUD_SX(CFG.OFF_PING) + CoDHUD_SX(4), headerY, Color(255,255,255), TEXT_ALIGN_RIGHT, 0, outlined and 1 or 0, Color(0,0,0) )
 	draw.SimpleTextOutlined( language.GetPhrase("BO1_CGAME_SB_DEATHS"), "BO2_Scoreboard_Text", barRight - CoDHUD_SX(CFG.OFF_DEATHS), headerY, Color(255,255,255), TEXT_ALIGN_CENTER, 0, outlined and 1 or 0, Color(0,0,0) )
@@ -1707,14 +1823,23 @@ local function scoreboard( ... )
 	draw.SimpleTextOutlined( language.GetPhrase("BO1_CGAME_SB_ASSISTS"), "BO2_Scoreboard_Text", barRight - CoDHUD_SX(CFG.OFF_ASSISTS), headerY, Color(255,255,255), TEXT_ALIGN_CENTER, 0, outlined and 1 or 0, Color(0,0,0) )
 	draw.SimpleTextOutlined( language.GetPhrase("BO1_CGAME_SB_KILLS"), "BO2_Scoreboard_Text", barRight - CoDHUD_SX(CFG.OFF_KILLS), headerY, Color(255,255,255), TEXT_ALIGN_CENTER, 0, outlined and 1 or 0, Color(0,0,0) )
 	draw.SimpleTextOutlined( language.GetPhrase("BO1_CGAME_SB_SCORE"), "BO2_Scoreboard_Text", barRight - CoDHUD_SX(CFG.OFF_SCORE), headerY, Color(255,255,255), TEXT_ALIGN_CENTER, 0, outlined and 1 or 0, Color(0,0,0) )
-		
-		
+
 	render.SetScissorRect(0, viewportTop, ScrW(), viewportBottom, true)
-		for fi, facData in ipairs(factionList) do
+		for fi, facData in ipairs(groups) do
 			local players = facData.players
+			
+			local leader = players[1]
+			local leaderScore = players[1]:Frags()
+
 			local facKey = facData.key
 			local score = facData.score or 0
-			local fData = CoDHUD.Factions[hudtype] and CoDHUD.Factions[hudtype][facKey] or { name = facKey, short = facKey, color = Color(120,120,120) }
+			local fData
+
+			if CoDHUD_ActiveGamemodeCL == "dm" then
+				fData = { name = "DM", short = "DM", color = Color(200, 200, 200), glow = Color(255, 255, 255) }
+			else
+				fData = CoDHUD.Factions[hudtype] and CoDHUD.Factions[hudtype][facKey] or { name = facKey, short = facKey, color = Color(120,120,120), glow = Color(255,255,255) }
+			end
 
 			local sectionY = startY
 
@@ -1739,33 +1864,50 @@ local function scoreboard( ... )
 			surface.SetMaterial(MAT_BOXFG)
 			surface.SetDrawColor(255,255,255)
 			surface.DrawTexturedRect( factionRectX, factionRectY, factionRectW, factionRectH )
-
-			-- ICON
-			local iconPath = CoDHUD.Factions[hudtype][facKey].scoreIcon
-			local mat = Material(iconPath, "smooth")
-
-			surface.SetMaterial(mat)
-			surface.SetDrawColor(255,255,255,255)
-
+				
 			local iconSize = CoDHUD_S(CFG.ICON_SIZE)
 			local iconX = barX + CoDHUD_S(CFG.ICON_X_OFF)
 			local iconY = sectionY + CoDHUD_S(CFG.ICON_Y_OFF)
-			local minPlayers = 2
-			local maxPlayersForFullIcon = 4
-			local revealT = math.Clamp( (playerCount - minPlayers) / (maxPlayersForFullIcon - minPlayers), 0, 1 )
-			local visibleFrac = Lerp(revealT, 0.6, 1)
-			surface.DrawTexturedRectUV( iconX, iconY, iconSize, iconSize * visibleFrac, 0, 0, 1, visibleFrac )
+				
+			if CoDHUD_ActiveGamemodeCL ~= "dm" then
+				-- FACTION ICON (unchanged)
+				local iconPath = CoDHUD.Factions[hudtype][facKey].scoreIcon
+				local mat = Material(iconPath, "smooth")
+
+				surface.SetMaterial(mat)
+				surface.SetDrawColor(255,255,255,255)
+
+				local minPlayers = 2
+				local maxPlayersForFullIcon = 4
+				local revealT = math.Clamp((playerCount - minPlayers) / (maxPlayersForFullIcon - minPlayers), 0, 1)
+				local visibleFrac = Lerp(revealT, 0.6, 1)
+
+				surface.DrawTexturedRectUV(iconX, iconY, iconSize, iconSize * visibleFrac, 0, 0, 1, visibleFrac)
+			end
 
 			surface.SetMaterial(MAT_BOXOVERLAY)
 			surface.SetDrawColor(fData.glow)
 			surface.DrawTexturedRect( factionRectX, factionRectY + CoDHUD_SY(3), iconSize * 1.4, factionRectH )
 
-			draw.SimpleTextOutlined( score, "BO2_Scoreboard_Score", barX + CoDHUD_SX(CFG.SCORE_NAME_X), sectionY + CoDHUD_S(CFG.SCORE_NAME_Y) - CoDHUD_S(22), Color(255,255,255), TEXT_ALIGN_LEFT, 0, outlined and 1 or 0, Color(0,0,0) )
+			local displayScore = leaderScore or 0
+
+			draw.SimpleTextOutlined( displayScore, "BO2_Scoreboard_Score", barX + CoDHUD_SX(CFG.SCORE_NAME_X), sectionY + CoDHUD_S(CFG.SCORE_NAME_Y) - CoDHUD_S(22), Color(255,255,255), TEXT_ALIGN_LEFT, 0, outlined and 1 or 0, Color(0,0,0) )
 			
 			surface.SetFont("BO2_Scoreboard_Score")
 			local scorew, scoreh = surface.GetTextSize(score)
+			local facname
+
+			if CoDHUD_ActiveGamemodeCL == "dm" then
+				if IsValid(leader) then
+					facname = leader:Nick()
+				else
+					facname = "Unknown"
+				end
+			else
+				facname = fData.short .. "_CAPS"
+			end
 			
-			draw.SimpleTextOutlined( language.GetPhrase(fData.short .. "_CAPS"), "BO2_Scoreboard_Text", barX + CoDHUD_S(CFG.FAC_NAME_X), sectionY + CoDHUD_S(CFG.FAC_NAME_Y), fData.glow, 0,0, outlined and 1 or 0, Color(0,0,0) )
+			draw.SimpleTextOutlined( language.GetPhrase(facname), "BO2_Scoreboard_Text", barX + CoDHUD_S(CFG.FAC_NAME_X), sectionY + CoDHUD_S(CFG.FAC_NAME_Y), fData.glow, 0,0, outlined and 1 or 0, Color(0,0,0) )
 
 			-- rows
 			for i, ply in ipairs(players) do
@@ -2043,7 +2185,7 @@ local function weaponinfo(...)
     end
 
 	surface.SetFont("BO2_Wep_Name")
-	local name  = string.upper(language.GetPhrase(wep:GetPrintName() or wep:GetClass()))
+	local name  = CoDHUD_UpperText(language.GetPhrase(wep:GetPrintName() or wep:GetClass()))
 	local namew, nameh = surface.GetTextSize(name)
 
 	draw.RoundedBox( 4, ScrW() - CoDHUD_SX(CFG.WEP_NAME_X_OFF+2) - namew, ScrH() - CoDHUD_SY(CFG.WEP_NAME_Y_OFF), namew + CoDHUD_S(11), nameh, Color( 255, 255, 255, 100 ) )
