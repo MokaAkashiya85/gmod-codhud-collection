@@ -239,7 +239,7 @@ local function ProcessWeaponProgress(ply, wepClass, isHeadshot)
 end
 
 local function onDamage( target, attacker, isKill, dmgInfo )
-    print( "OnDamage", target, attacker, isKill, dmgInfo )
+    -- print( "OnDamage", target, attacker, isKill, dmgInfo )
     local recipients = {}
     if target:IsPlayer() then
         table.insert(recipients, target)
@@ -256,7 +256,7 @@ local function onDamage( target, attacker, isKill, dmgInfo )
 end
 
 local function onDeath( target, attacker, inflictor, isHeadshot, additionalData )
-    print( "OnDeath", target, attacker, inflictor, isHeadshot, additionalData )
+    -- print( "OnDeath", target, attacker, inflictor, isHeadshot, additionalData )
     local recipients = {}
     if IsValid(target) and target:IsPlayer() then
         table.insert(recipients, target)
