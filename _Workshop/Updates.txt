@@ -36,13 +36,22 @@
 - CoD4, WaW HUDs: Fixed that the end-of-round match bonus was too high.
 
 [ Update 8 ]
-Added proper TDM and FFA functionality; select your gamemode:
-By default, if no other gamemode is active, FFA will always be the standard
+[ Added ]
+- Added proper TDM & FFA functionality;
+  ∟ Team Deathmatch; Faction-based battle with optional friendly fire. Supports multiple factions.
+  ∟ Free-for-All; Everyone versus everyone. No allies.
+  ∟ FFA will be default if no valid gamemode is active
 
-- TDM: Just as before; faction-based team fighting with optional friendly fire
-- FFA: Everyone for themselves; get assigned a random faction and zero allies
+- Added per-game ranks and improved statistics;
+  ∟ Every game has its own ranks and rank values
+  ∟ Purely cosmetic, more than anything
+  ∟ Can be reset in the CoDHUD Menu under Client > Other Settings
+  
+- Improved local player statistics;
+  ∟ Now stores per-game player kills, headshots and deaths; one for BO, one for MW2, etc.
 
 - Added Black Ops II HUD
 
+[ Changes ]
 - Friendly name tags appear instantly when in view
 - Fixed significant performance issues when using GMinimap
