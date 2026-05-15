@@ -1149,8 +1149,18 @@ function CoDHUD_HeaderQueue.Think()
 
 		if canSpawn then
 			if not CoDHUD_HeaderQueue.HasPresentationLock then
-				if not PRESENT:Acquire("header") then
-					return
+
+				local hud = CoDHUD[CoDHUD_GetHUDType()]
+				local block = true
+
+				if hud and hud.MedalsBlockChallenges == false then
+					block = false
+				end
+
+				if block then
+					if not PRESENT:Acquire("header") then
+						return
+					end
 				end
 
 				CoDHUD_HeaderQueue.HasPresentationLock = true
