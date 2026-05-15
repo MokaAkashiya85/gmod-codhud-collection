@@ -7,6 +7,7 @@ There are no requirements. All content is included in this Git.
 
 ## Features
 **Fully recreated HUDs from various CoD titles**
+- Rank System (Cosmetic, mostly)
 - Weapon Info
 - Score Info
 - Scoreboard
