@@ -1719,7 +1719,7 @@ local function scoreboard( ... )
 		draw.SimpleTextOutlined(ply:GetNWInt("Assists", 0), "BO2_Scoreboard_Text", barRight - CoDHUD_SX(CFG.OFF_ASSISTS), y + (h / 2), tCol, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0))
 		draw.SimpleTextOutlined(kills, "BO2_Scoreboard_Text", barRight - CoDHUD_SX(CFG.OFF_KILLS),   y + (h / 2), tCol, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0))
 		draw.SimpleTextOutlined(pScore, "BO2_Scoreboard_Text", barRight - CoDHUD_SX(CFG.OFF_SCORE),   y + (h / 2), tCol, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0))
-		draw.SimpleTextOutlined( level, "BO2_Scoreboard_Text", barRight - CoDHUD_S(CFG.OFF_XP) + CoDHUD_S(10),   y + (h / 2), tCol, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0))
+		draw.SimpleTextOutlined(level, "BO2_Scoreboard_Text", barRight - CoDHUD_S(CFG.OFF_XP) + CoDHUD_S(10),   y + (h / 2), tCol, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0))
 
 		surface.SetMaterial(CoDHUD[hudtype].LevelIcons[level])
 		surface.SetDrawColor(255, 255, 255, 255)

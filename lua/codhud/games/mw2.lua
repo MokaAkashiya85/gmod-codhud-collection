@@ -1772,7 +1772,7 @@ local function scoreboard( ... )
 		OFF_ASSISTS = 120,
 		OFF_KILLS = 225,
 		OFF_SCORE = 335,
-		OFF_XP = 1060,
+		OFF_XP = 1070,
 	}
 
 	local MAT_GRADIENT_L = Material("vgui/gradient-l")
@@ -1822,7 +1822,7 @@ local function scoreboard( ... )
 		draw.SimpleTextOutlined(ply:GetNWInt("Assists", 0), "MW2_Scoreboard_Text", barRight - CoDHUD_S(CFG.OFF_ASSISTS), y + (h / 2), tCol, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0))
 		draw.SimpleTextOutlined(ply:Frags(), "MW2_Scoreboard_Text", barRight - CoDHUD_S(CFG.OFF_KILLS),   y + (h / 2), tCol, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0))
 		draw.SimpleTextOutlined(pScore, "MW2_Scoreboard_Text", barRight - CoDHUD_S(CFG.OFF_SCORE),   y + (h / 2), tCol, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0))
-		draw.SimpleTextOutlined( level, "MW2_Scoreboard_Text", barRight - CoDHUD_S(CFG.OFF_XP) + CoDHUD_S(50),   y + (h / 2), tCol, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0))
+		draw.SimpleTextOutlined(level, "MW2_Scoreboard_Text2", barRight - CoDHUD_S(CFG.OFF_XP) + CoDHUD_S(24),   y + (h / 1.75), Color(255,255,255), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0))
 
 		surface.SetMaterial(CoDHUD[hudtype].LevelIcons[level])
 		surface.SetDrawColor(255, 255, 255, 255)

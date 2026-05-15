@@ -41,6 +41,7 @@ end)
 
 local codhud_menu_frame = nil
 local rs_confirm = nil
+local levelreset_confirm = nil
 local pendingFaction = nil
 local pendingGame = nil
 
@@ -272,6 +273,106 @@ local function CoDHUD_RS_OpenConfirm()
     end
 end
 
+local function CoDHUD_LevelReset_OpenConfirm()
+    if IsValid(levelreset_confirm) then levelreset_confirm:Remove() end
+	
+	local fs = GetConVar("codhud_fullscreen"):GetBool()
+	local menusize = fs and 1 or 0.55
+	
+    -- hide main menu while confirm is open
+    if IsValid(codhud_menu_frame) then
+        codhud_menu_frame:SetVisible(false)
+    end
+
+    levelreset_confirm = vgui.Create("DFrame")
+    levelreset_confirm:SetSize(ScrW() * menusize, ScrH() * menusize)
+    levelreset_confirm:Center()
+    levelreset_confirm:SetTitle("#CoDHUD.Title")
+    levelreset_confirm:MakePopup()
+
+	if fs then
+		levelreset_confirm:SetDraggable(false)
+		levelreset_confirm:ShowCloseButton(false)
+	end
+
+    levelreset_confirm.Paint = function(self, w, h)
+		if CoDHUD[CoDHUD_GetHUDType()] and CoDHUD[CoDHUD_GetHUDType()].SettingsMenu then
+			CoDHUD[CoDHUD_GetHUDType()].SettingsMenu(w, h)
+		else
+			draw.RoundedBox(0, 0, 0, w, h, Color(100,100,100))
+
+			surface.SetDrawColor(255, 255, 255, 125)
+			surface.SetMaterial( Material(CoDHUD_GetHUDType() .. "/menu_anim") )
+			surface.DrawTexturedRect(0, 0, w, h)
+			
+			surface.SetDrawColor(255, 255, 255)
+			surface.SetMaterial( Material(CoDHUD_GetHUDType() .. "/menu_bg") )
+			surface.DrawTexturedRect(0, 0, w, h)
+		end
+    end
+
+    -- main container (keeps everything aligned)
+    local root = vgui.Create("DPanel", levelreset_confirm)
+    root:Dock(FILL)
+    root:DockMargin(20, 20, 20, 20)
+    root.Paint = nil
+
+    -- title / message
+    local lbl = vgui.Create("DLabel", root)
+    lbl:Dock(TOP)
+    lbl:SetTall(300)
+    lbl:SetText("#CoDHUD.Rank.Reset.Warning")
+    lbl:SetFont("CoDHUD_Settings_Main")
+    lbl:SetContentAlignment(4)
+    lbl:SetWrap(true)
+	function lbl:PerformLayout()
+		self:SetFGColor(Color(255,255,255))
+	end
+
+    -- spacer pushes buttons down
+    local spacer = vgui.Create("DPanel", root)
+    spacer:Dock(FILL)
+    spacer.Paint = nil
+
+    -- bottom button bar
+    local bottom = vgui.Create("DPanel", root)
+    bottom:Dock(BOTTOM)
+    bottom:SetTall(50)
+    bottom.Paint = nil
+
+    -- LEFT button (NO)
+    local btn_nah = vgui.Create("DButton", bottom)
+    btn_nah:Dock(LEFT)
+    btn_nah:SetWide(150)
+    btn_nah:SetText("#CoDHUD.RoundStart.No")
+
+    btn_nah.DoClick = function()
+        levelreset_confirm:Remove()
+
+        if IsValid(codhud_menu_frame) then
+            codhud_menu_frame:SetVisible(true)
+            codhud_menu_frame:MakePopup()
+        end
+    end
+
+    -- RIGHT button (YES)
+    local btn_go = vgui.Create("DButton", bottom)
+    btn_go:Dock(RIGHT)
+    btn_go:SetWide(150)
+    btn_go:SetText("#CoDHUD.RoundStart.Yes")
+
+    btn_go.DoClick = function()
+        levelreset_confirm:Remove()
+		
+		RunConsoleCommand("codhud_rank_clear")
+
+        if IsValid(codhud_menu_frame) then
+            codhud_menu_frame:SetVisible(true)
+            codhud_menu_frame:MakePopup()
+        end
+    end
+end
+
 local function CoDHUD_OpenGameConfirm(newGame)
     if IsValid(rs_confirm) then rs_confirm:Remove() end
 
@@ -472,6 +573,23 @@ local CoDHUD_SETTINGS = {
 							{ type = "label", label = "#CoDHUD.Challenges.Reset.desc" },
 						}
 					},
+					{ name = "#CoDHUD.Rank", controls = {
+							{ type = "button",	label = "#CoDHUD.Rank.Reset",
+								func = function()
+									local lp = LocalPlayer()
+									if not IsValid(lp) or not lp:IsAdmin() then return end
+
+									CoDHUD_LevelReset_OpenConfirm()
+
+									if IsValid(codhud_menu_frame) then
+										codhud_menu_frame:SetVisible(false)
+									end
+								end
+							},
+							{ type = "label", label = "#CoDHUD.Rank.Reset.desc" },
+						}
+					},
+					
 					{ name = "#CoDHUD.Menu", controls = {
 							{ type = "checkbox",	label = "#CoDHUD.Menu.Fullscreen", convar = "codhud_fullscreen", tooltip = "CoDHUD.Menu.Fullscreen.desc" },
 						}

@@ -54,6 +54,7 @@ local function InitiateCoDFonts()
 			
 	-- Scoreboard
     surface.CreateFont( "CoD4_Scoreboard_Text",		{ font = "Carbon Regular", size = CoDHUD_S(34), weight = 400, antialias = true, shadow = true, })
+    surface.CreateFont( "CoD4_Scoreboard_Text2",		{ font = "Carbon Regular", size = CoDHUD_S(30), weight = 400, antialias = true, shadow = true, })
     surface.CreateFont( "CoD4_Scoreboard_Headers",	{ font = "Carbon Regular", size = CoDHUD_S(28), weight = 400, antialias = true, shadow = true, })
     surface.CreateFont( "CoD4_Scoreboard_Timer",	{ font = "BankGothic Md BT", size = CoDHUD_S(34), weight = 400, antialias = true, })
 	
@@ -120,6 +121,7 @@ local function InitiateCoDFonts()
 
 	-- Scoreboard
     surface.CreateFont( "WaW_Scoreboard_Text",		{ font = "Optima Std Roman", size = CoDHUD_S(34), weight = 400, antialias = true, shadow = true, })
+    surface.CreateFont( "WaW_Scoreboard_Text2",		{ font = "Optima Std Roman", size = CoDHUD_S(30), weight = 400, antialias = true, shadow = true, })
     surface.CreateFont( "WaW_Scoreboard_Headers",	{ font = "Optima Std Roman", size = CoDHUD_S(28), weight = 400, antialias = true, shadow = true, })
     surface.CreateFont( "WaW_Scoreboard_Timer",		{ font = "Optima Std Roman", size = CoDHUD_S(34), weight = 400, antialias = true, })
 	
@@ -193,6 +195,7 @@ local function InitiateCoDFonts()
 		
 	-- Scoreboard
     surface.CreateFont( "MW2_Scoreboard_Text",		{ font = "Conduit ITC Light", size = CoDHUD_S(34), weight = 400, antialias = true, shadow = true, })
+    surface.CreateFont( "MW2_Scoreboard_Text2",		{ font = "Conduit ITC Light", size = CoDHUD_S(30), weight = 400, antialias = true, shadow = true, })
     surface.CreateFont( "MW2_Scoreboard_Rank",		{ font = "Conduit ITC Light", size = CoDHUD_S(28), weight = 400, antialias = true, shadow = true, })
     surface.CreateFont( "MW2_Scoreboard_Timer",		{ font = "BankGothic Md BT", size = CoDHUD_S(34), weight = 400, antialias = true, })
 	
@@ -266,6 +269,7 @@ local function InitiateCoDFonts()
 		
 	-- Scoreboard
     surface.CreateFont( "BO1_Scoreboard_Text",		{ font = "HelveticaNeue MediumCond", size = CoDHUD_S(28), weight = 100, antialias = true, shadow = true, })
+    surface.CreateFont( "BO1_Scoreboard_Text2",		{ font = "HelveticaNeue MediumCond", size = CoDHUD_S(24), weight = 100, antialias = true, shadow = true, })
     surface.CreateFont( "BO1_Scoreboard_Score",		{ font = "MorrisSansW04-MediumCond", size = CoDHUD_S(64), weight = 400, antialias = true, shadow = true, })
     surface.CreateFont( "BO1_Scoreboard_Timer",		{ font = "MorrisSansW04-MediumCond", size = CoDHUD_S(34), weight = 400, antialias = true, })
 	

@@ -270,12 +270,67 @@ end
 CoDHUD[hudtype].MedalsBlockChallenges = false   -- medals pause challenges
 
 CoDHUD[hudtype].LevelData = {
-	nameprefix = "COD4_",
-	materialpath = "cod4/ranks/rank_", -- For icons; followed by the "rank icon" path.
+	nameprefix = "MW2_",
+	materialpath = "cod4/ranks/", -- For icons; followed by the "rank icon" path.
+	xpmult = 0.1,
 }
 
 CoDHUD[hudtype].Levels = {
-	[1] = { "pvt1", 0, 800, "RANK_PVT_FULL", "1stlt1", 800 } -- testing rank
+	[1] = { "pfc1", 0, 30, "RANK_PFC_FULL", "rank_pfc1", 30 },
+	[2] = { "pfc2", 30, 90, "RANK_PFC_FULL2", "rank_pfc1", 120 },
+	[3] = { "pfc3", 120, 150, "RANK_PFC_FULL3", "rank_pfc1", 270 },
+	[4] = { "lcpl1", 270, 210, "RANK_LCPL_FULL", "rank_lcpl1", 480 },
+	[5] = { "lcpl2", 480, 270, "RANK_LCPL_FULL2", "rank_lcpl1", 750 },
+	[6] = { "lcpl3", 750, 330, "RANK_LCPL_FULL3", "rank_lcpl1", 1080 },
+	[7] = { "cpl1", 1080, 390, "RANK_CPL_FULL", "rank_cpl1", 1470 },
+	[8] = { "cpl2", 1470, 450, "RANK_CPL_FULL2", "rank_cpl1", 1920 },
+	[9] = { "cpl3", 1920, 510, "RANK_CPL_FULL3", "rank_cpl1", 2430 },
+	[10] = { "sgt1", 2430, 570, "RANK_SGT_FULL", "rank_sgt1", 3000 },
+	[11] = { "sgt2", 3000, 650, "RANK_SGT_FULL2", "rank_sgt1", 3650 },
+	[12] = { "sgt3", 3650, 730, "RANK_SGT_FULL3", "rank_sgt1", 4380 },
+	[13] = { "ssgt1", 4380, 810, "RANK_SSGT_FULL", "rank_ssgt1", 5190 },
+	[14] = { "ssgt2", 5190, 890, "RANK_SSGT_FULL2", "rank_ssgt1", 6080 },
+	[15] = { "ssgt3", 6080, 970, "RANK_SSGT_FULL3", "rank_ssgt1", 7050 },
+	[16] = { "gysgt1", 7050, 1050, "RANK_GYSGT_FULL", "rank_gysgt1", 8100 },
+	[17] = { "gysgt2", 8100, 1130, "RANK_GYSGT_FULL2", "rank_gysgt1", 9230 },
+	[18] = { "gysgt3", 9230, 1210, "RANK_GYSGT_FULL3", "rank_gysgt1", 10440 },
+	[19] = { "msgt1", 10440, 1290, "RANK_MSGT_FULL", "rank_msgt1", 11730 },
+	[20] = { "msgt2", 11730, 1370, "RANK_MSGT_FULL2", "rank_msgt1", 13100 },
+	[21] = { "msgt3", 13100, 1450, "RANK_MSGT_FULL3", "rank_msgt1", 14550 },
+	[22] = { "mgysgt1", 14550, 1530, "RANK_MGYSGT_FULL", "rank_mgysgt1", 16080 },
+	[23] = { "mgysgt2", 16080, 1610, "RANK_MGYSGT_FULL2", "rank_mgysgt1", 17690 },
+	[24] = { "mgysgt3", 17690, 1690, "RANK_MGYSGT_FULL3", "rank_mgysgt1", 19380 },
+	[25] = { "2ndlt1", 19380, 1770, "RANK_2NDLT_FULL", "rank_2ndlt1", 21150 },
+	[26] = { "2ndlt2", 21150, 1850, "RANK_2NDLT_FULL2", "rank_2ndlt1", 23000 },
+	[27] = { "2ndlt3", 23000, 1930, "RANK_2NDLT_FULL3", "rank_2ndlt1", 24930 },
+	[28] = { "1stlt1", 24930, 2010, "RANK_1STLT_FULL", "rank_1stlt1", 26940 },
+	[29] = { "1stlt2", 26940, 2090, "RANK_1STLT_FULL2", "rank_1stlt1", 29030 },
+	[30] = { "1stlt3", 29030, 2210, "RANK_1STLT_FULL3", "rank_1stlt1", 31240 },
+	[31] = { "capt1", 31240, 2330, "RANK_CAPT_FULL", "rank_capt1", 33570 },
+	[32] = { "capt2", 33570, 2450, "RANK_CAPT_FULL2", "rank_capt1", 36020 },
+	[33] = { "capt3", 36020, 2570, "RANK_CAPT_FULL3", "rank_capt1", 38590 },
+	[34] = { "maj1", 38590, 2690, "RANK_MAJ_FULL", "rank_maj1", 41280 },
+	[35] = { "maj2", 41280, 2810, "RANK_MAJ_FULL2", "rank_maj1", 44090 },
+	[36] = { "maj3", 44090, 2930, "RANK_MAJ_FULL3", "rank_maj1", 47020 },
+	[37] = { "ltcol1", 47020, 3050, "RANK_LTCOL_FULL", "rank_ltcol1", 50070 },
+	[38] = { "ltcol2", 50070, 3170, "RANK_LTCOL_FULL2", "rank_ltcol1", 53240 },
+	[39] = { "ltcol3", 53240, 3290, "RANK_LTCOL_FULL3", "rank_ltcol1", 56530 },
+	[40] = { "col1", 56530, 3410, "RANK_COL_FULL", "rank_col1", 59940 },
+	[41] = { "col2", 59940, 3530, "RANK_COL_FULL2", "rank_col1", 63470 },
+	[42] = { "col3", 63470, 3650, "RANK_COL_FULL3", "rank_col1", 67120 },
+	[43] = { "bgen1", 67120, 3770, "RANK_BGEN_FULL", "rank_bgen1", 70890 },
+	[44] = { "bgen2", 70890, 3890, "RANK_BGEN_FULL2", "rank_bgen1", 74780 },
+	[45] = { "bgen3", 74780, 4010, "RANK_BGEN_FULL3", "rank_bgen1", 78790 },
+	[46] = { "majgen1", 78790, 4130, "RANK_MAJGEN_FULL", "rank_majgen1", 82920 },
+	[47] = { "majgen2", 82920, 4250, "RANK_MAJGEN_FULL2", "rank_majgen1", 87170 },
+	[48] = { "majgen3", 87170, 4370, "RANK_MAJGEN_FULL3", "rank_majgen1", 91540 },
+	[49] = { "ltgen1", 91540, 4490, "RANK_LTGEN_FULL", "rank_ltgen1", 96030 },
+	[50] = { "ltgen2", 96030, 4610, "RANK_LTGEN_FULL2", "rank_ltgen1", 100640 },
+	[51] = { "ltgen3", 100640, 4730, "RANK_LTGEN_FULL3", "rank_ltgen1", 105370 },
+	[52] = { "gen1", 105370, 4850, "RANK_GEN_FULL", "rank_gen1", 110220 },
+	[53] = { "gen2", 110220, 4970, "RANK_GEN_FULL2", "rank_gen1", 115190 },
+	[54] = { "gen3", 115190, 5090, "RANK_GEN_FULL3", "rank_gen1", 120280 },
+	[55] = { "comm1", 120280, 5210, "RANK_COMM_FULL", "rank_comm", 125490 }
 }
 
 CoDHUD[hudtype].LevelIcons = {}
@@ -524,7 +579,7 @@ CoDHUD[hudtype].RoundEnd = re_teams
 
 local function re_bonus( ... )
 	local re_lock_time = select(1, ...)
-	local re_match_bonus = math.Round(select(2, ...) * 0.1)
+	local re_match_bonus = math.Round(select(2, ...))
 
 	re_match_bonus = string.Replace(re_match_bonus, "0", "O")
 
@@ -561,7 +616,7 @@ local function xp( ... )
 	local finalAlpha = select(3, ...)
 	local scoreScale = select(4, ...)
 	local currentPulseAlpha = select(5, ...)
-	local scoreVal = math.Round(select(6, ...) * 0.1)
+	local scoreVal = select(6, ...)
 
 	local outlined = GetConVar("codhud_enable_outlinedtext"):GetBool()
 
@@ -579,6 +634,40 @@ local function xp( ... )
 	cam.PopModelMatrix()
 end
 CoDHUD[hudtype].XP = xp
+
+local xpmats = {
+	ticks = Material(hudtype .. "/hud/hud_xpticker480ws.png", "mips smooth"),
+}
+
+local function xpbar( ... )
+	local xp = select(1, ...)
+	local nextXP = select(2, ...)
+	local progress = select(3, ...)
+	local levelProgressXP = select(4, ...)
+	local levelRequiredXP = select(5, ...)
+
+	local y, h = 12, 12
+
+	surface.SetDrawColor(0, 0, 0, 200)
+	surface.DrawRect(0, ScrH() - CoDHUD_SY(y), ScrW(), CoDHUD_SY(h))
+
+	local grad = Material("vgui/gradient-r")
+
+	surface.SetMaterial(grad)
+	surface.SetDrawColor(210, 190, 120, 220)
+	surface.DrawTexturedRect( 0, ScrH() - CoDHUD_SY(y), ScrW() * progress, CoDHUD_SY(h) )
+
+	-- Tick marks
+	local repeats = 20
+
+	surface.SetMaterial(xpmats.ticks)
+	surface.SetDrawColor(255, 255, 255, 200)
+
+	for i = 0, repeats - 1 do
+		surface.DrawTexturedRect( i * ScrW() / repeats, ScrH() - CoDHUD_SY(y), ScrW() / repeats, CoDHUD_SY(h) )
+	end
+end
+CoDHUD[hudtype].XPBar = xpbar
 
 local function dmg_dir( ... )
 	local attackers = select(1, ...)
@@ -1504,7 +1593,7 @@ local function scoreboard( ... )
 		draw.SimpleTextOutlined(string.Replace(ply:GetNWInt("Assists", 0), "0", "O"), "CoD4_Scoreboard_Text", barRight - CoDHUD_S(CFG.OFF_ASSISTS), y + (h / 2), tCol, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0))
 		draw.SimpleTextOutlined(string.Replace(ply:Frags(), "0", "O"), "CoD4_Scoreboard_Text", barRight - CoDHUD_S(CFG.OFF_KILLS),   y + (h / 2), tCol, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0))
 		draw.SimpleTextOutlined(string.Replace(pScore, "0", "O"), "CoD4_Scoreboard_Text", barRight - CoDHUD_S(CFG.OFF_SCORE),   y + (h / 2), tCol, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0))
-		draw.SimpleTextOutlined( string.Replace(tostring(level), "0", "O"), "CoD4_Scoreboard_Text", barRight - CoDHUD_S(CFG.OFF_XP) + CoDHUD_S(50),   y + (h / 2), tCol, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0))
+		draw.SimpleTextOutlined( string.Replace(tostring(level), "0", "O"), "CoD4_Scoreboard_Text2", barRight - CoDHUD_S(CFG.OFF_XP) + CoDHUD_S(24), y + (h / 1.75), Color(255,255,255), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0))
 
 		if CoDHUD[hudtype].LevelIcons[level] then
 			surface.SetMaterial(CoDHUD[hudtype].LevelIcons[level])

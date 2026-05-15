@@ -9,7 +9,13 @@ if CLIENT then
 
     _G.CoDHUD_AddScore = function(amount)
         local ct = CurTime()
+
+		if CoDHUD[CoDHUD_GetHUDType()] and CoDHUD[CoDHUD_GetHUDType()].LevelData then
+			amount = amount * (CoDHUD[CoDHUD_GetHUDType()].LevelData.xpmult or 1)
+		end
 		
+		amount = math.Round(amount)
+
 		CoDHUD_AddXP(amount)
 		
         scoreVal   = scoreVal + amount
@@ -79,6 +85,12 @@ if CLIENT then
 			ply:EmitSound("hud/hitmarker.mp3", 100, 100, 1, CHAN_AUTO)
 		end
 
-        if isKill then _G.CoDHUD_AddScore(100) end
+		local killscore = 100
+		
+		if CoDHUD_ActiveGamemodeCL == "dm" then 
+			killscore = 50
+		end
+
+        if isKill then _G.CoDHUD_AddScore(killscore) end
     end)
 end

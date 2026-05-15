@@ -279,6 +279,7 @@ CoDHUD[hudtype].MedalsBlockChallenges = false   -- medals pause challenges
 CoDHUD[hudtype].LevelData = {
 	nameprefix = "WAW_",
 	materialpath = "waw/ranks/", -- For icons; followed by the "rank icon" path.
+	xpmult = 0.1,
 }
 
 CoDHUD[hudtype].Levels = {
@@ -604,7 +605,7 @@ CoDHUD[hudtype].RoundEnd = re_teams
 
 local function re_bonus( ... )
 	local re_lock_time = select(1, ...)
-	local re_match_bonus = math.Round(select(2, ...) * 0.1)
+	local re_match_bonus = math.Round(select(2, ...))
 
 	local outlined = GetConVar("codhud_enable_outlinedtext"):GetBool()
 
@@ -639,7 +640,7 @@ local function xp( ... )
 	local finalAlpha = select(3, ...)
 	local scoreScale = select(4, ...)
 	local currentPulseAlpha = select(5, ...)
-	local scoreVal = math.Round(select(6, ...) * 0.1)
+	local scoreVal = select(6, ...)
 
 	local outlined = GetConVar("codhud_enable_outlinedtext"):GetBool()
 
@@ -657,6 +658,40 @@ local function xp( ... )
 	cam.PopModelMatrix()
 end
 CoDHUD[hudtype].XP = xp
+
+local xpmats = {
+	ticks = Material(hudtype .. "/hud/hud_xpticker480.png", "mips smooth"),
+}
+
+local function xpbar( ... )
+	local xp = select(1, ...)
+	local nextXP = select(2, ...)
+	local progress = select(3, ...)
+	local levelProgressXP = select(4, ...)
+	local levelRequiredXP = select(5, ...)
+
+	local y, h = 12, 12
+
+	surface.SetDrawColor(0, 0, 0, 200)
+	surface.DrawRect(0, ScrH() - CoDHUD_SY(y), ScrW(), CoDHUD_SY(h))
+
+	local grad = Material("vgui/gradient-r")
+
+	surface.SetMaterial(grad)
+	surface.SetDrawColor(210, 190, 120, 220)
+	surface.DrawTexturedRect( 0, ScrH() - CoDHUD_SY(y), ScrW() * progress, CoDHUD_SY(h) )
+
+	-- Tick marks
+	local repeats = 20
+
+	surface.SetMaterial(xpmats.ticks)
+	surface.SetDrawColor(255, 255, 255, 200)
+
+	for i = 0, repeats - 1 do
+		surface.DrawTexturedRect( i * ScrW() / repeats, ScrH() - CoDHUD_SY(y), ScrW() / repeats, CoDHUD_SY(h) )
+	end
+end
+CoDHUD[hudtype].XPBar = xpbar
 
 local function dmg_dir( ... )
 	local attackers = select(1, ...)
@@ -1578,7 +1613,7 @@ local function scoreboard( ... )
 		draw.SimpleTextOutlined(ply:GetNWInt("Assists", 0), "WaW_Scoreboard_Text", barRight - CoDHUD_S(CFG.OFF_ASSISTS), y + (h / 2), tCol, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0))
 		draw.SimpleTextOutlined(ply:Frags(), "WaW_Scoreboard_Text", barRight - CoDHUD_S(CFG.OFF_KILLS),   y + (h / 2), tCol, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0))
 		draw.SimpleTextOutlined(pScore, "WaW_Scoreboard_Text", barRight - CoDHUD_S(CFG.OFF_SCORE),   y + (h / 2), tCol, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0))
-		draw.SimpleTextOutlined( level, "WaW_Scoreboard_Text", barRight - CoDHUD_S(CFG.OFF_XP) + CoDHUD_S(55),   y + (h / 2), tCol, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0))
+		draw.SimpleTextOutlined(level, "WaW_Scoreboard_Text2", barRight - CoDHUD_S(CFG.OFF_XP) + CoDHUD_S(24),   y + (h / 1.75), Color(255,255,255), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0))
 
 		surface.SetMaterial(CoDHUD[hudtype].LevelIcons[level])
 		surface.SetDrawColor(255, 255, 255, 255)
