@@ -1086,7 +1086,7 @@ local function medals( ... )
 	end
 
 	-- TITLE
-	draw.SimpleTextOutlined( language.GetPhrase(activeMedal.text), "BO2_MedalPrimary", cx, cy + CoDHUD_SY(128), colWhite, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, outlined and 1.5 or 0, colBlack )
+	draw.SimpleTextOutlined( CoDHUD_UpperText(language.GetPhrase(activeMedal.text)), "BO2_MedalPrimary", cx, cy + CoDHUD_SY(128), colWhite, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, outlined and 1.5 or 0, colBlack )
 end
 CoDHUD[hudtype].Medals = medals
 CoDHUD[hudtype].MedalsSound = "hud/bo2/metal_3.SN65.pc.snd.mp3"

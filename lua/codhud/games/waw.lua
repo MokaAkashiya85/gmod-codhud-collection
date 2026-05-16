@@ -605,7 +605,7 @@ CoDHUD[hudtype].RoundEnd = re_teams
 
 local function re_bonus( ... )
 	local re_lock_time = select(1, ...)
-	local re_match_bonus = math.Round(select(2, ...))
+	local re_match_bonus = math.Round(select(2, ...) * 0.1)
 
 	local outlined = GetConVar("codhud_enable_outlinedtext"):GetBool()
 
@@ -1788,7 +1788,7 @@ local function scoreboard( ... )
     surface.DrawTexturedRect(0, CoDHUD_S(CFG.HEADER_Y_POS) + CoDHUD_S(CFG.HEADER_H) + CoDHUD_S(2), scrW, CoDHUD_S(CFG.HEADER_H * 0.1))
 
     -- Map name
-    local mapName = string.upper(game.GetMap())
+    local mapName = CoDHUD_UpperText(game.GetMap())
 	draw.SimpleTextOutlined( mapName, "WaW_Scoreboard_Text", scrW/2, CoDHUD_S(CFG.MAP_Y_OFF), Color(255, 255, 255), 1, 0, outlined and 1.5 or 0, Color(0,0,0) )
 
     -- Timer

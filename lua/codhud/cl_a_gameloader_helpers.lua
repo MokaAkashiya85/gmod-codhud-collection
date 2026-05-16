@@ -408,14 +408,3 @@ function CoDHUD_UpperText(str)
         return utf8_upper_map[c] or c
     end))
 end
-function CoDHUD_UpperText(str)
-    if not str then return "" end
-
-    -- first handle ASCII quickly
-    str = string.upper(str)
-
-    -- then fix known UTF-8 chars
-    return (str:gsub("[%z\1-\127\194-\244][\128-\191]*", function(c)
-        return utf8_upper_map[c] or c
-    end))
-end

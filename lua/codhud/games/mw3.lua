@@ -1878,7 +1878,7 @@ local function scoreboard( ... )
     surface.DrawTexturedRect(0, CoDHUD_S(CFG.HEADER_Y_POS), scrW, CoDHUD_S(CFG.HEADER_H))
 
     -- Map name
-    local mapName = string.upper(game.GetMap())
+    local mapName = CoDHUD_UpperText(game.GetMap())
 	draw.SimpleTextOutlined( mapName, "MW2_Scoreboard_Timer", scrW/2, CoDHUD_S(CFG.MAP_Y_OFF), Color(255, 255, 255), 1, 0, outlined and 1.5 or 0, Color(0,0,0) )
 
     -- Timer
@@ -2269,7 +2269,7 @@ local function weaponinfo(...)
     local timeSinceSwitch = CurTime() - wepSwitchTime
     if timeSinceSwitch < CFG.WEP_NAME_FADE then
         local alpha = math.Clamp(1 - (timeSinceSwitch / CFG.WEP_NAME_FADE), 0, 1)
-        local name  = language.GetPhrase(wep:GetPrintName() or wep:GetClass()):upper()
+        local name  = CoDHUD_UpperText(language.GetPhrase(wep:GetPrintName() or wep:GetClass()))
         draw.SimpleTextOutlined(name, "MW2_Wep_Name", barX + barW + CoDHUD_SX(CFG.WEP_NAME_X_OFF), barY + CoDHUD_SY(CFG.WEP_NAME_Y_OFF), Color(255, 255, 255, 255 * alpha), 2, 0, outlined and 1.5 or 0, Color(0, 0, 0, 255 * alpha))
     end
 
