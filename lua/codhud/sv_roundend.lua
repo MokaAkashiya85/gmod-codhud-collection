@@ -3,13 +3,13 @@
 local RE_Triggered     = false
 local RE_ThinkThrottle = 0
 
-codhud_enable_roundend = CreateConVar("codhud_enable_roundend", "1", {FCVAR_ARCHIVE, FCVAR_NOTIFY, FCVAR_REPLICATED}, "Enable or disable the MW2 round end screen.")
-codhud_enable_roundend_StartNext = CreateConVar("codhud_enable_roundend_startnext", "1", {FCVAR_ARCHIVE, FCVAR_NOTIFY, FCVAR_REPLICATED}, "Immediately starts a new 'Round' once the current one ends.")
+CreateConVar("codhud_enable_roundend", "1", {FCVAR_ARCHIVE, FCVAR_NOTIFY, FCVAR_REPLICATED}, "Enable or disable the MW2 round end screen.")
+CreateConVar("codhud_enable_roundend_startnext", "1", {FCVAR_ARCHIVE, FCVAR_NOTIFY, FCVAR_REPLICATED}, "Immediately starts a new 'Round' once the current one ends.")
 
 CoDHUD_RoundEnding = false
 CoDHUD_RoundEndTimeSV = nil
 
-local function CoDHUD_DoRoundEnd(winnerFaction, loserFaction, winnerScore, loserScore)
+local function CoDHUD_DoRoundEnd(winnerFaction, loserFaction, winnerScore, loserScore, forcedEnd)
     if RE_Triggered then return end
 	RE_Triggered = true
 
@@ -19,6 +19,7 @@ local function CoDHUD_DoRoundEnd(winnerFaction, loserFaction, winnerScore, loser
 			net.WriteString(loserFaction or "")
 			net.WriteInt(winnerScore or 0, 32)
 			net.WriteInt(loserScore or 0, 32)
+            net.WriteBool(forcedEnd)
 		net.Broadcast()
 		
 		CoDHUD_RoundEnding = true
@@ -151,6 +152,41 @@ local function CoDHUD_DoRoundEnd(winnerFaction, loserFaction, winnerScore, loser
 		CoDHUD_RoundEnding = false
     end)
 end
+
+net.Receive("CoDHUD_EndRound", function()
+    if not _G.CoDHUD_RoundActive then return end
+	if CoDHUD_RoundStarting then return end
+    if RE_Triggered then return end
+    local factionScores = {}
+
+    for _, ply in ipairs(player.GetAll()) do
+        if not IsValid(ply) then continue end
+        local faction = ply:GetNW2String("CoDHUD_Faction", "rangers")
+        local score   = math.max(0, ply:Frags())
+        factionScores[faction] = (factionScores[faction] or 0) + score
+    end
+
+    local winnerFaction, winnerScore = nil, -1
+
+    for faction, score in pairs(factionScores) do
+        if score > winnerScore then
+            winnerFaction = faction
+            winnerScore = score
+        end
+    end
+
+    local loserFaction, loserScore = "", 0
+
+    for faction, score in pairs(factionScores) do
+        if faction ~= winnerFaction then
+            loserFaction = faction
+            loserScore = score
+            break
+        end
+    end
+
+    CoDHUD_DoRoundEnd(winnerFaction, loserFaction, winnerScore, loserScore, true)
+end)
 
 hook.Add("Think", "CoDHUD_RoundEnd_ScoreCheck", function()
     if not _G.CoDHUD_RoundActive then return end

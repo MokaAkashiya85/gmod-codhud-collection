@@ -99,6 +99,7 @@ net.Receive("CoDHUD_RoundEnd", function()
     local loserFac  = net.ReadString()
     local winnerSc  = net.ReadInt(32)
     local loserSc   = net.ReadInt(32)
+	local forcedEnd	= net.ReadBool()
 
 	-- prevent suspense music from interfering with spawn theme
 	timer.Remove("CoDHUD_SuspenseTimer")
@@ -264,7 +265,9 @@ net.Receive("CoDHUD_RoundEnd", function()
     -- Write-in state reset
 	local timeLeft = (CoDHUD_RoundEndTime or 0) - CurTime()
 
-	if (CoDHUD_MatchMaxTime > 0) and timeLeft <= 0.1 then
+	if forcedEnd then
+		ws_limit = language.GetPhrase("MW2_MP_HOST_ENDED_GAME")
+	elseif (CoDHUD_MatchMaxTime > 0) and timeLeft <= 0.1 then
 		ws_limit = language.GetPhrase(str.re.result.time or "MW2_MP_TIME_LIMIT_REACHED")
 	else
 		ws_limit = language.GetPhrase(str.re.result.score or "MW2_MP_SCORE_LIMIT_REACHED")
