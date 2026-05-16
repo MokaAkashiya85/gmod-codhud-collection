@@ -90,6 +90,8 @@ hook.Add("Think", "CoDHUD_Announcer_Score_Think", function()
     local roundActive = _G.CoDHUD_RoundActiveCL
 	local isDM = (CoDHUD_ActiveGamemodeCL == "dm")
 
+	if not roundActive then return end
+
     -- 1. Retrieve current faction and voice tag
     local currentFaction = ply:GetNW2String("CoDHUD_Faction", "")
     if currentFaction == "" then

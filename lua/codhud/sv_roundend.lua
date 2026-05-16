@@ -154,6 +154,7 @@ end
 
 hook.Add("Think", "CoDHUD_RoundEnd_ScoreCheck", function()
     if not _G.CoDHUD_RoundActive then return end
+	if CoDHUD_RoundStarting then return end
 	if not GetConVar("codhud_enable_roundend"):GetBool() then return end
 
     if RE_Triggered then return end
@@ -216,6 +217,7 @@ end)
 
 hook.Add("Think", "CoDHUD_RoundEnd_TimeLimit", function()
     if not _G.CoDHUD_RoundActive then return end
+	if CoDHUD_RoundStarting then return end
     if not GetConVar("codhud_enable_roundend"):GetBool() then return end
     if RE_Triggered then return end
 	if not CoDHUD_RoundEndTimeSV then return end

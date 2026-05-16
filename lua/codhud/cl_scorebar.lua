@@ -144,6 +144,8 @@ hook.Add("HUDPaint", "CoDHUD_Scorebar", function()
     -- if not IsValid(ply) or not ply:Alive() then return end
     if not IsValid(ply) then return end
 
+	if not _G.CoDHUD_RoundActiveCL then return end
+
     if CoDHUD[CoDHUD_GetHUDType()] and CoDHUD[CoDHUD_GetHUDType()].Scorebar then
         local data = GetScorebarData()
         if data then
