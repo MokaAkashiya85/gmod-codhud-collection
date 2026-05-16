@@ -2,9 +2,19 @@
 
 local function GetWeaponPrintName(class)
 
+    -- 1. Seek for registered weapon
     local listedSwep = list.GetEntry("Weapon", class)
     if listedSwep and listedSwep.PrintName then
         return listedSwep.PrintName
+    end
+
+    -- 3. Try active weapon (MOST reliable)
+    local ply = LocalPlayer()
+    if IsValid(ply) then
+        local wep = ply:GetActiveWeapon()
+        if IsValid(wep) and wep:GetClass() == class then
+            return wep:GetPrintName() or "#" .. wep:GetClass() or wep.PrintName
+        end
     end
 
     -- 2. Try SWEP stored (fallback)
@@ -13,14 +23,6 @@ local function GetWeaponPrintName(class)
         return swep.PrintName
     end
 
-    -- 3. Try active weapon third (MOST reliable)
-    local ply = LocalPlayer()
-    if IsValid(ply) then
-        local wep = ply:GetActiveWeapon()
-        if IsValid(wep) and wep:GetClass() == class then
-            return wep:GetPrintName() or "#" .. wep:GetClass() or wep.PrintName
-        end
-    end
 
     -- 4. Last resort cleanup
     return string.upper(string.gsub(class, "^weapon_", ""))
