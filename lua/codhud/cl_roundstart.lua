@@ -1,5 +1,6 @@
 ---- [ CLIENT ROUND START ] ----
 
+
 local CFG = {
     HEADER_X         = 960,
     HEADER_Y         = 150,
@@ -44,6 +45,7 @@ local rs_bw         = 0
 local rs_boost_done = false
 local rs_locked_ang = nil
 CoDHUD_ActiveGamemodeCL	= "dm"
+CoDHUD_RoundActiveCL = false
 
 local rs_header = nil
 local rs_objective = nil
@@ -129,6 +131,8 @@ local function CoDHUD_RS_Start(gamemode, timestart)
 
     rs_bw = 1
 
+    _G.CoDHUD_RoundActiveCL = true
+
 	if CoDHUD[CoDHUD_GetHUDType()] and CoDHUD[CoDHUD_GetHUDType()].RoundStart then
 		CoDHUD[CoDHUD_GetHUDType()].RoundStart(fdata.name, rs_glow, rs_icon_mat, fdata.short)
 	end
@@ -151,6 +155,7 @@ local function CoDHUD_RS_End()
 end
 
 hook.Add("Think", "CoDHUD_RS_Think", function()
+    if not _G.CoDHUD_RoundActiveCL then return end
     if not rs_active then return end
 
     local now = CurTime()

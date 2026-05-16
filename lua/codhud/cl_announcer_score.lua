@@ -87,6 +87,7 @@ hook.Add("Think", "CoDHUD_Announcer_Score_Think", function()
 
 	local voicefile = CoDHUD[hudType].VoiceCallouts
 	if not voicefile then return end
+    local roundActive = _G.CoDHUD_RoundActiveCL
 	local isDM = (CoDHUD_ActiveGamemodeCL == "dm")
 
     -- 1. Retrieve current faction and voice tag
@@ -121,33 +122,35 @@ hook.Add("Think", "CoDHUD_Announcer_Score_Think", function()
         return
     end
 
-    -- 4. Get Replicated Score Limit
-    local limit = GetConVar("codhud_score_limit"):GetInt()
-    if not limit or limit <= 0 then limit = 75 end
+    if roundActive then
+        -- 4. Get Replicated Score Limit
+        local limit = GetConVar("codhud_score_limit"):GetInt()
+        if not limit or limit <= 0 then limit = 75 end
 
-    -- 5. Music Trigger (Passing 'true' to indicate this is music)
-    if not MusicTriggered then
-        if (limit - myScore) <= (limit * 0.25) and myScore > 0 then
-            MusicTriggered = true
-            CoDHUD_PlayAnnouncerSound(voicefile.winningmusic, true)
-        elseif (limit - bestEnemyScore) <= (limit * 0.25) and bestEnemyScore > 0 then
-            MusicTriggered = true
-            CoDHUD_PlayAnnouncerSound(voicefile.losingmusic, true)
+        -- 5. Music Trigger (Passing 'true' to indicate this is music)
+        if not MusicTriggered then
+            if (limit - myScore) <= (limit * 0.25) and myScore > 0 then
+                MusicTriggered = true
+                CoDHUD_PlayAnnouncerSound(voicefile.winningmusic, true)
+            elseif (limit - bestEnemyScore) <= (limit * 0.25) and bestEnemyScore > 0 then
+                MusicTriggered = true
+                CoDHUD_PlayAnnouncerSound(voicefile.losingmusic, true)
+            end
         end
-    end
 
-    -- 6. Near End Announcer
-    if not NearEndTriggered then
-        if (limit - myScore) <= (limit * 0.25) and myScore > bestEnemyScore and myScore > 0 then
-            NearEndTriggered = true
-			local sound = CoDHUD_GetAnnouncerSound(voicefile.winningfight)
+        -- 6. Near End Announcer
+        if not NearEndTriggered then
+            if (limit - myScore) <= (limit * 0.25) and myScore > bestEnemyScore and myScore > 0 then
+                NearEndTriggered = true
+                local sound = CoDHUD_GetAnnouncerSound(voicefile.winningfight)
 
-			if sound then CoDHUD_PlayAnnouncerSound(sound, false) end
+                if sound then CoDHUD_PlayAnnouncerSound(sound, false) end
 
-        elseif (limit - bestEnemyScore) <= (limit * 0.25) and bestEnemyScore > myScore and bestEnemyScore > 0 then
-            NearEndTriggered = true
-			local sound = CoDHUD_GetAnnouncerSound(voicefile.losingfight)
-			if sound then CoDHUD_PlayAnnouncerSound(sound, false) end
+            elseif (limit - bestEnemyScore) <= (limit * 0.25) and bestEnemyScore > myScore and bestEnemyScore > 0 then
+                NearEndTriggered = true
+                local sound = CoDHUD_GetAnnouncerSound(voicefile.losingfight)
+                if sound then CoDHUD_PlayAnnouncerSound(sound, false) end
+            end
         end
     end
 
@@ -184,6 +187,7 @@ end)
 
 hook.Add("Think", "CoDHUD_Announcer_Time_Think", function()
 	if _G.CoDHUD_IsRoundEnding then return end
+    if not _G.CoDHUD_RoundActiveCL then return end
     local ply = LocalPlayer()
     if not IsValid(ply) then return end
 	local hudType = CoDHUD_GetHUDType()

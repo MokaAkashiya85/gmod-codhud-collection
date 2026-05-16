@@ -92,6 +92,8 @@ local function CoDHUD_DoRoundEnd(winnerFaction, loserFaction, winnerScore, loser
 
     -- Respawn all players 10 seconds after the client screen triggers
     timer.Simple(15, function()
+        _G.CoDHUD_RoundActive = false
+        _G.CoDHUD_ActiveGamemode = "dm"
 		if GetConVar("codhud_enable_roundend_startnext"):GetBool() then
 			local gamemode = CoDHUD_ActiveGamemode or "war"
 			local matchtimer = GetConVar("codhud_matchstart_timer"):GetInt()
@@ -128,6 +130,7 @@ local function CoDHUD_DoRoundEnd(winnerFaction, loserFaction, winnerScore, loser
 
 				CoDHUD_RoundStarting = false
 				CoDHUD_RoundStartTimer = nil
+                _G.CoDHUD_RoundActive = true
 
 				for _, p in ipairs(player.GetAll()) do
 					if IsValid(p) then
@@ -150,6 +153,7 @@ local function CoDHUD_DoRoundEnd(winnerFaction, loserFaction, winnerScore, loser
 end
 
 hook.Add("Think", "CoDHUD_RoundEnd_ScoreCheck", function()
+    if not _G.CoDHUD_RoundActive then return end
 	if not GetConVar("codhud_enable_roundend"):GetBool() then return end
 
     if RE_Triggered then return end
@@ -211,6 +215,7 @@ hook.Add("Think", "CoDHUD_RoundEnd_ScoreCheck", function()
 end)
 
 hook.Add("Think", "CoDHUD_RoundEnd_TimeLimit", function()
+    if not _G.CoDHUD_RoundActive then return end
     if not GetConVar("codhud_enable_roundend"):GetBool() then return end
     if RE_Triggered then return end
 	if not CoDHUD_RoundEndTimeSV then return end

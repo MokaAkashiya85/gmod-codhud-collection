@@ -12,6 +12,7 @@ CreateConVar( "codhud_autobalance_on_roundstart", "0", { FCVAR_ARCHIVE, FCVAR_NO
 
 CoDHUD_RoundStarting = false
 CoDHUD_RoundStartTimer = nil
+CoDHUD_RoundActive = false
 
 CoDHUD_ActiveGamemode = "dm"
 
@@ -62,6 +63,7 @@ net.Receive("CoDHUD_StartRound", function(len, ply)
 
 	CoDHUD_RoundStarting = true
 	CoDHUD_RoundStartTimer = CurTime() + matchtimer
+	_G.CoDHUD_RoundActive = true
 
 	timer.Remove("CoDHUD_RoundStartTime")
 	

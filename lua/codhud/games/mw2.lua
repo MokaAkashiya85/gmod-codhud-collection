@@ -1592,7 +1592,7 @@ local function scorebar(data)
     local cv_limit = GetConVar("codhud_score_limit")
     if cv_limit then
         local val = cv_limit:GetInt()
-        if val > 0 then liveScoreLimit = val end
+        if _G.CoDHUD_RoundActiveCL and val > 0 then liveScoreLimit = val else liveScoreLimit = math.max(data.clientScore, data.enemyScore) end
     end
 	
 	liveScoreLimit = liveScoreLimit * 100

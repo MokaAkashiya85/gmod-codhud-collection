@@ -86,6 +86,8 @@ local function RE_End()
     timer.Remove("MW2_RE_Done")
 	timer.Remove("CoDHUD_SuspenseTimer")
 	_G.CoDHUD_IsRoundEnding = false
+    _G.CoDHUD_RoundActiveCL = false
+	_G.CoDHUD_ActiveGamemodeCL	= "dm"
 end
 
 -- ============================================================
