@@ -772,7 +772,7 @@ local CoDHUD_SETTINGS = {
 								end
 							},
 
-							{ type = "button", label = "#CoDHUD.RoundStart.ForceEnd", 
+							{ type = "button", label = "#CoDHUD.ForceEndRound", 
 								func = function()
 									local lp = LocalPlayer()
 									if not IsValid(lp) or not lp:IsAdmin() then return end
