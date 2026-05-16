@@ -92,8 +92,6 @@ local function CoDHUD_DoRoundEnd(winnerFaction, loserFaction, winnerScore, loser
 
     -- Respawn all players 10 seconds after the client screen triggers
     timer.Simple(15, function()
-        _G.CoDHUD_RoundActive = false
-        _G.CoDHUD_ActiveGamemode = "dm"
 		if GetConVar("codhud_enable_roundend_startnext"):GetBool() then
 			local gamemode = CoDHUD_ActiveGamemode or "war"
 			local matchtimer = GetConVar("codhud_matchstart_timer"):GetInt()
@@ -139,6 +137,8 @@ local function CoDHUD_DoRoundEnd(winnerFaction, loserFaction, winnerScore, loser
 				end
 			end)
 		else
+            _G.CoDHUD_ActiveGamemode = "dm"
+            _G.CoDHUD_RoundActive = false
 			for _, ply in ipairs(player.GetAll()) do
 				if IsValid(ply) then
 					ply:SetFrags(0)
