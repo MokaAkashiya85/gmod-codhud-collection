@@ -1,5 +1,31 @@
 ---- [ CLIENT CHALLENGE NOTIFICATIONS & TRACKING ] ----
 
+local function GetWeaponPrintName(class)
+
+    local listedSwep = list.GetEntry("Weapon", class)
+    if listedSwep and listedSwep.PrintName then
+        return listedSwep.PrintName
+    end
+
+    -- 2. Try SWEP stored (fallback)
+    local swep = weapons.GetStored(class)
+    if swep and swep.PrintName then
+        return swep.PrintName
+    end
+
+    -- 3. Try active weapon third (MOST reliable)
+    local ply = LocalPlayer()
+    if IsValid(ply) then
+        local wep = ply:GetActiveWeapon()
+        if IsValid(wep) and wep:GetClass() == class then
+            return wep:GetPrintName() or "#" .. wep:GetClass() or wep.PrintName
+        end
+    end
+
+    -- 4. Last resort cleanup
+    return string.upper(string.gsub(class, "^weapon_", ""))
+end
+
 -- [[ HELPERS ]]
 function CoDHUD_ChallengeTitle(header, level, prefix)
     local name = header
@@ -10,10 +36,10 @@ function CoDHUD_ChallengeTitle(header, level, prefix)
     -- Detect prefixes
     if string.find(header, "%[KILLS%]") then
         mode = "MARKSMAN"
-        name = string.Trim(string.Replace(header, "[KILLS] ", ""))
+        name = language.GetPhrase(GetWeaponPrintName(string.Trim(string.Replace(header, "[KILLS] ", ""))))
     elseif string.find(header, "%[HS%]") then
         mode = "EXPERT"
-        name = string.Trim(string.Replace(header, "[HS] ", ""))
+        name = language.GetPhrase(GetWeaponPrintName(string.Trim(string.Replace(header, "[HS] ", ""))))
     else
 		if string.find(header, " ") then prefix = "" end
         mode = "LEVEL"

@@ -169,7 +169,7 @@ local function GetWeaponClass(ply, inflictor)
     return "unknown"
 end
 
-local function GetWeaponPrintName(class, ply)
+--[[local function GetWeaponPrintName(class, ply)
     -- 1. Try active weapon first (MOST reliable)
     if IsValid(ply) then
         local wep = ply:GetActiveWeapon()
@@ -193,7 +193,7 @@ local function GetWeaponPrintName(class, ply)
 
     -- 4. Last resort cleanup
     return string.upper(string.gsub(class, "^weapon_", ""))
-end
+end]] -- obsolete
 
 local function ProcessWeaponProgress(ply, wepClass, isHeadshot)
 
@@ -213,7 +213,7 @@ local function ProcessWeaponProgress(ply, wepClass, isHeadshot)
 
     local hs = heads[wepClass] or 0
 
-    local weaponName = GetWeaponPrintName(wepClass)
+    -- local weaponName = GetWeaponPrintName(wepClass)
 
     local killTiers = {10, 25, 75, 150, 300, 500, 750, 1000}
     local killTierPts = {250, 1000, 2000, 5000, 10000, 10000, 10000, 10000}
@@ -222,7 +222,7 @@ local function ProcessWeaponProgress(ply, wepClass, isHeadshot)
 		local pts = killTierPts[i] or 0
 
 		if weaponKills >= req then
-			TriggerChallenge( ply, wepClass .. "_MARKSMAN_" .. i, "[KILLS] " .. weaponName, i, "GET_N_KILLS", req, pts )
+			TriggerChallenge( ply, wepClass .. "_MARKSMAN_" .. i, "[KILLS] " .. wepClass, i, "GET_N_KILLS", req, pts )
 		end
 	end
 
@@ -233,7 +233,7 @@ local function ProcessWeaponProgress(ply, wepClass, isHeadshot)
 		local pts = hsTierPts[i] or 0
 
 		if hs >= req then
-			TriggerChallenge( ply, wepClass .. "_EXPERT_" .. i, "[HS] " .. weaponName, i, "GET_N_HEADSHOTS", req, pts )
+			TriggerChallenge( ply, wepClass .. "_EXPERT_" .. i, "[HS] " .. wepClass, i, "GET_N_HEADSHOTS", req, pts )
 		end
 	end
 end
