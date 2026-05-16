@@ -222,10 +222,26 @@ hook.Add("InitPostEntity", "CoDHUD_SendStatsToServer", function()
 end)
 
 concommand.Add("codhud_rank_clear", function()
-    CoDHUD_Stats.huds = {}
+    -- CoDHUD_Stats.huds = {}
 	
 	if CoDHUD_Stats and CoDHUD_Stats.huds and CoDHUD_Stats.huds[CoDHUD_GetHUDType()] then
-		CoDHUD_Stats.huds[CoDHUD_GetHUDType()] = {}
+		CoDHUD_Stats.huds[CoDHUD_GetHUDType()] = {
+			kills = 0,
+			deaths = 0,
+			headshots = 0,
+
+			xp = 0,
+
+			level = {
+				level = 1,
+				name = "",
+				short = "0",
+				nextxp = 0
+			},
+
+			weaponkills = {},
+			weaponheadshots = {}
+		}
 	end
     CoDHUD_SaveStats()
     print("[CoDHUD] Cleared Client Rank and Stats.")
