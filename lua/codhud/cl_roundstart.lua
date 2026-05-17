@@ -248,6 +248,17 @@ hook.Add("RenderScreenspaceEffects", "CoDHUD_RS_BW", function()
     })
 end)
 
+local function StartRoundWhenReady(gamemode, timestart)
+    if not IsValid(LocalPlayer()) then
+        timer.Simple(0.1, function()
+            StartRoundWhenReady(gamemode, timestart)
+        end)
+        return
+    end
+
+    CoDHUD_RS_Start(gamemode, timestart)
+end
+
 net.Receive("CoDHUD_RoundStart", function()
     local gamemode = net.ReadString()
     local timestart = net.ReadInt(6)
@@ -260,9 +271,7 @@ net.Receive("CoDHUD_RoundStart", function()
 		CoDHUD_MatchMaxTime = maxtimer * 60 -- convert once, store once
 	end
 
-    timer.Simple(0, function()
-        CoDHUD_RS_Start(gamemode, timestart)
-    end)
+    StartRoundWhenReady(gamemode, timestart)
 end)
 
 net.Receive("CoDHUD_SyncFactionPool", function()

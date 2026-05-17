@@ -453,9 +453,7 @@ hook.Add( "player_activate", "CoDHUD_JoinRoundSync", function(data)
 
     timer.Simple(0.1, function()
         -- No active round
-        if not CoDHUD_RoundEndTimeSV and not CoDHUD_RoundStarting then
-            return
-        end
+        if not _G.CoDHUD_RoundActive then return end
 
         local gamemode = CoDHUD_ActiveGamemode or "dm"
         local maxtimer = GetConVar("codhud_time_limit"):GetFloat()
