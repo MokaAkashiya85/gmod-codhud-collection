@@ -2182,8 +2182,15 @@ local function weaponinfo(...)
 
 	local glactive = 
 	wep.dt and (wep.dt.AltActive or wep.dt.M203Active) -- CW2
-	or (wep.ARC9 and wep:GetUBGL())
-	or (wep.GLDeployed and wep:GLDeployed())
+	or (wep.ARC9 and wep:GetUBGL()) -- ARC9
+	or (wep.GLDeployed and wep:GLDeployed()) -- ak47toh TFA CoD
+
+	if wep.ActiveAttachments and wep.ActiveAttachments.md_m203 then
+		altType = "40MM"
+		altCount = ply:GetAmmoCount("40MM")
+		clip2 = wep.M203Chamber and 1 or 0
+		maxClip2 = 1
+	end -- CW2 base M203
 
 	if glactive then
 		clip = clip2

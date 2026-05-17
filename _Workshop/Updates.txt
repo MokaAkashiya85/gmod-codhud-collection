@@ -59,5 +59,6 @@
 - Score bar is hidden if no round is active
 - Damage indicator now points in the direction the damage was received, not constantly where the attacker currently is
 - Friendly name tags appear instantly when in view
+- Added underbarrel HUD support for CW 2.0 weapons and ak47toh's TFA CoD packs
 - Fixed significant performance issues when using GMinimap
 - Fixed that CW2 weapons had incorrect names on challenge prompts
