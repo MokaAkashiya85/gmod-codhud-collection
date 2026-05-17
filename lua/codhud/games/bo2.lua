@@ -372,7 +372,7 @@ local function levelup( ... )
     local logo = select(3, ...)
 
     CoDHUD_HeaderQueue.Push({
-		type = "bo_challenge", -- TEMPORARY
+		type = "bo_challenge",
         text = rank .. "\n" .. language.GetPhrase("BO2_RANK_PROMOTED"),
         x = ScrW() * 0.5,
         y = CoDHUD_SY(200),
@@ -386,7 +386,7 @@ local function levelup( ... )
             shd = "BO2_ChalSub",
         },
 
-		iconY = CoDHUD_SY(50),
+		iconY = CoDHUD_SY(25),
 		iconSize = CoDHUD_S(128),
 		icon = logo
     })
@@ -1674,6 +1674,28 @@ local function scoreboard( ... )
 		return scoreA > scoreB
 	end
 
+	local function TruncateText(text, font, maxWidth)
+		surface.SetFont(font)
+
+		-- Fits already
+		if surface.GetTextSize(text) <= maxWidth then return text end
+
+		local ellipsis = "..."
+		local ellipsisWidth = surface.GetTextSize(ellipsis)
+
+		local truncated = text
+
+		while #truncated > 0 do
+			truncated = string.sub(truncated, 1, #truncated - 1)
+
+			local w = surface.GetTextSize(truncated)
+
+			if w + ellipsisWidth <= maxWidth then return truncated .. ellipsis end
+		end
+
+		return ellipsis
+	end
+
 	local function DrawPlayerRow(ply, lp, x, y, w, h, barRight, bgCol)
 		-- Status Icon (dead indicator) - Moved next to name
 		if ply:IsValid() and not ply:Alive() then
@@ -1712,7 +1734,10 @@ local function scoreboard( ... )
 		surface.DrawRect(barRight - CoDHUD_SX(CFG.OFF_SCORE) - CoDHUD_SX(50), y, CoDHUD_S(100), h)
 
 		-- Text
-		draw.SimpleTextOutlined(ply:Nick(), "BO2_Scoreboard_Text", x + CoDHUD_SX(80), y + (h / 2), tCol, TEXT_ALIGN_LEFT,  TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0))
+		local maxNameWidth = (barRight - CoDHUD_S(1250))
+		local playerName = TruncateText( ply:Nick(), "BO2_Scoreboard_Text", maxNameWidth )
+		draw.SimpleTextOutlined( playerName, "BO2_Scoreboard_Text", x + CoDHUD_S(80), y + (h / 2), tCol, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0) )
+
 		draw.SimpleTextOutlined(ply:Ping(), "BO2_Scoreboard_Text", barRight - CoDHUD_SX(CFG.OFF_PING),  y + (h / 2), tCol, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0))
 		draw.SimpleTextOutlined(deaths, "BO2_Scoreboard_Text", barRight - CoDHUD_SX(CFG.OFF_DEATHS),  y + (h / 2), tCol, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0))
 		draw.SimpleTextOutlined(kd, "BO2_Scoreboard_Text", barRight - CoDHUD_SX(CFG.OFF_RATIO),  y + (h / 2), tCol, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0))

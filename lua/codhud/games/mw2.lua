@@ -707,7 +707,7 @@ local function xpbar( ... )
 		local steps = 50
 		
 		local lR, lG, lB = 110, 100, 40
-		local rR, rG, rB = 210, 190, 120
+		local rR, rG, rB = 255, 210, 40
 		local a = 200
 
 		surface.SetMaterial(xpmats.fill)
@@ -1796,6 +1796,28 @@ local function scoreboard( ... )
 		return scoreA > scoreB
 	end
 
+	local function TruncateText(text, font, maxWidth)
+		surface.SetFont(font)
+
+		-- Fits already
+		if surface.GetTextSize(text) <= maxWidth then return text end
+
+		local ellipsis = "..."
+		local ellipsisWidth = surface.GetTextSize(ellipsis)
+
+		local truncated = text
+
+		while #truncated > 0 do
+			truncated = string.sub(truncated, 1, #truncated - 1)
+
+			local w = surface.GetTextSize(truncated)
+
+			if w + ellipsisWidth <= maxWidth then return truncated .. ellipsis end
+		end
+
+		return ellipsis
+	end
+
 	local function DrawPlayerRow(ply, lp, x, y, w, h, barRight, bgCol)
 		-- Background
 		surface.SetDrawColor(bgCol.r, bgCol.g, bgCol.b, CFG.BAR_ALPHA)
@@ -1817,7 +1839,11 @@ local function scoreboard( ... )
 		local level, levelData = CalculateLevelFromXP( ply:GetNW2Float( "CoDHUD_XP", 0 ) )
 
 		-- Text
-		draw.SimpleTextOutlined(ply:Nick(), "MW2_Scoreboard_Text", x + CoDHUD_S(110), y + (h / 2), tCol, TEXT_ALIGN_LEFT,  TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0))
+		local maxNameWidth = (barRight - CoDHUD_S(1000))
+		local playerName = TruncateText( ply:Nick(), "MW2_Scoreboard_Text", maxNameWidth )
+		draw.SimpleTextOutlined( playerName, "MW2_Scoreboard_Text", x + CoDHUD_S(110), y + (h / 2), tCol, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0) )		
+
+		-- draw.SimpleTextOutlined(ply:Nick(), "MW2_Scoreboard_Text", x + CoDHUD_S(110), y + (h / 2), tCol, TEXT_ALIGN_LEFT,  TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0))
 		draw.SimpleTextOutlined(ply:Deaths(), "MW2_Scoreboard_Text", barRight - CoDHUD_S(CFG.OFF_DEATHS),  y + (h / 2), tCol, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0))
 		draw.SimpleTextOutlined(ply:GetNWInt("Assists", 0), "MW2_Scoreboard_Text", barRight - CoDHUD_S(CFG.OFF_ASSISTS), y + (h / 2), tCol, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0))
 		draw.SimpleTextOutlined(ply:Frags(), "MW2_Scoreboard_Text", barRight - CoDHUD_S(CFG.OFF_KILLS),   y + (h / 2), tCol, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0))

@@ -70,522 +70,253 @@ function CoDHUD.GetHUDList()
 	return mainHUDs
 end
 
+local function CoDHUD_CreateConfirm(data)
+    if IsValid(data.frameVar) then
+        data.frameVar:Remove()
+    end
+
+    local fs = GetConVar("codhud_fullscreen"):GetBool()
+    local menusize = fs and 1 or 0.55
+
+    if IsValid(codhud_menu_frame) then
+        codhud_menu_frame:SetVisible(false)
+    end
+
+    local frame = vgui.Create("DFrame")
+
+    if data.frameName then
+        _G[data.frameName] = frame
+    end
+
+    frame:SetSize(ScrW() * menusize, ScrH() * menusize)
+    frame:Center()
+    frame:SetTitle("#CoDHUD.Title")
+    frame:MakePopup()
+
+    if fs then
+        frame:SetDraggable(false)
+        frame:ShowCloseButton(false)
+    end
+
+    frame.Paint = function(self, w, h)
+        if CoDHUD[CoDHUD_GetHUDType()] and CoDHUD[CoDHUD_GetHUDType()].SettingsMenu then
+            CoDHUD[CoDHUD_GetHUDType()].SettingsMenu(w, h, data.paintData)
+        else
+            draw.RoundedBox(0, 0, 0, w, h, Color(100,100,100))
+
+            surface.SetDrawColor(255,255,255,125)
+            surface.SetMaterial(Material(CoDHUD_GetHUDType() .. "/menu_anim"))
+            surface.DrawTexturedRect(0,0,w,h)
+
+            surface.SetDrawColor(255,255,255)
+            surface.SetMaterial(Material(CoDHUD_GetHUDType() .. "/menu_bg"))
+            surface.DrawTexturedRect(0,0,w,h)
+        end
+
+        if data.customPaint then
+            data.customPaint(self, w, h)
+        end
+    end
+
+    local root = vgui.Create("DPanel", frame)
+    root:Dock(FILL)
+    root:DockMargin(20,20,20,20)
+    root.Paint = nil
+
+    -- Optional custom content
+    if data.buildContent then
+        data.buildContent(root, frame)
+    else
+        local lbl = vgui.Create("DLabel", root)
+        lbl:Dock(FILL)
+        lbl:SetText(data.message or "")
+        lbl:SetWrap(true)
+        lbl:SetContentAlignment(data.messageAlign or 5)
+        lbl:SetFont(data.font or "CoDHUD_Settings_Main")
+
+        function lbl:PerformLayout()
+            self:SetFGColor(Color(255,255,255))
+        end
+    end
+
+    local bottom = vgui.Create("DPanel", root)
+    bottom:Dock(BOTTOM)
+    bottom:SetTall(50)
+    bottom.Paint = nil
+
+    local no = vgui.Create("DButton", bottom)
+    no:Dock(LEFT)
+    no:SetWide(150)
+    no:SetText(data.cancelText or "#dialog.cancel")
+
+    no.DoClick = function()
+        frame:Remove()
+
+        if IsValid(codhud_menu_frame) then
+            codhud_menu_frame:SetVisible(true)
+            codhud_menu_frame:MakePopup()
+        end
+
+        if data.onCancel then
+            data.onCancel()
+        end
+    end
+
+    local yes = vgui.Create("DButton", bottom)
+    yes:Dock(RIGHT)
+    yes:SetWide(150)
+    yes:SetText(data.confirmText or "#dialog.ok")
+
+    yes.DoClick = function()
+        frame:Remove()
+
+        if data.onConfirm then
+            data.onConfirm()
+        end
+    end
+
+    return frame
+end
+
 local function CoDHUD_OpenFactionConfirm(factionID)
     pendingFaction = factionID
 
-    if IsValid(rs_confirm) then rs_confirm:Remove() end
+    local factionData = CoDHUD.Factions[CoDHUD_GetHUDType()][factionID]
 
-    local fs = GetConVar("codhud_fullscreen"):GetBool()
-    local menusize = fs and 1 or 0.55
+    CoDHUD_CreateConfirm({
+        frameName = "rs_confirm",
+        paintData = factionData,
 
-    if IsValid(codhud_menu_frame) then
-        codhud_menu_frame:SetVisible(false)
-    end
+        customPaint = function(self, w, h)
+            surface.SetDrawColor(255,255,255)
+            surface.SetMaterial(Material(factionData.scoreIcon, "smooth"))
 
-    rs_confirm = vgui.Create("DFrame")
-    rs_confirm:SetSize(ScrW() * menusize, ScrH() * menusize)
-    rs_confirm:Center()
-    rs_confirm:SetTitle("#CoDHUD.Title")
-    rs_confirm:MakePopup()
+            surface.DrawTexturedRect( w - (w * 0.5) - CoDHUD_S(64), CoDHUD_S(64), CoDHUD_S(128), CoDHUD_S(128) )
 
-    if fs then
-        rs_confirm:SetDraggable(false)
-        rs_confirm:ShowCloseButton(false)
-    end
+            local glow = factionData.glow or Color(0,0,0)
+            draw.SimpleTextOutlined( "#" .. factionData.name, "MW2_ChalHeader_Pri", w * 0.5, CoDHUD_S(32), Color(255,255,255), 1, 1, 3, Color(glow.r, glow.g, glow.b, 25) )
+        end,
 
-	local factionData = CoDHUD.Factions[CoDHUD_GetHUDType()][factionID]
+        message = language.GetPhrase("CoDHUD.Faction.ChangeWarning"),
 
-    rs_confirm.Paint = function(self, w, h)
-		if CoDHUD[CoDHUD_GetHUDType()] and CoDHUD[CoDHUD_GetHUDType()].SettingsMenu then
-			CoDHUD[CoDHUD_GetHUDType()].SettingsMenu(w, h, factionData)
-		else
-			draw.RoundedBox(0, 0, 0, w, h, Color(100,100,100))
+        onCancel = function() pendingFaction = nil end,
 
-			surface.SetDrawColor(255, 255, 255, 125)
-			surface.SetMaterial( Material(CoDHUD_GetHUDType() .. "/menu_anim") )
-			surface.DrawTexturedRect(0, 0, w, h)
-			
-			surface.SetDrawColor(255, 255, 255)
-			surface.SetMaterial( Material(CoDHUD_GetHUDType() .. "/menu_bg") )
-			surface.DrawTexturedRect(0, 0, w, h)
-		end
+        onConfirm = function()
+            net.Start("CoDHUD_RequestFactionChange")
+            net.WriteString(pendingFaction or "")
+            net.SendToServer()
 
-		surface.SetDrawColor(255, 255, 255)
-		surface.SetMaterial(Material(factionData.scoreIcon, "smooth"))
-		surface.DrawTexturedRect(w - (w * 0.5) - CoDHUD_S(64), CoDHUD_S(64), CoDHUD_S(128), CoDHUD_S(128))
-		
-		local glow = factionData.glow or Color(0,0,0)
+            pendingFaction = nil
 
-		draw.SimpleTextOutlined( "#" .. factionData.name, "MW2_ChalHeader_Pri", w * 0.5, CoDHUD_S(32), Color(255,255,255), 1, 1, 3, Color(glow.r, glow.g, glow.b, 25) )
-    end
-
-    local root = vgui.Create("DPanel", rs_confirm)
-    root:Dock(FILL)
-    root:DockMargin(20, 20, 20, 20)
-    root.Paint = nil
-
-    local lbl = vgui.Create("DLabel", root)
-    lbl:Dock(FILL)
-    lbl:SetText(language.GetPhrase("CoDHUD.Faction.ChangeWarning"))
-    lbl:SetWrap(true)
-    lbl:SetContentAlignment(1)
-    lbl:SetFont("CoDHUD_Settings_Main")
-	function lbl:PerformLayout()
-		self:SetFGColor(Color(255,255,255))
-	end
-
-    local bottom = vgui.Create("DPanel", root)
-    bottom:Dock(BOTTOM)
-    bottom:SetTall(50)
-    bottom.Paint = nil
-
-    local no = vgui.Create("DButton", bottom)
-    no:Dock(LEFT)
-    no:SetWide(150)
-    no:SetText("#dialog.cancel")
-
-    no.DoClick = function()
-        rs_confirm:Remove()
-        if IsValid(codhud_menu_frame) then
-            codhud_menu_frame:SetVisible(true)
-            codhud_menu_frame:MakePopup()
+            if IsValid(codhud_menu_frame) then codhud_menu_frame:SetVisible(false) end
         end
-        pendingFaction = nil
-    end
-
-    local yes = vgui.Create("DButton", bottom)
-    yes:Dock(RIGHT)
-    yes:SetWide(150)
-    yes:SetText("#dialog.ok")
-
-    yes.DoClick = function()
-        rs_confirm:Remove()
-
-        net.Start("CoDHUD_RequestFactionChange")
-        net.WriteString(pendingFaction or "")
-        net.SendToServer()
-
-        pendingFaction = nil
-
-        if IsValid(codhud_menu_frame) then
-            codhud_menu_frame:SetVisible(false)
-        end
-    end
+    })
 end
 
 local function CoDHUD_RS_OpenConfirm()
-    if IsValid(rs_confirm) then rs_confirm:Remove() end
-	
-	local fs = GetConVar("codhud_fullscreen"):GetBool()
-	local menusize = fs and 1 or 0.55
-	
-    -- hide main menu while confirm is open
-    if IsValid(codhud_menu_frame) then
-        codhud_menu_frame:SetVisible(false)
-    end
+    CoDHUD_CreateConfirm({
+        frameName = "rs_confirm",
 
-    rs_confirm = vgui.Create("DFrame")
-    rs_confirm:SetSize(ScrW() * menusize, ScrH() * menusize)
-    rs_confirm:Center()
-    rs_confirm:SetTitle("#CoDHUD.Title")
-    rs_confirm:MakePopup()
+        message = "#CoDHUD.RoundStart.Notice",
 
-	if fs then
-		rs_confirm:SetDraggable(false)
-		rs_confirm:ShowCloseButton(false)
-	end
+        cancelText = "#CoDHUD.RoundStart.No",
+        confirmText = "#CoDHUD.RoundStart.Yes",
 
-    rs_confirm.Paint = function(self, w, h)
-		if CoDHUD[CoDHUD_GetHUDType()] and CoDHUD[CoDHUD_GetHUDType()].SettingsMenu then
-			CoDHUD[CoDHUD_GetHUDType()].SettingsMenu(w, h)
-		else
-			draw.RoundedBox(0, 0, 0, w, h, Color(100,100,100))
+        onConfirm = function()
+            if IsValid(codhud_menu_frame) then codhud_menu_frame:SetVisible(false) end
 
-			surface.SetDrawColor(255, 255, 255, 125)
-			surface.SetMaterial( Material(CoDHUD_GetHUDType() .. "/menu_anim") )
-			surface.DrawTexturedRect(0, 0, w, h)
-			
-			surface.SetDrawColor(255, 255, 255)
-			surface.SetMaterial( Material(CoDHUD_GetHUDType() .. "/menu_bg") )
-			surface.DrawTexturedRect(0, 0, w, h)
-		end
-    end
-
-    -- main container (keeps everything aligned)
-    local root = vgui.Create("DPanel", rs_confirm)
-    root:Dock(FILL)
-    root:DockMargin(20, 20, 20, 20)
-    root.Paint = nil
-
-    -- title / message
-    local lbl = vgui.Create("DLabel", root)
-    lbl:Dock(TOP)
-    lbl:SetTall(300)
-    lbl:SetText("#CoDHUD.RoundStart.Notice")
-    lbl:SetFont("CoDHUD_Settings_Main")
-    lbl:SetContentAlignment(4)
-    lbl:SetWrap(true)
-	function lbl:PerformLayout()
-		self:SetFGColor(Color(255,255,255))
-	end
-
-    -- spacer pushes buttons down
-    local spacer = vgui.Create("DPanel", root)
-    spacer:Dock(FILL)
-    spacer.Paint = nil
-
-    -- bottom button bar
-    local bottom = vgui.Create("DPanel", root)
-    bottom:Dock(BOTTOM)
-    bottom:SetTall(50)
-    bottom.Paint = nil
-
-    -- LEFT button (NO)
-    local btn_nah = vgui.Create("DButton", bottom)
-    btn_nah:Dock(LEFT)
-    btn_nah:SetWide(150)
-    btn_nah:SetText("#CoDHUD.RoundStart.No")
-
-    btn_nah.DoClick = function()
-        rs_confirm:Remove()
-
-        if IsValid(codhud_menu_frame) then
-            codhud_menu_frame:SetVisible(true)
-            codhud_menu_frame:MakePopup()
+            net.Start("CoDHUD_StartRound")
+            net.SendToServer()
         end
-    end
-
-    -- RIGHT button (YES)
-    local btn_go = vgui.Create("DButton", bottom)
-    btn_go:Dock(RIGHT)
-    btn_go:SetWide(150)
-    btn_go:SetText("#CoDHUD.RoundStart.Yes")
-
-    btn_go.DoClick = function()
-        rs_confirm:Remove()
-
-        if IsValid(codhud_menu_frame) then
-            codhud_menu_frame:SetVisible(false)
-        end
-
-        net.Start("CoDHUD_StartRound")
-        net.SendToServer()
-    end
+    })
 end
 
 local function CoDHUD_RS_OpenForceEndConfirm()
-    if IsValid(rs_confirm) then rs_confirm:Remove() end
-	
-	local fs = GetConVar("codhud_fullscreen"):GetBool()
-	local menusize = fs and 1 or 0.55
-	
-    -- hide main menu while confirm is open
-    if IsValid(codhud_menu_frame) then
-        codhud_menu_frame:SetVisible(false)
-    end
+    CoDHUD_CreateConfirm({
+        frameName = "rs_confirm",
 
-    rs_confirm = vgui.Create("DFrame")
-    rs_confirm:SetSize(ScrW() * menusize, ScrH() * menusize)
-    rs_confirm:Center()
-    rs_confirm:SetTitle("#CoDHUD.Title")
-    rs_confirm:MakePopup()
+        message = "#CoDHUD.ForceEndRound.Notice",
 
-	if fs then
-		rs_confirm:SetDraggable(false)
-		rs_confirm:ShowCloseButton(false)
-	end
+        cancelText = "#CoDHUD.RoundStart.No",
+        confirmText = "#CoDHUD.ForceEndRound.Yes",
 
-    rs_confirm.Paint = function(self, w, h)
-		if CoDHUD[CoDHUD_GetHUDType()] and CoDHUD[CoDHUD_GetHUDType()].SettingsMenu then
-			CoDHUD[CoDHUD_GetHUDType()].SettingsMenu(w, h)
-		else
-			draw.RoundedBox(0, 0, 0, w, h, Color(100,100,100))
+        onConfirm = function()
+            if IsValid(codhud_menu_frame) then codhud_menu_frame:SetVisible(false) end
 
-			surface.SetDrawColor(255, 255, 255, 125)
-			surface.SetMaterial( Material(CoDHUD_GetHUDType() .. "/menu_anim") )
-			surface.DrawTexturedRect(0, 0, w, h)
-			
-			surface.SetDrawColor(255, 255, 255)
-			surface.SetMaterial( Material(CoDHUD_GetHUDType() .. "/menu_bg") )
-			surface.DrawTexturedRect(0, 0, w, h)
-		end
-    end
-
-    -- main container (keeps everything aligned)
-    local root = vgui.Create("DPanel", rs_confirm)
-    root:Dock(FILL)
-    root:DockMargin(20, 20, 20, 20)
-    root.Paint = nil
-
-    -- title / message
-    local lbl = vgui.Create("DLabel", root)
-    lbl:Dock(TOP)
-    lbl:SetTall(300)
-    lbl:SetText("#CoDHUD.ForceEndRound.Notice")
-    lbl:SetFont("CoDHUD_Settings_Main")
-    lbl:SetContentAlignment(4)
-    lbl:SetWrap(true)
-	function lbl:PerformLayout()
-		self:SetFGColor(Color(255,255,255))
-	end
-
-    -- spacer pushes buttons down
-    local spacer = vgui.Create("DPanel", root)
-    spacer:Dock(FILL)
-    spacer.Paint = nil
-
-    -- bottom button bar
-    local bottom = vgui.Create("DPanel", root)
-    bottom:Dock(BOTTOM)
-    bottom:SetTall(50)
-    bottom.Paint = nil
-
-    -- LEFT button (NO)
-    local btn_nah = vgui.Create("DButton", bottom)
-    btn_nah:Dock(LEFT)
-    btn_nah:SetWide(150)
-    btn_nah:SetText("#CoDHUD.RoundStart.No")
-
-    btn_nah.DoClick = function()
-        rs_confirm:Remove()
-
-        if IsValid(codhud_menu_frame) then
-            codhud_menu_frame:SetVisible(true)
-            codhud_menu_frame:MakePopup()
+            net.Start("CoDHUD_EndRound")
+            net.SendToServer()
         end
-    end
-
-    -- RIGHT button (YES)
-    local btn_go = vgui.Create("DButton", bottom)
-    btn_go:Dock(RIGHT)
-    btn_go:SetWide(150)
-    btn_go:SetText("#CoDHUD.ForceEndRound.Yes")
-
-    btn_go.DoClick = function()
-        rs_confirm:Remove()
-
-        if IsValid(codhud_menu_frame) then
-            codhud_menu_frame:SetVisible(false)
-        end
-
-        net.Start("CoDHUD_EndRound")
-        net.SendToServer()
-    end
+    })
 end
 
 local function CoDHUD_LevelReset_OpenConfirm()
-    if IsValid(levelreset_confirm) then levelreset_confirm:Remove() end
-	
-	local fs = GetConVar("codhud_fullscreen"):GetBool()
-	local menusize = fs and 1 or 0.55
-	
-    -- hide main menu while confirm is open
-    if IsValid(codhud_menu_frame) then
-        codhud_menu_frame:SetVisible(false)
-    end
+    CoDHUD_CreateConfirm({
+        frameName = "levelreset_confirm",
 
-    levelreset_confirm = vgui.Create("DFrame")
-    levelreset_confirm:SetSize(ScrW() * menusize, ScrH() * menusize)
-    levelreset_confirm:Center()
-    levelreset_confirm:SetTitle("#CoDHUD.Title")
-    levelreset_confirm:MakePopup()
+        message = "#CoDHUD.Rank.Reset.Warning",
 
-	if fs then
-		levelreset_confirm:SetDraggable(false)
-		levelreset_confirm:ShowCloseButton(false)
-	end
+        onConfirm = function()
+            RunConsoleCommand("codhud_rank_clear")
 
-    levelreset_confirm.Paint = function(self, w, h)
-		if CoDHUD[CoDHUD_GetHUDType()] and CoDHUD[CoDHUD_GetHUDType()].SettingsMenu then
-			CoDHUD[CoDHUD_GetHUDType()].SettingsMenu(w, h)
-		else
-			draw.RoundedBox(0, 0, 0, w, h, Color(100,100,100))
-
-			surface.SetDrawColor(255, 255, 255, 125)
-			surface.SetMaterial( Material(CoDHUD_GetHUDType() .. "/menu_anim") )
-			surface.DrawTexturedRect(0, 0, w, h)
-			
-			surface.SetDrawColor(255, 255, 255)
-			surface.SetMaterial( Material(CoDHUD_GetHUDType() .. "/menu_bg") )
-			surface.DrawTexturedRect(0, 0, w, h)
-		end
-    end
-
-    -- main container (keeps everything aligned)
-    local root = vgui.Create("DPanel", levelreset_confirm)
-    root:Dock(FILL)
-    root:DockMargin(20, 20, 20, 20)
-    root.Paint = nil
-
-    -- title / message
-    local lbl = vgui.Create("DLabel", root)
-    lbl:Dock(TOP)
-    lbl:SetTall(300)
-    lbl:SetText("#CoDHUD.Rank.Reset.Warning")
-    lbl:SetFont("CoDHUD_Settings_Main")
-    lbl:SetContentAlignment(4)
-    lbl:SetWrap(true)
-	function lbl:PerformLayout()
-		self:SetFGColor(Color(255,255,255))
-	end
-
-    -- spacer pushes buttons down
-    local spacer = vgui.Create("DPanel", root)
-    spacer:Dock(FILL)
-    spacer.Paint = nil
-
-    -- bottom button bar
-    local bottom = vgui.Create("DPanel", root)
-    bottom:Dock(BOTTOM)
-    bottom:SetTall(50)
-    bottom.Paint = nil
-
-    -- LEFT button (NO)
-    local btn_nah = vgui.Create("DButton", bottom)
-    btn_nah:Dock(LEFT)
-    btn_nah:SetWide(150)
-    btn_nah:SetText("#dialog.cancel")
-
-    btn_nah.DoClick = function()
-        levelreset_confirm:Remove()
-
-        if IsValid(codhud_menu_frame) then
-            codhud_menu_frame:SetVisible(true)
-            codhud_menu_frame:MakePopup()
+            if IsValid(codhud_menu_frame) then
+                codhud_menu_frame:SetVisible(true)
+                codhud_menu_frame:MakePopup()
+            end
         end
-    end
-
-    -- RIGHT button (YES)
-    local btn_go = vgui.Create("DButton", bottom)
-    btn_go:Dock(RIGHT)
-    btn_go:SetWide(150)
-    btn_go:SetText("#dialog.ok")
-
-    btn_go.DoClick = function()
-        levelreset_confirm:Remove()
-		
-		RunConsoleCommand("codhud_rank_clear")
-
-        if IsValid(codhud_menu_frame) then
-            codhud_menu_frame:SetVisible(true)
-            codhud_menu_frame:MakePopup()
-        end
-    end
+    })
 end
 
 local function CoDHUD_OpenGameConfirm(newGame)
-    if IsValid(rs_confirm) then rs_confirm:Remove() end
-
-    local fs = GetConVar("codhud_fullscreen"):GetBool()
-    local menusize = fs and 1 or 0.55
-
     local currentGame = GetConVar("codhud_game"):GetString()
+
     pendingGame = newGame
-	
-	currentGame = currentGame
-	newGame = newGame
 
-    if IsValid(codhud_menu_frame) then
-        codhud_menu_frame:SetVisible(false)
-    end
+    CoDHUD_CreateConfirm({
+        frameName = "rs_confirm",
 
-    rs_confirm = vgui.Create("DFrame")
-    rs_confirm:SetSize(ScrW() * menusize, ScrH() * menusize)
-    rs_confirm:Center()
-    rs_confirm:SetTitle("#CoDHUD.Title")
-    rs_confirm:MakePopup()
+        buildContent = function(root, frame)
 
-    if fs then
-        rs_confirm:SetDraggable(false)
-        rs_confirm:ShowCloseButton(false)
-    end
+            -- CURRENT -> NEW DISPLAY
+            local top = vgui.Create("DLabel", root)
+            top:Dock(TOP)
+            top:SetTall(120)
+            top:SetFont("CoDHUD_Settings_Main")
+            top:SetContentAlignment(5)
 
-    rs_confirm.Paint = function(self, w, h)
-        if CoDHUD[CoDHUD_GetHUDType()] and CoDHUD[CoDHUD_GetHUDType()].SettingsMenu then
-            CoDHUD[CoDHUD_GetHUDType()].SettingsMenu(w, h)
-        else
-            draw.RoundedBox(0, 0, 0, w, h, Color(100,100,100))
+            function top:PerformLayout()
+                self:SetFGColor(Color(255,255,255))
+            end
+
+            top:SetText(string.format(
+                "%s -> %s",
+                language.GetPhrase("CoDHUD.Type." .. currentGame),
+                language.GetPhrase("CoDHUD.Type." .. newGame)
+            ))
+
+            -- WARNING TEXT
+            local lbl = vgui.Create("DLabel", root)
+            lbl:Dock(FILL)
+            lbl:SetText(language.GetPhrase("CoDHUD.Admin.RestrictType.Warning"))
+            lbl:SetWrap(true)
+            lbl:SetContentAlignment(7)
+            lbl:SetFont("CoDHUD_Settings_Main")
+
+            function lbl:PerformLayout() self:SetFGColor(Color(255,255,255)) end
+        end,
+
+        onCancel = function() pendingGame = nil end,
+
+        onConfirm = function()
+            net.Start("CoDHUD_SetGame")
+            net.WriteString(pendingGame or "")
+            net.SendToServer()
+
+            pendingGame = nil
+
+            if IsValid(codhud_menu_frame) then codhud_menu_frame:SetVisible(false) end
+            timer.Simple(0.15, function() RunConsoleCommand("codhud_openmenu") end)
         end
-    end
-
-    local root = vgui.Create("DPanel", rs_confirm)
-    root:Dock(FILL)
-    root:DockMargin(20, 20, 20, 20)
-    root.Paint = nil
-
-    -- CURRENT -> NEW DISPLAY
-    local top = vgui.Create("DLabel", root)
-    top:Dock(TOP)
-    top:SetTall(120)
-	top:SetFont("CoDHUD_Settings_Main")
-	function top:PerformLayout()
-		self:SetFGColor(Color(255,255,255))
-	end
-
-    top:SetContentAlignment(5)
-
-    top:SetText(
-        string.format(
-            "%s -> %s",
-            language.GetPhrase("CoDHUD.Type." .. currentGame),
-            language.GetPhrase("CoDHUD.Type." .. newGame)
-		)
-	)
-
-    -- WARNING TEXT
-    local lbl = vgui.Create("DLabel", root)
-    lbl:Dock(FILL)
-    lbl:SetText(language.GetPhrase("CoDHUD.Admin.RestrictType.Warning"))
-    lbl:SetWrap(true)
-    lbl:SetContentAlignment(7)
-	lbl:SetFont("CoDHUD_Settings_Main")
-	function lbl:PerformLayout()
-		self:SetFGColor(Color(255,255,255))
-	end
-
-
-    -- BUTTONS
-    local bottom = vgui.Create("DPanel", root)
-    bottom:Dock(BOTTOM)
-    bottom:SetTall(50)
-    bottom.Paint = nil
-
-    local no = vgui.Create("DButton", bottom)
-    no:Dock(LEFT)
-    no:SetWide(150)
-    no:SetText("#dialog.cancel")
-
-    no.DoClick = function()
-        rs_confirm:Remove()
-
-        if IsValid(codhud_menu_frame) then
-            codhud_menu_frame:SetVisible(true)
-            codhud_menu_frame:MakePopup()
-        end
-
-        pendingGame = nil
-    end
-
-    local yes = vgui.Create("DButton", bottom)
-    yes:Dock(RIGHT)
-    yes:SetWide(150)
-    yes:SetText("#dialog.ok")
-
-    yes.DoClick = function()
-        rs_confirm:Remove()
-
-        net.Start("CoDHUD_SetGame")
-        net.WriteString(pendingGame or "")
-        net.SendToServer()
-
-        pendingGame = nil
-
-        if IsValid(codhud_menu_frame) then
-            codhud_menu_frame:SetVisible(false)
-        end
-		
-		timer.Simple( 0.15, function() RunConsoleCommand("codhud_openmenu") end)
-    end
+    })
 end
 
 local CoDHUD_SETTINGS = {
@@ -1077,8 +808,8 @@ local function CreateCategory(parent, data)
     if data.type == "factions" then
         local grid = vgui.Create("DGrid", inner)
         grid:SetCols(3)
-        grid:SetColWide(64)
-        grid:SetRowHeight(64)
+        grid:SetColWide(CoDHUD_S(64))
+        grid:SetRowHeight(CoDHUD_S(64))
         grid:Dock(TOP)
 
 		local sorted = {}
@@ -1106,7 +837,7 @@ local function CreateCategory(parent, data)
 			local count = factionCounts[id] or 0
 
 			local btn = vgui.Create("DImageButton")
-			btn:SetSize(64, 64)
+			btn:SetSize(CoDHUD_S(64), CoDHUD_S(64))
 			if faction.scoreIcon then
 				btn:SetImage(faction.scoreIcon)
 			else

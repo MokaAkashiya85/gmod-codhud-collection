@@ -245,7 +245,7 @@ concommand.Add("codhud_rank_clear", function()
 	end
     CoDHUD_SaveStats()
     print("[CoDHUD] Cleared Client Rank and Stats.")
-	CoDHUD_AddKillfeedMessage("CoDHUD.System.RankReset")
+	CoDHUD_AddKillfeedMessage("CoDHUD.System.RankReset", "CoDHUD.Type." .. CoDHUD_GetHUDType())
 	
 	net.Start("CoDHUD_SendFullStats")
 		net.WriteTable(CoDHUD_Stats)

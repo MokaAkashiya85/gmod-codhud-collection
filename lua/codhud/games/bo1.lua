@@ -370,7 +370,7 @@ local function levelup( ... )
 		writeSpeed = 16,
         text = string.format( language.GetPhrase("BO1_RANK_PROMOTED_TO"), level ),
         x = ScrW() * 0.5,
-        y = CoDHUD_SY(125),
+        y = CoDHUD_SY(100),
         color = Color(0,0,0),
 		sfx = "music/bo1/stings/mp_level_up.mp3",
         fonts = {
@@ -379,7 +379,7 @@ local function levelup( ... )
 			shd = "BO1_RS_H_Shd"
         },
 
-		iconY = CoDHUD_SY(180),
+		iconY = CoDHUD_SY(150),
 		iconSize = CoDHUD_S(134),
 		icon = logo
     })
@@ -1537,6 +1537,28 @@ local function scoreboard( ... )
 		return scoreA > scoreB
 	end
 
+	local function TruncateText(text, font, maxWidth)
+		surface.SetFont(font)
+
+		-- Fits already
+		if surface.GetTextSize(text) <= maxWidth then return text end
+
+		local ellipsis = "..."
+		local ellipsisWidth = surface.GetTextSize(ellipsis)
+
+		local truncated = text
+
+		while #truncated > 0 do
+			truncated = string.sub(truncated, 1, #truncated - 1)
+
+			local w = surface.GetTextSize(truncated)
+
+			if w + ellipsisWidth <= maxWidth then return truncated .. ellipsis end
+		end
+
+		return ellipsis
+	end
+
 	local function DrawPlayerRow(ply, lp, x, y, w, h, barRight, bgCol)
 		-- Background
 		surface.SetDrawColor(bgCol.r, bgCol.g, bgCol.b, CFG.BAR_ALPHA)
@@ -1569,7 +1591,10 @@ local function scoreboard( ... )
 		local level, levelData = CalculateLevelFromXP( ply:GetNW2Float( "CoDHUD_XP", 0 ) )
 
 		-- Text
-		draw.SimpleTextOutlined(ply:Nick(), "BO1_Scoreboard_Text", x + CoDHUD_S(110), y + (h / 2), tCol, TEXT_ALIGN_LEFT,  TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0))
+		local maxNameWidth = (barRight - CoDHUD_S(1200))
+		local playerName = TruncateText( ply:Nick(), "BO1_Scoreboard_Text", maxNameWidth )
+		draw.SimpleTextOutlined( playerName, "BO1_Scoreboard_Text", x + CoDHUD_S(110), y + (h / 2), tCol, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0) )
+
 		draw.SimpleTextOutlined(ply:Ping(), "BO1_Scoreboard_Text", barRight - CoDHUD_S(CFG.OFF_PING),  y + (h / 2), tCol, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0))
 		draw.SimpleTextOutlined(deaths, "BO1_Scoreboard_Text", barRight - CoDHUD_S(CFG.OFF_DEATHS),  y + (h / 2), tCol, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0))
 		draw.SimpleTextOutlined(kd, "BO1_Scoreboard_Text", barRight - CoDHUD_S(CFG.OFF_RATIO),  y + (h / 2), tCol, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0))
