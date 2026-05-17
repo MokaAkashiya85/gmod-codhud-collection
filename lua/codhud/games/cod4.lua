@@ -2134,6 +2134,7 @@ local function weaponinfo(...)
 	local glactive = 
 	wep.dt and (wep.dt.AltActive or wep.dt.M203Active) -- CW2
 	or (wep.ARC9 and wep:GetUBGL())
+	or (wep.GLDeployed and wep:GLDeployed())
 
 	if glactive then
 		clip = clip2
