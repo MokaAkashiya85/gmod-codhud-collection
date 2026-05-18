@@ -434,7 +434,7 @@ end)
 
 -- [[ BACKSTABBER TRACKING ]]
 hook.Add("PlayerShouldTakeDamage", "CoDHUD_BackstabCheck", function(victim, attacker)
-    if IsValid(attacker) and attacker:IsPlayer() and attacker:GetActiveWeapon():GetClass() == "weapon_crowbar" then
+    if IsValid(attacker) and attacker:IsPlayer() and IsValid(attacker:GetActiveWeapon()) and attacker:GetActiveWeapon():GetClass() == "weapon_crowbar" then
         local dir = (victim:GetPos() - attacker:GetPos()):GetNormalized()
         if victim:GetForward():Dot(dir) > 0.5 and victim:Health() <= 25 then
             TriggerChallenge(attacker, "backstabber", "BACKSTABBER", nil, "STAB_AN_ENEMY_IN_THE", nil, 3000)
