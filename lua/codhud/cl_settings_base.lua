@@ -1715,12 +1715,12 @@ function CoDHUDMenu:Open(menu)
 	local HideCloseButton = CurrentMenu.HideCloseButton == true
 	local HidePrompts = GetConVar("codhud_menu_hide_prompts"):GetBool()
 	
-	if CurrentMenu.Description == true and GetConVar("codhud_menu_hide_desc"):GetBool() then
-		Width = math.max(
-			CoDHUD_SX(1000),
-			Width * 0.75
-		)
-	end
+	-- if CurrentMenu.Description == true and GetConVar("codhud_menu_hide_desc"):GetBool() then
+		-- Width = math.max(
+			-- CoDHUD_SX(1000),
+			-- Width * 0.75
+		-- )
+	-- end
 
     if IsValid(CoDHUD.SettingsFrame) then CoDHUD.SettingsFrame:Remove() end
     gui.EnableScreenClicker(true)
