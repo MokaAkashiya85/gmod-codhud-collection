@@ -100,66 +100,6 @@ CoDHUDMenu.Sounds = {
 -- Store all menus globally
 CoDHUDMenu.Menus = CoDHUDMenu.Menus or {}
 
--- [[ Start of Menu ConVars ]] --
--- Background colour
-CreateClientConVar("CoDHUDMenu_col_bg_r", 25, true, false)
-CreateClientConVar("CoDHUDMenu_col_bg_g", 25, true, false)
-CreateClientConVar("CoDHUDMenu_col_bg_b", 25, true, false)
-CreateClientConVar("CoDHUDMenu_col_bg_a", 245, true, false)
-
--- Description panel colour
-CreateClientConVar("CoDHUDMenu_col_desc_r", 28, true, false)
-CreateClientConVar("CoDHUDMenu_col_desc_g", 28, true, false)
-CreateClientConVar("CoDHUDMenu_col_desc_b", 28, true, false)
-CreateClientConVar("CoDHUDMenu_col_desc_a", 150, true, false)
-
--- Tabs sidebar colour
-CreateClientConVar("CoDHUDMenu_col_tabs_r", 0, true, false)
-CreateClientConVar("CoDHUDMenu_col_tabs_g", 0, true, false)
-CreateClientConVar("CoDHUDMenu_col_tabs_b", 0, true, false)
-CreateClientConVar("CoDHUDMenu_col_tabs_a", 0,  true, false)
-
--- Tab button (active/hover/default)
-CreateClientConVar("CoDHUDMenu_col_tab_default_r", 125, true, false)
-CreateClientConVar("CoDHUDMenu_col_tab_default_g", 125, true, false)
-CreateClientConVar("CoDHUDMenu_col_tab_default_b", 125, true, false)
-
-CreateClientConVar("CoDHUDMenu_col_tab_active_r", 255, true, false)
-CreateClientConVar("CoDHUDMenu_col_tab_active_g", 255, true, false)
-CreateClientConVar("CoDHUDMenu_col_tab_active_b", 255, true, false)
-
-CreateClientConVar("CoDHUDMenu_col_tab_hover_r", 255, true, false)
-CreateClientConVar("CoDHUDMenu_col_tab_hover_g", 255, true, false)
-CreateClientConVar("CoDHUDMenu_col_tab_hover_b", 255, true, false)
-
--- Label colour
-CreateClientConVar("CoDHUDMenu_col_label_r", 100, true, false)
-CreateClientConVar("CoDHUDMenu_col_label_g", 100, true, false)
-CreateClientConVar("CoDHUDMenu_col_label_b", 100, true, false)
-CreateClientConVar("CoDHUDMenu_col_label_a", 75,  true, false)
-
--- Bool colour
-CreateClientConVar("CoDHUDMenu_col_bool_r", 125, true, false)
-CreateClientConVar("CoDHUDMenu_col_bool_g", 125, true, false)
-CreateClientConVar("CoDHUDMenu_col_bool_b", 125, true, false)
-CreateClientConVar("CoDHUDMenu_col_bool_a", 200, true, false)
-
-CreateClientConVar("CoDHUDMenu_col_bool_active_r", 58, true, false)
-CreateClientConVar("CoDHUDMenu_col_bool_active_g", 193, true, false)
-CreateClientConVar("CoDHUDMenu_col_bool_active_b", 0, true, false)
-
--- Bool colour
-CreateClientConVar("CoDHUDMenu_col_button_r", 125, true, false)
-CreateClientConVar("CoDHUDMenu_col_button_g", 125, true, false)
-CreateClientConVar("CoDHUDMenu_col_button_b", 125, true, false)
-CreateClientConVar("CoDHUDMenu_col_button_a", 125, true, false)
-
-CreateClientConVar("CoDHUDMenu_col_button_hover_r", 125, true, false)
-CreateClientConVar("CoDHUDMenu_col_button_hover_g", 125, true, false)
-CreateClientConVar("CoDHUDMenu_col_button_hover_b", 125, true, false)
-CreateClientConVar("CoDHUDMenu_col_button_hover_a", 200, true, false)
--- [[ End of Color ConVars ]] --
-
 function CoDHUD.PlayerCanSeeSetting(st)
 	if st.sp and not game.SinglePlayer() then
 		return false
@@ -716,7 +656,7 @@ function CoDHUD.BuildSetting(parent, st, descPanel, promptBar)
 		end
 		p:DockMargin(6, 6, 6, 2)
 		p.Paint = function(self, w, h)
-			local bg = Color( GetConVar("CoDHUDMenu_col_label_r"):GetInt(), GetConVar("CoDHUDMenu_col_label_g"):GetInt(), GetConVar("CoDHUDMenu_col_label_b"):GetInt(), GetConVar("CoDHUDMenu_col_label_a"):GetInt() )
+			local bg = Color( 100, 100, 100, 75 )
 			
 			draw.RoundedBox(4, 0, 0, w, h, bg)
 			draw.SimpleTextOutlined(CoDHUDString(st.text), "CoDHUD_Settings_Sec", w*0.5, h*0.4, color_white, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1.5, color_black)
@@ -813,24 +753,12 @@ function CoDHUD.BuildSetting(parent, st, descPanel, promptBar)
 			local enabled = getBool()
 			local hovered = self:IsHovered()
 
-			local bga = hovered and 
-			GetConVar("CoDHUDMenu_col_bool_a"):GetInt() * math.abs(math.sin(RealTime()*4)) 
-			or GetConVar("CoDHUDMenu_col_bool_a"):GetInt() * 0.75
+			local bga = hovered and 200 * math.abs(math.sin(RealTime()*4)) or 200 * 0.75
 			local bg
 
-			local default = Color( 
-				GetConVar("CoDHUDMenu_col_bool_r"):GetInt(),
-				GetConVar("CoDHUDMenu_col_bool_g"):GetInt(),
-				GetConVar("CoDHUDMenu_col_bool_b"):GetInt(),
-				bga
-			)
-			local active = Color(
-				GetConVar("CoDHUDMenu_col_bool_active_r"):GetInt(),
-				GetConVar("CoDHUDMenu_col_bool_active_g"):GetInt(),
-				GetConVar("CoDHUDMenu_col_bool_active_b"):GetInt(),
-				bga
-			)
-
+			local default = Color(  125, 125, 125, bga )
+			local active = Color( 58, 193, 0, bga )
+			
 			bg = enabled and active or default
 
 			-- background & text
@@ -1152,18 +1080,8 @@ function CoDHUD.BuildSetting(parent, st, descPanel, promptBar)
 		combo:DockMargin(6, 3, 6, 3)
 		combo.Paint = function(self, w, h)
 			local hovered = self.Button:IsHovered()
-			local default = Color( 
-				GetConVar("CoDHUDMenu_col_button_r"):GetInt(),
-				GetConVar("CoDHUDMenu_col_button_g"):GetInt(),
-				GetConVar("CoDHUDMenu_col_button_b"):GetInt(),
-				GetConVar("CoDHUDMenu_col_button_a"):GetInt()
-				)
-			local hover = Color( 
-				GetConVar("CoDHUDMenu_col_button_hover_r"):GetInt(),
-				GetConVar("CoDHUDMenu_col_button_hover_g"):GetInt(),
-				GetConVar("CoDHUDMenu_col_button_hover_b"):GetInt(),
-				GetConVar("CoDHUDMenu_col_button_hover_a"):GetInt() * math.abs(math.sin(RealTime()*4))
-				)
+			local default = Color( 125, 125, 125, 125 )
+			local hover = Color( 125, 125, 125, 200 * math.abs(math.sin(RealTime()*4)) )
 
 			-- background & text
 			draw.RoundedBox(12, 0, 0, w, h, default)
@@ -1314,18 +1232,8 @@ function CoDHUD.BuildSetting(parent, st, descPanel, promptBar)
 		btn:SetText("")
 		btn.Paint = function(self, w, h)
 			local hovered = self:IsHovered()
-			local default = Color( 
-				GetConVar("CoDHUDMenu_col_button_r"):GetInt(),
-				GetConVar("CoDHUDMenu_col_button_g"):GetInt(),
-				GetConVar("CoDHUDMenu_col_button_b"):GetInt(),
-				GetConVar("CoDHUDMenu_col_button_a"):GetInt()
-				)
-			local hover = Color( 
-				GetConVar("CoDHUDMenu_col_button_hover_r"):GetInt(),
-				GetConVar("CoDHUDMenu_col_button_hover_g"):GetInt(),
-				GetConVar("CoDHUDMenu_col_button_hover_b"):GetInt(),
-				GetConVar("CoDHUDMenu_col_button_hover_a"):GetInt() * math.abs(math.sin(RealTime()*4))
-				)
+			local default = Color( 125, 125, 125, 125 )
+			local hover = Color( 125, 125, 125, 200 * math.abs(math.sin(RealTime()*4)) )
 
 			-- background & text
 			draw.RoundedBox(12, w*0.0125, 0, w*0.9875, h, default)
@@ -1733,9 +1641,9 @@ function CoDHUDMenu:Open(menu)
 
     local frame = vgui.Create("DFrame")
     CoDHUD.SettingsFrame = frame
-    frame:SetSize(0, 0)
+	frame:SetSize(fw, fh)
+	frame:SetPos(fx, fy)
 	frame:Center()
-    frame:SetPos(fx + fw * 0.5, fy + fh * 0.5)
     frame:SetTitle("")
     frame:ShowCloseButton(false)
     frame:SetDraggable(false)
@@ -1754,12 +1662,8 @@ function CoDHUDMenu:Open(menu)
     local secondaryFadeStart = animStart + animDur * 0.5
     local secondaryFadeDur = animDur * 1.25
 
-    frame._open_animStart = animStart
-    frame._open_animDur = animDur
-    frame._open_primaryFadeStart = primaryFadeStart
-    frame._open_primaryFadeEnd = primaryFadeStart + primaryFadeDur
-    frame._open_secondaryFadeStart = secondaryFadeStart
-    frame._open_secondaryFadeEnd = secondaryFadeStart + secondaryFadeDur
+	frame._fadeStart = CurTime()
+	frame._fadeDur = tonumber(GetConVar("codhud_menu_openspeed"):GetString()) or 0.2
     frame._closing = false
 
     frame.TitleAlpha = 0
@@ -1769,10 +1673,10 @@ function CoDHUDMenu:Open(menu)
     if ShowDesc then
         descPanel = vgui.Create("DPanel", frame)
         descPanel:Dock(RIGHT)
-        descPanel:SetWide(fw * 0.3)
+        descPanel:SetWide(fw * 0.25)
         descPanel.Paint = function(self, w, h)
             local a = self:GetAlpha()
-			local col = Color(GetConVar("CoDHUDMenu_col_desc_r"):GetInt(), GetConVar("CoDHUDMenu_col_desc_g"):GetInt(), GetConVar("CoDHUDMenu_col_desc_b"):GetInt(), math.floor(GetConVar("CoDHUDMenu_col_desc_a"):GetInt() * (a / 255)) )
+			local col = Color( 28, 28, 28, math.floor(150 * (a / 255)) )
             surface.SetDrawColor(col)
 
 			if self.SelectedConVar then
@@ -1828,9 +1732,9 @@ function CoDHUDMenu:Open(menu)
 	end
 	function sbar.btnGrip:Paint(w, h)
 		local hovered = self:IsHovered()
-		local default = Color( GetConVar("CoDHUDMenu_col_button_r"):GetInt(), GetConVar("CoDHUDMenu_col_button_g"):GetInt(), GetConVar("CoDHUDMenu_col_button_b"):GetInt(), GetConVar("CoDHUDMenu_col_button_a"):GetInt() )
-		local hover = Color( GetConVar("CoDHUDMenu_col_button_hover_r"):GetInt(), GetConVar("CoDHUDMenu_col_button_hover_g"):GetInt(), GetConVar("CoDHUDMenu_col_button_hover_b"):GetInt(), GetConVar("CoDHUDMenu_col_button_hover_a"):GetInt() )
-
+		local default = Color( 125, 125, 125, 125 )
+		local hover = Color( 125, 125, 125, 200 * math.abs(math.sin(RealTime()*4)) )
+		
 		draw.RoundedBox(12, 0, 0, w, h, hovered and hover or default)
 	end
 
@@ -1842,12 +1746,7 @@ function CoDHUDMenu:Open(menu)
         tabsPanel:SetWide(CoDHUD_SX(300))
 		tabsPanel:Dock(LEFT)
         tabsPanel.Paint = function(self, w, h)
-			surface.SetDrawColor(
-				GetConVar("CoDHUDMenu_col_tabs_r"):GetInt(),
-				GetConVar("CoDHUDMenu_col_tabs_g"):GetInt(),
-				GetConVar("CoDHUDMenu_col_tabs_b"):GetInt(),
-				GetConVar("CoDHUDMenu_col_tabs_a"):GetInt()
-			)
+			surface.SetDrawColor( 0, 0, 0, 0 )
 			surface.DrawRect(0, 0, w, h)
 		end
 
@@ -1893,12 +1792,7 @@ function CoDHUDMenu:Open(menu)
 			local mk = markup.Parse(markupText, wrapWidth)
 			
 			surface.SetFont("CoDHUD_Settings_Sec")
-            surface.SetDrawColor( 
-				GetConVar("CoDHUDMenu_col_desc_r"):GetInt(),
-				GetConVar("CoDHUDMenu_col_desc_g"):GetInt(),
-				GetConVar("CoDHUDMenu_col_desc_b"):GetInt(),
-				math.floor(GetConVar("CoDHUDMenu_col_desc_a"):GetInt() * (a / 255))
-			)
+            surface.SetDrawColor( 28, 28, 28, math.floor(150 * (a / 255)) )
 			surface.DrawRect(0, 0, mk:GetWidth() + (xPadding * 2), h)
 			
 			mk:Draw(xPadding, yPadding, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
@@ -2041,33 +1935,18 @@ function CoDHUDMenu:Open(menu)
 
     frame.Think = function(self)
         if not self._closing then
-            local elapsed = CurTime() - self._open_animStart
-            local p = math.Clamp(elapsed / self._open_animDur, 0, 1)
+			local fade = math.Clamp( (CurTime() - self._fadeStart) / self._fadeDur, 0, 1 )
+			local alpha = fade * 255
 
-            local w = Lerp(p, 0, self.TargetWidth)
-            local h = Lerp(p, 0, self.TargetHeight)
-            local x = fx + (fw * 0.5) - (w * 0.5)
-            local y = fy + (fh * 0.5) - (h * 0.5)
-            self:SetSize(w, h)
-            self:SetPos(x, y)
+			self.TitleAlpha = alpha
 
+			SetGroupAlpha(primaryGroup, alpha)
+			SetGroupAlpha(secondaryGroup, alpha)
+			SetAlphaRecursive(center, alpha)
+			
             if not HideCloseButton and IsValid(closeBtn) then
 				closeBtn:SetPos(math.max(self:GetWide() - 24, 8), 4)
 			end
-
-            local primaryA = 0
-            if CurTime() >= self._open_primaryFadeStart then
-                primaryA = math.Clamp((CurTime() - self._open_primaryFadeStart) / (self._open_primaryFadeEnd - self._open_primaryFadeStart), 0, 1) * 255
-            end
-            self.TitleAlpha = primaryA
-            SetGroupAlpha(primaryGroup, primaryA)
-
-            local secondaryA = 0
-            if CurTime() >= self._open_secondaryFadeStart then
-                secondaryA = math.Clamp((CurTime() - self._open_secondaryFadeStart) / (self._open_secondaryFadeEnd - self._open_secondaryFadeStart), 0, 1) * 255
-            end
-            SetGroupAlpha(secondaryGroup, secondaryA)
-            SetAlphaRecursive(center, secondaryA)
 
             -- unfocus auto-close
 			if UnfocusClose and input.IsMouseDown(MOUSE_LEFT) then
@@ -2139,55 +2018,24 @@ function CoDHUDMenu:Open(menu)
                 BuildTab(center.CurrentTabIndex)
             end
         else
-            local now = CurTime()
-            local fadeStart = self._closeStart
-            local fadeEnd = fadeStart + self._closeFadeDur
-            local shrinkStart = self._closeShrinkStart
-            local shrinkEnd = shrinkStart + self._closeShrinkDur
+			local fade = math.Clamp( (CurTime() - self._closeStart) / self._closeFadeDur, 0, 1 )
+			local alpha = (1 - fade) * 255
+			self.TitleAlpha = alpha
 
-            local fadeT = 0
-            if now <= fadeStart then
-                fadeT = 0
-            elseif now >= fadeEnd then
-                fadeT = 1
-            else
-                fadeT = (now - fadeStart) / (fadeEnd - fadeStart)
-            end
-            local invFade = 1 - fadeT
-            local fadeA = math.floor(invFade * 255)
+			SetGroupAlpha(primaryGroup, alpha)
+			SetGroupAlpha(secondaryGroup, alpha)
+			SetCenterChildrenAlpha(alpha)
 
-            self.TitleAlpha = fadeA
-            SetGroupAlpha(primaryGroup, fadeA)
-            SetGroupAlpha(secondaryGroup, fadeA)
-            SetCenterChildrenAlpha(fadeA)
-
-            local shrinkT = 0
-            if now <= shrinkStart then
-                shrinkT = 0
-            elseif now >= shrinkEnd then
-                shrinkT = 1
-            else
-                shrinkT = (now - shrinkStart) / (shrinkEnd - shrinkStart)
-            end
-            local w = Lerp(shrinkT, self.TargetWidth, 0)
-            local h = Lerp(shrinkT, self.TargetHeight, 0)
-            local x = fx + (fw * 0.5) - (w * 0.5)
-            local y = fy + (fh * 0.5) - (h * 0.5)
-            self:SetSize(w, h)
-            self:SetPos(x, y)
-
-            if now >= math.max(fadeEnd, shrinkEnd) then
-                if IsValid(self) then
-                    self:Remove()
-                end
-                gui.EnableScreenClicker(false)
-                CoDHUD.SettingsFrame = nil
-            end
+			if fade >= 1 then
+				if IsValid(self) then
+					self:Remove()
+				end
+			end
         end
     end
 
     frame.Paint = function(self, w, h)
-		local bg = Color( GetConVar("CoDHUDMenu_col_bg_r"):GetInt(), GetConVar("CoDHUDMenu_col_bg_g"):GetInt(), GetConVar("CoDHUDMenu_col_bg_b"):GetInt(), GetConVar("CoDHUDMenu_col_bg_a"):GetInt() )
+		local bg = Color( 25, 25, 25, 245 )
 		local alpha = math.Clamp(math.floor(self.TitleAlpha), 0, 255)
         local titleColor = Color(255, 255, 255, alpha)
 
@@ -2229,26 +2077,9 @@ function CoDHUDMenu:Open(menu)
 				local baseAlpha  = 75
 				local hoverAlpha = 175 * pulse
 
-				local default = Color(
-					GetConVar("CoDHUDMenu_col_tab_default_r"):GetInt(),
-					GetConVar("CoDHUDMenu_col_tab_default_g"):GetInt(),
-					GetConVar("CoDHUDMenu_col_tab_default_b"):GetInt(),
-					baseAlpha
-				)
-
-				local active = Color(
-					GetConVar("CoDHUDMenu_col_tab_active_r"):GetInt(),
-					GetConVar("CoDHUDMenu_col_tab_active_g"):GetInt(),
-					GetConVar("CoDHUDMenu_col_tab_active_b"):GetInt(),
-					baseAlpha
-				)
-
-				local hoverCol = Color(
-					GetConVar("CoDHUDMenu_col_tab_hover_r"):GetInt(),
-					GetConVar("CoDHUDMenu_col_tab_hover_g"):GetInt(),
-					GetConVar("CoDHUDMenu_col_tab_hover_b"):GetInt(),
-					hoverAlpha
-				)
+				local default = Color( 125, 125, 125, baseAlpha )
+				local active = Color( 255, 255, 255, baseAlpha )
+				local hoverCol = Color( 255, 255, 255, hoverAlpha )
 				local bg = isSelected and active or default
 
 				draw.RoundedBox( TAB_CORNER_RADIUS, TAB_SIDE_PADDING, 4, w - TAB_SIDE_PADDING * 2, h - 8, bg )
