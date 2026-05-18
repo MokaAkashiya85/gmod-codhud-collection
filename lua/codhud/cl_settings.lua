@@ -968,7 +968,7 @@ CoDHUDMenu.Main = function()
 	local menusize = fs and 1 or 0.75
 
 	CoDHUDMenu.CurrentMenu = CoDHUDMenu:Open({
-		Name = UVString("CoDHUD.Title"),
+		Name = CoDHUDString("CoDHUD.Title"),
 		Width  = ScrW() * menusize,
 		Height = ScrH() * menusize,
 		Description = true,
@@ -1089,7 +1089,7 @@ function CoDHUDMenu.ConfirmFactionChange(factionID)
 	local menusize = fs and 1 or 0.5
 
 	CoDHUDMenu.CurrentMenu = CoDHUDMenu:Open({
-		Name = UVString("CoDHUD.Title") .. " - " .. UVString("CoDHUD.RoundStart"),
+		Name = CoDHUDString("CoDHUD.Title") .. " - " .. CoDHUDString("CoDHUD.RoundStart"),
 		Width  = ScrW() * menusize,
 		Height = ScrH() * menusize,
 		Description = false,
@@ -1123,7 +1123,7 @@ CoDHUDMenu.ConfirmRoundStart = function()
 	local menusize = fs and 1 or 0.5
 
 	CoDHUDMenu.CurrentMenu = CoDHUDMenu:Open({
-		Name = UVString("CoDHUD.Title") .. " - " .. UVString("CoDHUD.RoundStart"),
+		Name = CoDHUDString("CoDHUD.Title") .. " - " .. CoDHUDString("CoDHUD.RoundStart"),
 		Width  = ScrW() * menusize,
 		Height = ScrH() * menusize,
 		Description = false,
@@ -1149,7 +1149,7 @@ CoDHUDMenu.ConfirmRoundStop = function()
 	local menusize = fs and 1 or 0.5
 
 	CoDHUDMenu.CurrentMenu = CoDHUDMenu:Open({
-		Name = UVString("CoDHUD.Title") .. " - " .. UVString("CoDHUD.ForceEndRound"),
+		Name = CoDHUDString("CoDHUD.Title") .. " - " .. CoDHUDString("CoDHUD.ForceEndRound"),
 		Width  = ScrW() * menusize,
 		Height = ScrH() * menusize,
 		Description = false,
@@ -1178,7 +1178,7 @@ CoDHUDMenu.ConfirmGameChange = function(data)
 	pendingGame = data
 
 	CoDHUDMenu.CurrentMenu = CoDHUDMenu:Open({
-		Name = UVString("CoDHUD.Title") .. " - " .. UVString("CoDHUD.ForceEndRound"),
+		Name = CoDHUDString("CoDHUD.Title") .. " - " .. CoDHUDString("CoDHUD.ForceEndRound"),
 		Width  = ScrW() * menusize,
 		Height = ScrH() * menusize,
 		Description = false,
@@ -1231,7 +1231,7 @@ function CoDHUDMenu.OpenStatsMenu()
     end
 
     CoDHUDMenu.CurrentMenu = CoDHUDMenu:Open({
-        Name = UVString("CoDHUD.Title") .. " - Stats",
+        Name = CoDHUDString("CoDHUD.Title") .. " - Stats",
         Width  = ScrW() * menusize,
         Height = ScrH() * menusize,
         Tabs = tabs
@@ -1263,7 +1263,7 @@ function CoDHUDMenu.OpenStatsMenu()
     end
 
     CoDHUDMenu.CurrentMenu = CoDHUDMenu:Open({
-        Name = UVString("CoDHUD.Title") .. " - Stats",
+        Name = CoDHUDString("CoDHUD.Title") .. " - Stats",
         Width  = ScrW() * menusize,
         Height = ScrH() * menusize,
         Tabs = tabs
