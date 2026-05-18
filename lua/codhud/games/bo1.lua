@@ -8,8 +8,8 @@ CoDHUD.Factions = CoDHUD.Factions or {}
 CoDHUD.Gamemodes = CoDHUD.Gamemodes or {}
 
 local textype = {
-	-- "hud/bo1/type.mp3",
-	"hud/bo1/delete.mp3",
+	-- "codhud/hud/bo1/type.mp3",
+	"codhud/hud/bo1/delete.mp3",
 }
 
 -- [[ SPECIAL KILLFEED ICONS ]]
@@ -155,7 +155,7 @@ CoDHUD[hudtype].VoiceCallouts = {
 }
 
 CoDHUD[hudtype].Timer = {
-	sound = "hud/ui_mp_countdown_v1.mp3",
+	sound = "codhud/hud/ui_mp_countdown_v1.mp3",
 	timings = {
 		[30] = 2,
 		[10] = 1
@@ -389,8 +389,9 @@ CoDHUD[hudtype].Levelup = levelup
 local function settingsmenu( ... )
 	local w = select(1, ...)
 	local h = select(2, ...)
+	local alpha = select(3, ...)
 
-	surface.SetDrawColor(255, 255, 255)
+	surface.SetDrawColor(255, 255, 255, alpha)
 	surface.SetMaterial( Material( "bo1/settings/menu_mp_background_main2.png" ) )
 	surface.DrawTexturedRect(0, 0, w, h)
 end

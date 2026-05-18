@@ -86,7 +86,7 @@ local recover_male = {
     "lowhealth/male_recover3.mp3"
 }
 
-local heartbeat_sound = "lowhealth/heartbeat.mp3"
+local heartbeat_sound = "codhud/lowhealth/heartbeat.mp3"
 
 local last_breath_sound = nil
 local last_heartbeat_sound = nil

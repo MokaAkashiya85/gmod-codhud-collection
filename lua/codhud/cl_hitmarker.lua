@@ -82,7 +82,7 @@ if CLIENT then
         hitTime  = ct + 0.5
 
 		if GetConVar("codhud_enable_hitmarker"):GetBool() and not GetConVar("codhud_quickdisable_hud"):GetBool() then
-			ply:EmitSound("hud/hitmarker.mp3", 100, 100, 1, CHAN_AUTO)
+			ply:EmitSound("codhud/hud/hitmarker.mp3", 100, 100, 1, CHAN_AUTO)
 		end
 
 		local killscore = 100

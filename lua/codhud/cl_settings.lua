@@ -1,4 +1,5 @@
 ---- [ CLIENT SETTINGS FILE ] ----
+CoDHUDMenu = CoDHUDMenu or {}
 
 -- [[ CLIENT CONVARS ]]
 CreateClientConVar("codhud_quickdisable_hud", "0", true, false, "Quickly disable all HUD options.")
@@ -961,6 +962,314 @@ local function CreateCategory(parent, data)
     end
 end
 
+-- Menus
+CoDHUDMenu.Main = function()
+	local fs = GetConVar("codhud_fullscreen"):GetBool()
+	local menusize = fs and 1 or 0.75
+
+	CoDHUDMenu.CurrentMenu = CoDHUDMenu:Open({
+		Name = UVString("CoDHUD.Title"),
+		Width  = ScrW() * menusize,
+		Height = ScrH() * menusize,
+		Description = true,
+		UnfocusClose = true,
+		Tabs = {
+
+			{ TabName = "CoDHUD.Faction.Select", NoTitle = true, -- Welcome Page
+				{ type = "factions", text = "REPLACEME" },
+			},
+			
+			{ TabName = "CoDHUD.HUD", NoTitle = true, -- Welcome Page
+				{ type = "label", text = "CoDHUD.Quick.title" },
+				{ type = "bool", text = "CoDHUD.Quick.DisableHUD", desc = "CoDHUD.Quick.DisableHUD.desc", convar = "codhud_quickdisable_hud" },
+				{ type = "bool", text = "CoDHUD.HUD.Outline", desc = "CoDHUD.HUD.Outline.desc", convar = "codhud_enable_outlinedtext" },
+				
+				{ type = "label", text = "CoDHUD.HUD" },
+				{ type = "bool", text = "CoDHUD.HUD.Scoreboard.Enable", desc = "CoDHUD.HUD.Scoreboard.Enable.desc", convar = "codhud_enable_scoreboard" },
+				
+				-- { type = "label", text = "CoDHUD.HUD.Scorecounter" },
+				{ type = "bool", text = "CoDHUD.HUD.Scorecounter.Enable", desc = "CoDHUD.HUD.Scorecounter.Enable.desc", convar = "codhud_enable_scorebar" },
+				
+				-- { type = "label", text = "CoDHUD.HUD.Medals" },
+				{ type = "bool", text = "CoDHUD.HUD.Medals.Enable", desc = "CoDHUD.HUD.Medals.Enable.desc", convar = "codhud_enable_medals" },
+				{ type = "bool", text = "CoDHUD.HUD.Medals.Speedup", desc = "CoDHUD.HUD.Medals.Speedup.desc", convar = "codhud_enable_medal_faster", requireparentconvar = "codhud_enable_medals" },
+
+				-- { type = "label", text = "CoDHUD.HUD.Killfeed" },
+				{ type = "bool", text = "CoDHUD.HUD.Killfeed.Enable", desc = "CoDHUD.HUD.Killfeed.Enable.desc", convar = "codhud_enable_killfeed" },
+				
+				-- { type = "label", text = "CoDHUD.HUD.Minimap" },
+				{ type = "bool", text = "CoDHUD.HUD.Minimap.Enable", desc = "CoDHUD.HUD.Minimap.Enable.desc", convar = "codhud_enable_minimap" },
+				
+				-- { type = "label", text = "CoDHUD.HUD.Hitmarker" },
+				{ type = "bool", text = "CoDHUD.HUD.Hitmarker.Enable", desc = "CoDHUD.HUD.Hitmarker.Enable.desc", convar = "codhud_enable_hitmarker" },
+				
+				-- { type = "label", text = "CoDHUD.HUD.WeaponInfo" },
+				{ type = "bool", text = "CoDHUD.HUD.WeaponInfo.Enable", desc = "CoDHUD.HUD.WeaponInfo.Enable.desc", convar = "codhud_enable_weaponinfo" },
+				{ type = "bool", text = "CoDHUD.HUD.WeaponPrompts.Enable", desc = "CoDHUD.HUD.WeaponPrompts.Enable.desc", convar = "codhud_enable_prompts" },
+				
+				-- { type = "label", text = "CoDHUD.HUD.XP" },
+				{ type = "bool", text = "CoDHUD.HUD.XP.Enable", desc = "CoDHUD.HUD.XP.Enable.desc", convar = "codhud_enable_xp" },
+				
+				-- { type = "label", text = "CoDHUD.HUD.IFF" },
+				{ type = "bool", text = "CoDHUD.HUD.IFF.Enable", desc = "CoDHUD.HUD.IFF.Enable.desc", convar = "codhud_enable_iff" },
+				
+				-- { type = "label", text = "CoDHUD.HUD.DeathIcon" },
+				{ type = "bool", text = "CoDHUD.HUD.DeathIcon.Enable", desc = "CoDHUD.HUD.DeathIcon.Enable.desc", convar = "codhud_enable_deathicon" },
+				
+				-- { type = "label", text = "CoDHUD.HUD.Chat" },
+				{ type = "bool", text = "CoDHUD.HUD.Chat.Enable", desc = "CoDHUD.HUD.Chat.Enable.desc", convar = "codhud_enable_chat" },
+				
+				-- { type = "label", text = "CoDHUD.HUD.Challenges" },
+				{ type = "bool", text = "CoDHUD.HUD.Challenges.Enable", desc = "CoDHUD.HUD.Challenges.Enable.desc", convar = "codhud_enable_challenges" },
+			},
+			
+			{ TabName = "CoDHUD.Server", sv = true, NoTitle = true, -- Welcome Page
+				{ type = "label", text = "CoDHUD.General" },
+				{ type = "bool", text = "CoDHUD.Admin.EndScreen", desc = "CoDHUD.Admin.EndScreen.desc", convar = "codhud_enable_roundend", sv = true },
+				{ type = "bool", text = "CoDHUD.Admin.EndScreen.StartNext", desc = "CoDHUD.Admin.EndScreen.StartNext.desc", convar = "codhud_enable_roundend_startnext", sv = true },
+				{ type = "bool", text = "CoDHUD.Admin.FriendlyFire", desc = "CoDHUD.Admin.FriendlyFire.desc", convar = "codhud_friendly_fire", sv = true },
+				
+				{ type = "combo", text = "CoDHUD.Autobalance.Amount", desc = "CoDHUD.Autobalance.Amount.desc", convar = "codhud_autofaction_limit", sv = true, content = {
+					{"CoDHUD.Autobalance.Amount.disable", "0"},
+					{"CoDHUD.Autobalance.Amount.2", "2"},
+					{"CoDHUD.Autobalance.Amount.3", "3"},
+					{"CoDHUD.Autobalance.Amount.4", "4"},
+				}},
+				
+				{ type = "combo", text = "CoDHUD.Admin.RestrictFactionChance", desc = "CoDHUD.Admin.RestrictFactionChance.desc", convar = "codhud_restrictfactions", sv = true, content = {
+					{"CoDHUD.Admin.RestrictFactionChance.disable", "0"},
+					{"CoDHUD.Admin.RestrictFactionChance.freely", "1"},
+					{"CoDHUD.Admin.RestrictFactionChance.pool", "2"},
+				}},
+				
+				
+				{ type = "label", text = "CoDHUD.RoundStart" },
+				{ type = "combo", text = "CoDHUD.RoundStart.Gamemode", desc = "CoDHUD.RoundStart.Info", convar = "codhud_selected_gamemode", sv = true, content = {
+					{"#MW2_MPUI_WAR", "war"},
+					{"#MW2_MPUI_DEATHMATCH", "dm"},
+				}},
+				{ type = "slider", text = "CoDHUD.Scorelimit", desc = "CoDHUD.Scorelimit.desc", convar = "codhud_score_limit", sv = true, min = 1, max = 150, decimals = 0 },
+				{ type = "slider", text = "CoDHUD.Timelimit", desc = "CoDHUD.Timelimit.desc", convar = "codhud_time_limit", sv = true, min = 0, max = 30, decimals = 0 },
+				{ type = "slider", text = "CoDHUD.RoundStart.Timer", desc = "CoDHUD.RoundStart.Timer.desc", convar = "codhud_matchstart_timer", sv = true, min = 0, max = 15, decimals = 0 },
+				{ type = "bool", text = "CoDHUD.RoundStart.Autobalance", desc = "CoDHUD.RoundStart.Autobalance.desc", convar = "codhud_autobalance_on_roundstart", sv = true },
+				-- { type = "bool", text = "CoDHUD.Admin.EndScreen", desc = "CoDHUD.Admin.EndScreen.desc", convar = "codhud_enable_roundend", sv = true },
+				{ type = "button", text = "CoDHUD.RoundStart.Start", desc = "CoDHUD.RoundStart.Start.desc", playsfx = "clickopen", prompts = {"CoDHUD.Glyph.OpenMenu"}, func = function() CoDHUDMenu.OpenMenu(CoDHUDMenu.ConfirmRoundStart, true) end, sv = true },
+				
+				{ type = "button", text = "CoDHUD.ForceEndRound", desc = "CoDHUD.ForceEndRound.desc", playsfx = "clickopen", prompts = {"CoDHUD.Glyph.OpenMenu"}, func = function() CoDHUDMenu.OpenMenu(CoDHUDMenu.ConfirmRoundStop, true) end, cond = function() return _G.CoDHUD_RoundActiveCL end, sv = true },
+				
+				
+				{ type = "label", text = "CoDHUD.Admin.RestrictType" },
+				{ type = "combo", text = "CoDHUD.Admin.RestrictType.Choose", desc = "CoDHUD.Admin.RestrictType.desc", convar = "codhud_game", sv = true, content = CoDHUD.GetHUDList(), func = function(_, data)
+					local current = GetConVar("codhud_game"):GetString()
+					if data == current then return end
+
+					CoDHUDMenu.ConfirmGameChange(data)
+				end}
+			},
+			
+			{ TabName = "CoDHUD.Close", Prompts = { "CoDHUD.Glyph.OpenMenu" }, func = function()
+					CoDHUDMenu.OpenStatsMenu()
+				end,
+			},
+			
+			{ TabName = "CoDHUD.Close", Prompts = { "CoDHUD.Glyph.Close" }, func = function()
+					CoDHUDMenu.CloseCurrentMenu()
+				end,
+			},
+		}
+	})
+end
+
+function CoDHUDMenu.ConfirmFactionChange(factionID)
+    pendingFaction = factionID
+
+    local factionData = CoDHUD.Factions[CoDHUD_GetHUDType()][factionID]
+
+	local fs = GetConVar("codhud_fullscreen"):GetBool()
+	local menusize = fs and 1 or 0.5
+
+	CoDHUDMenu.CurrentMenu = CoDHUDMenu:Open({
+		Name = UVString("CoDHUD.Title") .. " - " .. UVString("CoDHUD.RoundStart"),
+		Width  = ScrW() * menusize,
+		Height = ScrH() * menusize,
+		Description = false,
+		UnfocusClose = false,
+		Tabs = {
+					
+			{ TabName = "CoDHUD.RoundStart", NoTitle = true, -- Welcome Page
+				{ type = "infosimple", text = factionData.name },
+				{ type = "image", image = factionData.scoreIcon, mode = "icon", fixedSize = 128 },
+				{ type = "info", text = "CoDHUD.Faction.ChangeWarning" },
+				{ type = "button", text = "dialog.ok", prompts = {"CoDHUD.Glyph.Confirm"}, func = function()
+					net.Start("CoDHUD_RequestFactionChange")
+					net.WriteString(pendingFaction or "")
+					net.SendToServer()
+
+					pendingFaction = nil
+					
+					CoDHUDMenu.CloseCurrentMenu()
+				end, sv = true },
+				{ type = "button", text = "dialog.cancel", playsfx = "clickback", prompts = {"CoDHUD.Glyph.Return"}, func = function()
+					CoDHUDMenu.OpenMenu(CoDHUDMenu.Main, true) 
+					pendingFaction = nil
+				end, sv = true },
+			},
+		}
+	})
+end
+
+CoDHUDMenu.ConfirmRoundStart = function()
+	local fs = GetConVar("codhud_fullscreen"):GetBool()
+	local menusize = fs and 1 or 0.5
+
+	CoDHUDMenu.CurrentMenu = CoDHUDMenu:Open({
+		Name = UVString("CoDHUD.Title") .. " - " .. UVString("CoDHUD.RoundStart"),
+		Width  = ScrW() * menusize,
+		Height = ScrH() * menusize,
+		Description = false,
+		UnfocusClose = false,
+		Tabs = {
+					
+			{ TabName = "CoDHUD.RoundStart", NoTitle = true, -- Welcome Page
+				{ type = "infosimple", text = "CoDHUD.RoundStart.Notice" },
+				{ type = "button", text = "CoDHUD.RoundStart.Yes", prompts = {"CoDHUD.Glyph.Confirm"}, func = function()
+					net.Start("CoDHUD_StartRound")
+					net.SendToServer()
+					
+					CoDHUDMenu.CloseCurrentMenu()
+				end, sv = true },
+				{ type = "button", text = "CoDHUD.RoundStart.No", playsfx = "clickback", prompts = {"CoDHUD.Glyph.Return"}, func = function() CoDHUDMenu.OpenMenu(CoDHUDMenu.Main, true) end, sv = true },
+			},
+		}
+	})
+end
+
+CoDHUDMenu.ConfirmRoundStop = function()
+	local fs = GetConVar("codhud_fullscreen"):GetBool()
+	local menusize = fs and 1 or 0.5
+
+	CoDHUDMenu.CurrentMenu = CoDHUDMenu:Open({
+		Name = UVString("CoDHUD.Title") .. " - " .. UVString("CoDHUD.ForceEndRound"),
+		Width  = ScrW() * menusize,
+		Height = ScrH() * menusize,
+		Description = false,
+		UnfocusClose = false,
+		Tabs = {
+					
+			{ TabName = "CoDHUD.ForceEndRound", NoTitle = true, -- Welcome Page
+				{ type = "infosimple", text = "CoDHUD.ForceEndRound.Notice" },
+				{ type = "button", text = "CoDHUD.ForceEndRound.Yes", prompts = {"CoDHUD.Glyph.Confirm"}, func = function()
+					net.Start("CoDHUD_EndRound")
+					net.SendToServer()
+					
+					CoDHUDMenu.CloseCurrentMenu()
+				end, sv = true },
+				{ type = "button", text = "CoDHUD.ForceEndRound.No", playsfx = "clickback", prompts = {"CoDHUD.Glyph.Return"}, func = function() CoDHUDMenu.OpenMenu(CoDHUDMenu.Main, true) end, sv = true },
+			},
+		}
+	})
+end
+
+CoDHUDMenu.ConfirmGameChange = function(data)
+	local fs = GetConVar("codhud_fullscreen"):GetBool()
+	local menusize = fs and 1 or 0.5
+
+    local currentGame = GetConVar("codhud_game"):GetString()
+	pendingGame = data
+
+	CoDHUDMenu.CurrentMenu = CoDHUDMenu:Open({
+		Name = UVString("CoDHUD.Title") .. " - " .. UVString("CoDHUD.ForceEndRound"),
+		Width  = ScrW() * menusize,
+		Height = ScrH() * menusize,
+		Description = false,
+		UnfocusClose = false,
+		Tabs = {
+					
+			{ TabName = "CoDHUD.ForceEndRound", NoTitle = true, -- Welcome Page
+				{ type = "infosimple", text = string.format(
+						"%s -> %s",
+						language.GetPhrase("CoDHUD.Type." .. currentGame),
+						language.GetPhrase("CoDHUD.Type." .. pendingGame)
+					)
+				},
+				{ type = "infosimple", text = "CoDHUD.Admin.RestrictType.Warning" },
+				{ type = "button", text = "CoDHUD.ForceEndRound.Yes", prompts = {"CoDHUD.Glyph.Confirm"}, func = function()
+					net.Start("CoDHUD_SetGame")
+					net.WriteString(pendingGame)
+					net.SendToServer()
+					
+					CoDHUDMenu.CloseCurrentMenu()
+				end, sv = true },
+				{ type = "button", text = "CoDHUD.ForceEndRound.No", playsfx = "clickback", prompts = {"CoDHUD.Glyph.Return"}, func = function() CoDHUDMenu.OpenMenu(CoDHUDMenu.Main, true) end, sv = true },
+			},
+		}
+	})
+end
+
+function CoDHUDMenu.OpenStatsMenu()
+    local fs = GetConVar("codhud_fullscreen"):GetBool()
+    local menusize = fs and 1 or 0.75
+	
+
+    local tabs = {}
+
+    for gameId, stats in pairs(CoDHUD.Stats or {}) do
+        table.insert(tabs, {
+            TabName = "Game: " .. gameId,
+            NoTitle = true,
+
+            {
+                type = "infosimple",
+                text = "CoDHUD.Stats.Header"
+            },
+
+            {
+                type = "playerstats",
+                hud = gameId
+            }
+        })
+    end
+
+    CoDHUDMenu.CurrentMenu = CoDHUDMenu:Open({
+        Name = UVString("CoDHUD.Title") .. " - Stats",
+        Width  = ScrW() * menusize,
+        Height = ScrH() * menusize,
+        Tabs = tabs
+    })
+end
+
+function CoDHUDMenu.OpenStatsMenu()
+    local fs = GetConVar("codhud_fullscreen"):GetBool()
+    local menusize = fs and 1 or 0.75
+	
+
+    local tabs = {}
+
+    for gameId, stats in pairs(CoDHUD.Stats or {}) do
+        table.insert(tabs, {
+            TabName = "Game: " .. gameId,
+            NoTitle = true,
+
+            {
+                type = "infosimple",
+                text = "CoDHUD.Stats.Header"
+            },
+
+            {
+                type = "playerstats",
+                hud = gameId
+            }
+        })
+    end
+
+    CoDHUDMenu.CurrentMenu = CoDHUDMenu:Open({
+        Name = UVString("CoDHUD.Title") .. " - Stats",
+        Width  = ScrW() * menusize,
+        Height = ScrH() * menusize,
+        Tabs = tabs
+    })
+end
+
 if CLIENT then
     list.Set("DesktopWindows", "CoDHUDMenu", {
         title = "#CoDHUD.Title",
@@ -972,6 +1281,17 @@ if CLIENT then
 end
 
 concommand.Add("codhud_openmenu", function()
+	-- if CoDHUDMenu.CurrentMenu and IsValid(CoDHUDMenu.CurrentMenu) then
+		-- CoDHUDMenu.OpenMenu(CoDHUDMenu.CurrentMenu, true)
+	-- elseif CoDHUDMenu.LastMenu then
+		-- CoDHUDMenu.OpenMenu(CoDHUDMenu.LastMenu)
+	-- else
+		CoDHUDMenu.OpenMenu(CoDHUDMenu.Main)
+	-- end
+	CoDHUDMenu.PlaySFX("menuopen")
+
+	--[[
+
 	local fs = GetConVar("codhud_fullscreen"):GetBool()
 	local menusize = fs and 1 or 0.55
 	
@@ -1049,4 +1369,5 @@ concommand.Add("codhud_openmenu", function()
 
 		sheet:AddSheet(language.GetPhrase(tab.name), tabPanel)
 	end
+	]]--
 end)

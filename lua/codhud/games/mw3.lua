@@ -166,7 +166,7 @@ CoDHUD[hudtype].VoiceCallouts = {
 }
 
 CoDHUD[hudtype].Timer = {
-	sound = "hud/ui_mp_countdown_v1.mp3",
+	sound = "codhud/hud/ui_mp_countdown_v1.mp3",
 	timings = {
 		[30] = 2,
 		[10] = 1
@@ -433,14 +433,15 @@ CoDHUD[hudtype].Levelup = levelup
 local function settingsmenu( ... )
 	local w = select(1, ...)
 	local h = select(2, ...)
+	local alpha = select(3, ...)
 
-	draw.RoundedBox(0, 0, 0, w, h, Color(100,100,100))
+	draw.RoundedBox(0, 0, 0, w, h, Color(100,100,100,alpha))
 
-	surface.SetDrawColor(255, 255, 255)
+	surface.SetDrawColor(255, 255, 255, alpha)
 	surface.SetMaterial( Material( "mw3/settings/background01.png" ) )
 	surface.DrawTexturedRect(0, 0, w, h)
 	
-	surface.SetDrawColor(255, 255, 255, 25)
+	surface.SetDrawColor(255, 255, 255, math.Clamp(alpha, 0, 25))
 	surface.SetMaterial( Material( "mw3/settings/menu_anim" ) )
 	surface.DrawTexturedRect(0, 0, w, h)
 	

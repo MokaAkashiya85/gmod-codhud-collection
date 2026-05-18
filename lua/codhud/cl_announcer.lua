@@ -92,7 +92,7 @@ function CoDHUD_PlayAnnouncerSound(path, isMusic, volume)
 			CoDHUD_CurrentMusic = nil
 		end
 
-		sound.PlayFile("sound/" .. path, "noplay", function(chan, errCode, errStr)
+		sound.PlayFile("sound/codhud/" .. path, "noplay", function(chan, errCode, errStr)
 			if not IsValid(chan) then
 				return
 			end
@@ -161,15 +161,12 @@ function CoDHUD_GetAnnouncerSound(keys)
 				filesuffix = CoDHUD[CoDHUD_GetHUDType()].VoiceCallouts.suffix
 			end
 
-			local baseDir = "sound/announcer/" .. CoDHUD_GetHUDType() .. "/" .. l .. "/"
-
 			local voicePath = CoDHUD.Factions[CoDHUD_GetHUDType()][faction].voicepath
-
 			local cacheKey = CoDHUD_GetHUDType() .. "|" .. faction .. "|" .. l .. "|" .. key
 
 			-- build cache once
 			if not CoDHUD_AnnouncerCache[cacheKey] then
-				local folder = "announcer/" .. CoDHUD_GetHUDType() .. "/" .. l .. "/" .. string.GetPathFromFilename(voicePath)
+				local folder = "codhud/announcer/" .. CoDHUD_GetHUDType() .. "/" .. l .. "/" .. string.GetPathFromFilename(voicePath)
 				local prefix = string.GetFileFromFilename(voicePath) .. key
 				local files = file.Find("sound/" .. folder .. "*.mp3", "GAME")
 
@@ -184,7 +181,7 @@ function CoDHUD_GetAnnouncerSound(keys)
 				end
 
 				-- fallback exact file
-				local exactPath = "announcer/" .. CoDHUD_GetHUDType() .. "/" .. l .. "/" .. voicePath .. key .. filesuffix .. ".mp3"
+				local exactPath = "codhud/announcer/" .. CoDHUD_GetHUDType() .. "/" .. l .. "/" .. voicePath .. key .. filesuffix .. ".mp3"
 
 				if file.Exists("sound/" .. exactPath, "GAME") then
 					table.insert(candidates, exactPath)

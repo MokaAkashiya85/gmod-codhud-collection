@@ -3,6 +3,17 @@ CoDHUD = CoDHUD or {}
 CoDHUD.Factions = CoDHUD.Factions or {}
 CoDHUD.Gamemodes = CoDHUD.Gamemodes or {}
 
+
+-- Fuck GMod sometimes.
+function CoDHUDString(key)
+    if not isstring(key) then return "" end
+    if key:StartWith("#") then
+        key = key:sub(2)
+    end
+    return string.Trim(language.GetPhrase(key))
+end
+
+
 -- [[ RESOLUTION SCALING ]]
 local BASE_W, BASE_H = 1920, 1080
 
@@ -21,8 +32,15 @@ function CoDHUD_SY(y) return math.Round(y * CoDHUD_GetUIScale()) end
 -- [[ FONT INIT ]]
 local function InitiateCoDFonts()
 	-- [ SETTINGS ]
-    surface.CreateFont( "CoDHUD_Settings_Main",		{ font = "Conduit ITC", size = CoDHUD_S(42), weight = 10,  antialias = true })
-    surface.CreateFont( "CoDHUD_Settings_Sec",		{ font = "Conduit ITC", size = CoDHUD_S(32), weight = 10,  antialias = true })
+    surface.CreateFont( "CoDHUD_Settings_Header",	{ font = "Conduit ITC", size = CoDHUD_S(42), weight = 10,  antialias = true })
+    surface.CreateFont( "CoDHUD_Settings_Main",		{ font = "Conduit ITC", size = CoDHUD_S(32), weight = 10,  antialias = true })
+    surface.CreateFont( "CoDHUD_Settings_Sec",		{ font = "Conduit ITC", size = CoDHUD_S(28), weight = 10,  antialias = true })
+    surface.CreateFont( "CoDHUD_Settings_Tri",		{ font = "Conduit ITC", size = CoDHUD_S(24), weight = 10,  antialias = true })
+
+	-- Keybind Fonts
+	surface.CreateFont("CoDHUD_KeybindFont", { font = "Destiny Keys", size = CoDHUD_S(24), weight = 500, extended = true })
+	surface.CreateFont("CoDHUD_KeybindFontBig", { font = "Destiny Keys", size = CoDHUD_S(34), weight = 500, extended = true })
+	surface.CreateFont("CoDHUD_KeybindFontSmall", { font = "Destiny Keys", size = CoDHUD_S(18), weight = 500, extended = true })	
 	
 	-- [ CoD4 ]
 	-- Hitmarker / XP
@@ -407,4 +425,261 @@ function CoDHUD_UpperText(str)
     return (str:gsub("[%z\1-\127\194-\244][\128-\191]*", function(c)
         return utf8_upper_map[c] or c
     end))
+end
+
+
+-- Carried over from Unit Vehicles
+function CoDHUDBindButtonName(var)
+	local keyName = input.GetKeyName(var)
+	if not keyName then return "UNKNOWN" end
+	local upperKeyName = string.upper(keyName)
+	return upperKeyName
+end
+
+-- Glyph tables
+CoDHUDKeyGlyphs = {}
+
+-- Keyboard & Mouse
+CoDHUDKeyGlyphs.kb = {
+	["MOUSE1"] = "<color=51,150,218></color>" .. "", 
+	["MOUSE2"] = "<color=51,150,218></color>" .. "", 
+	["MOUSE3"] = "<color=51,150,218></color>" .. "", 
+	["MOUSE4"] = "<color=51,150,218></color>" .. "", 
+	["MOUSE5"] = "<color=51,150,218></color>" .. "", 
+	["MWHEELDOWN"] = "<color=51,150,218></color>" .. "",
+	["MWHEELUP"] = "<color=51,150,218></color>" .. "",
+	
+	["ö"] = "<color=51,51,51><color=255,255,255></color></color>",
+	["ä"] = "<color=51,51,51><color=255,255,255></color></color>",
+	["ì"] = "<color=51,51,51><color=255,255,255></color></color>",
+	["è"] = "<color=51,51,51><color=255,255,255></color></color>",
+	["é"] = "<color=51,51,51><color=255,255,255></color></color>",
+	["ß"] = "<color=51,51,51><color=255,255,255></color></color>",
+	["c"] = "<color=51,51,51><color=255,255,255></color></color>",
+	["ò"] = "<color=51,51,51><color=255,255,255></color></color>",
+	["à"] = "<color=51,51,51><color=255,255,255></color></color>",
+	["ù"] = "<color=51,51,51><color=255,255,255></color></color>",
+	["a"] = "<color=51,51,51><color=255,255,255></color></color>",
+	["b"] = "<color=51,51,51><color=255,255,255></color></color>",
+	["c"] = "<color=51,51,51><color=255,255,255></color></color>",
+	["d"] = "<color=51,51,51><color=255,255,255></color></color>",
+	["e"] = "<color=51,51,51><color=255,255,255></color></color>",
+	["f"] = "<color=51,51,51><color=255,255,255></color></color>",
+	["g"] = "<color=51,51,51><color=255,255,255></color></color>",
+	["h"] = "<color=51,51,51><color=255,255,255></color></color>",
+	["i"] = "<color=51,51,51><color=255,255,255></color></color>",
+	["j"] = "<color=51,51,51><color=255,255,255></color></color>",
+	["k"] = "<color=51,51,51><color=255,255,255></color></color>",
+	["l"] = "<color=51,51,51><color=255,255,255></color></color>",
+	["m"] = "<color=51,51,51><color=255,255,255></color></color>",
+	["n"] = "<color=51,51,51><color=255,255,255></color></color>",
+	["o"] = "<color=51,51,51><color=255,255,255></color></color>",
+	["p"] = "<color=51,51,51><color=255,255,255></color></color>",
+	["q"] = "<color=51,51,51><color=255,255,255></color></color>",
+	["r"] = "<color=51,51,51><color=255,255,255></color></color>",
+	["s"] = "<color=51,51,51><color=255,255,255></color></color>",
+	["t"] = "<color=51,51,51><color=255,255,255></color></color>",
+	["u"] = "<color=51,51,51><color=255,255,255></color></color>",
+	["v"] = "<color=51,51,51><color=255,255,255></color></color>",
+	["w"] = "<color=51,51,51><color=255,255,255></color></color>",
+	["x"] = "<color=51,51,51><color=255,255,255></color></color>",
+	["y"] = "<color=51,51,51><color=255,255,255></color></color>",
+	["z"] = "<color=51,51,51><color=255,255,255></color></color>",
+	["ü"] = "<color=51,51,51><color=255,255,255></color></color>",
+	
+	["0"] = "<color=51,51,51><color=255,255,255></color></color>",
+	["1"] = "<color=51,51,51><color=255,255,255></color></color>",
+	["2"] = "<color=51,51,51><color=255,255,255></color></color>",
+	["3"] = "<color=51,51,51><color=255,255,255></color></color>",
+	["4"] = "<color=51,51,51><color=255,255,255></color></color>",
+	["5"] = "<color=51,51,51><color=255,255,255></color></color>",
+	["6"] = "<color=51,51,51><color=255,255,255></color></color>",
+	["7"] = "<color=51,51,51><color=255,255,255></color></color>",
+	["8"] = "<color=51,51,51><color=255,255,255></color></color>",
+	["9"] = "<color=51,51,51><color=255,255,255></color></color>",
+	["'"] = "<color=51,51,51><color=255,255,255></color></color>",
+	["*"] = "<color=51,51,51><color=255,255,255></color></color>",
+	["+"] = "<color=51,51,51><color=255,255,255></color></color>",
+	[","] = "<color=51,51,51><color=255,255,255></color></color>",
+	["-"] = "<color=51,51,51><color=255,255,255></color></color>",
+	
+	["KP_SLASH"] = "<color=51,51,51><color=255,255,255></color></color>",
+	["KP_MULTIPLY"] = "<color=51,51,51><color=255,255,255></color></color>",
+	["KP_INS"] = "<color=51,51,51><color=255,255,255></color></color>",
+	["KP_END"] = "<color=51,51,51><color=255,255,255></color></color>",
+	["KP_DOWNARROW"] = "<color=51,51,51><color=255,255,255></color></color>",
+	["KP_PGDN"] = "<color=51,51,51><color=255,255,255></color></color>",
+	["KP_LEFTARROW"] = "<color=51,51,51><color=255,255,255></color></color>",
+	["KP_5"] = "<color=51,51,51><color=255,255,255></color></color>",
+	["KP_RIGHTARROW"] = "<color=51,51,51><color=255,255,255></color></color>",
+	["KP_HOME"] = "<color=51,51,51><color=255,255,255></color></color>",
+	["KP_UPARROW"] = "<color=51,51,51><color=255,255,255></color></color>",
+	["KP_PGUP"] = "<color=51,51,51><color=255,255,255></color></color>",
+	["KP_MINUS"] = "<color=51,51,51><color=255,255,255></color></color>",
+	["KP_PLUS"] = "<color=51,51,51><color=255,255,255></color></color>",
+	["KP_ENTER"] = "<color=51,51,51><color=255,255,255></color></color>",
+	["KP_DEL"] = "<color=51,51,51><color=255,255,255></color></color>",
+	
+	["SPACE"] = "<color=51,51,51><color=255,255,255></color></color>",
+	["DEL"] = "<color=51,51,51><color=255,255,255></color></color>",
+	["BACKSPACE"] = "<color=51,51,51><color=255,255,255></color></color>",
+	["TAB"] = "<color=51,51,51><color=255,255,255></color></color>",
+	["ENTER"] = "<color=51,51,51><color=255,255,255></color></color>",
+	["SHIFT"] = "<color=51,51,51><color=255,255,255></color></color>",
+	["RSHIFT"] = "<color=51,51,51><color=255,255,255></color></color>",
+	["CTRL"] = "<color=51,51,51><color=255,255,255></color></color>",
+	["RCTRL"] = "<color=51,51,51><color=255,255,255></color></color>",
+	["ALT"] = "<color=51,51,51><color=255,255,255></color></color>",
+	["RALT"] = "<color=51,51,51><color=255,255,255></color></color>",
+	["UPARROW"] = "<color=51,51,51><color=255,255,255></color></color>",
+	["DOWNARROW"] = "<color=51,51,51><color=255,255,255></color></color>",
+	["LEFTARROW"] = "<color=51,51,51><color=255,255,255></color></color>",
+	["RIGHTARROW"] = "<color=51,51,51><color=255,255,255></color></color>",
+	["INS"] = "<color=51,51,51><color=255,255,255></color></color>",
+	["END"] = "<color=51,51,51><color=255,255,255></color></color>",
+	["F1"] = "<color=51,51,51><color=255,255,255></color></color>",
+	["F2"] = "<color=51,51,51><color=255,255,255></color></color>",
+	["F3"] = "<color=51,51,51><color=255,255,255></color></color>",
+	["F4"] = "<color=51,51,51><color=255,255,255></color></color>",
+	["F5"] = "<color=51,51,51><color=255,255,255></color></color>",
+	["F6"] = "<color=51,51,51><color=255,255,255></color></color>",
+	["F7"] = "<color=51,51,51><color=255,255,255></color></color>",
+	["F8"] = "<color=51,51,51><color=255,255,255></color></color>",
+	["F9"] = "<color=51,51,51><color=255,255,255></color></color>",
+	["F10"] = "<color=51,51,51><color=255,255,255></color></color>",
+	["F11"] = "<color=51,51,51><color=255,255,255></color></color>",
+	["F12"] = "<color=51,51,51><color=255,255,255></color></color>",
+	
+	["["] = "<color=51,51,51><color=255,255,255></color></color>",
+	["]"] = "<color=51,51,51><color=255,255,255></color></color>",
+	["/"] = "<color=51,51,51><color=255,255,255></color></color>",
+	["SEMICOLON"] = "<color=51,51,51><color=255,255,255></color></color>",
+	["="] = "<color=51,51,51><color=255,255,255></color></color>",
+	["\\"] = "<color=51,51,51><color=255,255,255></color></color>",
+	["."] = "<color=51,51,51><color=255,255,255></color></color>",
+	-- ["."] = "<color=51,51,51><color=255,255,255></color></color>",
+	["CAPSLOCK"] = "<color=51,51,51><color=255,255,255></color></color>",
+}
+
+local lastGlyphUpdate = -1
+local CoDHUDCommandFallbacks = {
+	invnext = "MWHEELDOWN",  -- default glyph key
+	invprev = "MWHEELUP",
+	slot1   = "1",
+	slot2   = "2",
+	lastinv = "q",
+}
+
+-- The main functions
+function CoDHUDKeybindIcon(key, size)
+	local font = "CoDHUD_KeybindFont"  -- default
+	if size == "Big" then
+		font = "CoDHUD_KeybindFontBig"
+	elseif size == "Small" then
+		font = "CoDHUD_KeybindFontSmall"
+	end
+	
+	local alpha = alpha or 255
+
+	local wrap = function(str)
+		return "<font=" .. font .. ">" .. str .. "</font>"
+	end
+
+	local parts = string.Split(key, ".")
+	local glyph = "[" .. key .. "]"
+
+	if #parts == 1 then
+		if CoDHUDKeyGlyphs.kb[parts[1]] then
+			glyph = CoDHUDKeyGlyphs.kb[parts[1]]
+		end
+	elseif #parts == 2 then
+		local family, subkey = parts[1], parts[2]
+		if family == "kb" and CoDHUDKeyGlyphs.kb[subkey] then
+			glyph = CoDHUDKeyGlyphs.kb[subkey]
+		elseif family == "mouse" and CoDHUDKeyGlyphs.mouse[subkey] then
+			glyph = CoDHUDKeyGlyphs.mouse[subkey]
+		elseif family == "xbox" and CoDHUDKeyGlyphs.xbox[subkey] then
+			glyph = CoDHUDKeyGlyphs.xbox[subkey]
+		elseif family == "ps" and CoDHUDKeyGlyphs.ps[subkey] then
+			glyph = CoDHUDKeyGlyphs.ps[subkey]
+		elseif family == "switch" and CoDHUDKeyGlyphs.switch[subkey] then
+			glyph = CoDHUDKeyGlyphs.switch[subkey]
+		elseif subkey == "all" then
+			local tbl = CoDHUDKeyGlyphs[family]
+			if tbl then
+				local out = {}
+				for _, glyph in pairs(tbl) do
+					out[#out + 1] = glyph
+				end
+				glyph = table.concat(out, "")
+			end
+		end
+	end
+
+	return wrap(glyph)
+end
+
+local function ResolveKeybind(token)
+	if token:sub(1, 1) == "+" then -- console command (+use, +jump, etc.)
+		return input.LookupBinding(token, true)
+	end
+
+	local cv = GetConVar(token)
+	if cv then
+		return input.GetKeyName(cv:GetInt())
+	end
+
+	return nil
+end
+
+local function ResolveCommandGlyph(cmd)
+	local clean = cmd:gsub("^%+", "")
+	-- Check fallback table
+	if CoDHUDCommandFallbacks[clean] then return CoDHUDCommandFallbacks[clean] end
+
+	-- Fallback to normal keybind
+	return ResolveKeybind(cmd) or "???"
+end
+
+function CoDHUDReplaceKeybinds(str, glyphsize)
+	local glyphsize = glyphsize or nil
+
+	-- [+use] or [command]
+	str = str:gsub("%[([%+]?[%w_]+)%]", function(cmd)
+		return CoDHUDKeybindIcon(ResolveCommandGlyph(cmd), glyphsize)
+	end)
+
+	-- [key:convar_name]
+	str = str:gsub("%[key:([%w_]+)%]", function(cvar)
+		local key = ResolveKeybind(cvar)
+		if not key then return "???" end
+		return CoDHUDKeybindIcon(key, glyphsize)
+	end)
+
+	-- [string:phrase]
+	str = str:gsub("%[string:([^%]]+)%]", function(locstring)
+		return "<color=255,255,0>" .. CoDHUDString(locstring) .. "</color>"
+	end)
+
+	-- [ncstring:phrase] -- Without colour
+	str = str:gsub("%[ncstring:([^%]]+)%]", function(locstring)
+		return CoDHUDString(locstring)
+	end)
+
+	-- [glyph:phrase]
+	str = str:gsub("%[glyph:([^%]]+)%]", function(glyph)
+		return CoDHUDKeybindIcon(glyph, glyphsize)
+	end)
+
+	return str
+end
+
+function CoDHUDDiscordTextFormat(str)
+	str = str:gsub("%*%*(.-)%*%*", "<font=CoDHUDSettingsFontSmall-Bold>%1</font>")
+	str = str:gsub("(%s)%*(.-)%*", "<font=CoDHUDSettingsFontSmall-Italic> %2 </font>")
+	str = str:gsub("^%*(.-)%*", "[i]%1[/i]")
+	str = str:gsub("__(.-)__", "[u]%1[/u]")
+	str = str:gsub("^#%s*(.-)\n", "<font=CoDHUDSettingsFontBig>%1</font>\n")
+	str = str:gsub("\n#%s*(.-)\n", "\n<font=CoDHUDSettingsFontBig>%1</font>\n")
+	return str
 end

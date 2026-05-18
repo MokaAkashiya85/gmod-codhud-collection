@@ -1,4 +1,4 @@
-Title: CoD HUD Collection
+Title: Call of Duty HUD Collection & Mini-DM Gamemode
 
 [h3]Take no prisoners, comrades.[/h3]
 A sequel, improvement and rewrite of landocalrissian's original [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3704210589]Call of Duty: Modern Warfare 2 2009 HUD[/url], now with many new features, improvements and much more.
@@ -16,6 +16,7 @@ You can get them here: [url=https://steamcommunity.com/sharedfiles/filedetails/?
 [h1] Features [/h1]
 [h3] New Highlighted Features [/h3]
 [list]
+	[*] Working Team Deathmatch and Free-for-all functionality in Sandbox
 	[*] Customizable HUD Types; Switch to another game's HUD and its factions!
 		[list]
 			[*] Modern Warfare 1
@@ -24,6 +25,7 @@ You can get them here: [url=https://steamcommunity.com/sharedfiles/filedetails/?
 			[*] Black Ops
 			[*] Modern Warfare 3
 		[/list]
+	[*] Per-game ranks and stats
 	[*] Round End now supports Time Limits:
 	[list]
 		[*] HUD Timers will now count down
