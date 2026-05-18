@@ -187,9 +187,8 @@ end)
 
 hook.Add("Think", "CoDHUD_RoundEnd_ScoreCheck", function()
     if not _G.CoDHUD_RoundActive then return end
-	if CoDHUD_RoundStarting then return end
-	if not GetConVar("codhud_enable_roundend"):GetBool() then return end
-
+    if CoDHUD_RoundStarting then return end
+    if not GetConVar("codhud_enable_roundend"):GetBool() then return end
     if RE_Triggered then return end
 
     local now = CurTime()
@@ -204,7 +203,46 @@ hook.Add("Think", "CoDHUD_RoundEnd_ScoreCheck", function()
         scoreLimit = 75
     end
 
-    -- Build faction scores
+    local isDM = (_G.CoDHUD_ActiveGamemode == "dm")
+
+    -- Free-for-all
+    if isDM then
+        local winnerPly = nil
+        local winnerScore = 0
+
+        local secondPly = nil
+        local secondScore = 0
+
+        for _, ply in ipairs(player.GetAll()) do
+            if not IsValid(ply) then continue end
+
+            local score = math.max(0, ply:Frags())
+
+            -- Track top 2 players
+            if score > winnerScore then
+                secondPly = winnerPly
+                secondScore = winnerScore
+
+                winnerPly = ply
+                winnerScore = score
+            elseif score > secondScore then
+                secondPly = ply
+                secondScore = score
+            end
+        end
+
+        if not winnerPly then return end
+        if winnerScore < scoreLimit then return end
+
+        local winnerFaction = winnerPly:GetNW2String("CoDHUD_Faction", "rangers")
+        local loserFaction = secondPly and secondPly:GetNW2String("CoDHUD_Faction", "") or ""
+
+        CoDHUD_DoRoundEnd( winnerFaction, loserFaction, winnerScore, secondScore )
+
+        return
+    end
+
+    -- TDM
     local factionScores = {}
 
     for _, ply in ipairs(player.GetAll()) do
@@ -220,7 +258,6 @@ hook.Add("Think", "CoDHUD_RoundEnd_ScoreCheck", function()
         factionScores[faction] = (factionScores[faction] or 0) + score
     end
 
-    -- Determine if any faction reached the score limit
     local winnerFaction = nil
     local winnerScore = 0
 
@@ -234,7 +271,6 @@ hook.Add("Think", "CoDHUD_RoundEnd_ScoreCheck", function()
 
     if not winnerFaction then return end
 
-    -- Find highest enemy faction
     local loserFaction = ""
     local loserScore = 0
 
@@ -245,7 +281,7 @@ hook.Add("Think", "CoDHUD_RoundEnd_ScoreCheck", function()
         end
     end
 
-    CoDHUD_DoRoundEnd(winnerFaction, loserFaction, winnerScore, loserScore)
+    CoDHUD_DoRoundEnd( winnerFaction, loserFaction, winnerScore, loserScore )
 end)
 
 hook.Add("Think", "CoDHUD_RoundEnd_TimeLimit", function()

@@ -44,32 +44,56 @@ function CoDHUDAddon(rows)
 	end
 end
 
-CoDHUDMenuSound({
-    name = "MW2",
-    displayname = "NFS Most Wanted",
-    sounds = {
-        menuopen  = "uvui/mw/fe_common_mb [8].wav",
-        menuclose = "uvui/mw/fe_common_mb [9].wav",
-        hover     = "uvui/mw/fe_common_mb [1].wav",
-        hovertab  = "uvui/mw/fe_common_mb [2].wav",
-        click     = "uvui/mw/fe_common_mb [8].wav",
-        clickopen = "uvui/mw/fe_common_mb [3].wav",
-        clickback = "uvui/mw/fe_common_mb [4].wav",
-        confirm   = "uvui/mw/fe_common_mb [5].wav"
-    }
-})
-
 -- Sounds Table
+CoDHUDMenu.Music = {
+    ["cod4"] = "codhud/menu/cod4/HGW_Gameshell_v10.mp3",
+    ["waw"] = "codhud/menu/waw/mx_underscore_brave_soldat_mod.mp3",
+    ["mw2"] = "codhud/menu/mw2/hz_t_oilrig_themestealth_v1.mp3",
+    ["bo1"] = "codhud/menu/bo1/mus_mp_frontend_lp_l.mp3",
+    ["mw3"] = "codhud/menu/mw3/bt_mp_menumusic.mp3",
+    ["bo2"] = "codhud/menu/bo2/mpl_mus_frontend.SL65.pc.snd.mp3",
+}
+
 CoDHUDMenu.Sounds = {
-    ["MW2"] = {
-        menuopen = "uvui/mw/fe_common_mb [8].wav",
-        menuclose = "uvui/mw/fe_common_mb [9].wav",
-        hover = "uvui/mw/fe_common_mb [1].wav",
-        hovertab = "uvui/mw/fe_common_mb [2].wav",
-        click = "uvui/mw/fe_common_mb [8].wav",
-        clickopen = "uvui/mw/fe_common_mb [3].wav",
-        clickback = "uvui/mw/fe_common_mb [4].wav",
-        confirm = "uvui/mw/fe_common_mb [5].wav"
+    ["cod4"] = {
+        menuopen = "codhud/menu/cod4/ui_screen_in1.mp3",
+        menuclose = "codhud/menu/cod4/ui_screen_out1.mp3",
+        hover = "codhud/menu/cod4/ui_over_v1.mp3",
+        confirm = "codhud/menu/cod4/ui_select_v1.mp3",
+        clickopen = "codhud/menu/cod4/ui_select_v1.mp3",
+    },
+    ["waw"] = {
+        hover = "codhud/menu/waw/2nd_click_fnt.mp3",
+        confirm = "codhud/menu/waw/slider_rear.mp3",
+        clickopen = "codhud/menu/waw/main_click_fnt.mp3",
+    },
+    ["mw2"] = {
+        menuopen = "codhud/menu/mw2/ui_screen_in1.mp3",
+        menuclose = "codhud/menu/mw2/ui_screen_out1.mp3",
+        hover = "codhud/menu/mw2/ui_over_v2.mp3",
+        confirm = "codhud/menu/mw2/ui_select_hz_1.mp3",
+        clickopen = "codhud/menu/mw2/ui_select_hz_1.mp3",
+    },
+    -- ["bo1"] = {
+        -- menuopen = "codhud/menu/mw2/ui_screen_in1.mp3",
+        -- menuclose = "codhud/menu/mw2/ui_screen_out1.mp3",
+        -- hover = "codhud/menu/mw2/ui_over_v2.mp3",
+        -- confirm = "codhud/menu/mw2/ui_select_hz_1.mp3",
+        -- clickopen = "codhud/menu/mw2/ui_select_hz_1.mp3",
+    -- },
+    ["mw3"] = {
+        menuopen = "codhud/menu/mw3/ui_screen_in1.mp3",
+        menuclose = "codhud/menu/mw3/ui_screen_out1.mp3",
+        hover = "codhud/menu/mw3/nav_hover.mp3",
+        confirm = "codhud/menu/mw3/nav_positive.mp3",
+        clickopen = "codhud/menu/mw3/nav_positive.mp3",
+    },
+    ["bo2"] = {
+        menuopen = "codhud/menu/bo2/cac_globe_draw.LN65.pc.snd.mp3",
+        menuclose = "codhud/menu/bo2/cac_screen_fade.LN65.pc.snd.mp3",
+        hover = "codhud/menu/bo2/cac_main_nav.LN65.pc.snd.mp3",
+        confirm = "codhud/menu/bo2/cac_enter.LN65.pc.snd.mp3",
+        clickopen = "codhud/menu/bo2/cac_enter.LN65.pc.snd.mp3",
     },
 }
 
@@ -77,17 +101,6 @@ CoDHUDMenu.Sounds = {
 CoDHUDMenu.Menus = CoDHUDMenu.Menus or {}
 
 -- [[ Start of Menu ConVars ]] --
--- Sounds
-CreateClientConVar("CoDHUDMenu_sound_enabled", 1, true, false)
--- CreateClientConVar("CoDHUDMenu_sound_set", "MW2", true, false)
-
--- Background
-CreateClientConVar("CoDHUDMenu_hide_description", 0, true, false)
-CreateClientConVar("CoDHUDMenu_hide_prompts", 0, true, false)
-
-CreateClientConVar("CoDHUDMenu_open_speed", 0.25, true, false)
-CreateClientConVar("CoDHUDMenu_close_speed", 0.25, true, false)
-
 -- Background colour
 CreateClientConVar("CoDHUDMenu_col_bg_r", 25, true, false)
 CreateClientConVar("CoDHUDMenu_col_bg_g", 25, true, false)
@@ -772,7 +785,7 @@ function CoDHUD.BuildSetting(parent, st, descPanel, promptBar)
 		end
 
 		wrap.OnCursorEntered = function()
-			-- CoDHUDMenu.PlaySFX("hover")
+			CoDHUDMenu.PlaySFX("hover")
 			if descPanel then
 				descPanel.Desc = st.desc or ""
 				if st.convar then
@@ -872,6 +885,7 @@ function CoDHUD.BuildSetting(parent, st, descPanel, promptBar)
 		end
 
 		local function PushDesc()
+			CoDHUDMenu.PlaySFX("hover")
 			if descPanel then
 				descPanel.Desc = st.desc or ""
 				if st.convar then
@@ -964,6 +978,7 @@ function CoDHUD.BuildSetting(parent, st, descPanel, promptBar)
 			draw.SimpleText("✔", "CoDHUD_Settings_Sec", w/2,h/2,color_white,TEXT_ALIGN_CENTER,TEXT_ALIGN_CENTER)
 		end
 		applyBtn.OnCursorEntered = function()
+			CoDHUDMenu.PlaySFX("hover")
 			if descPanel then
 				descPanel.Desc = st.desc or ""
 				if st.convar then
@@ -1220,11 +1235,12 @@ function CoDHUD.BuildSetting(parent, st, descPanel, promptBar)
 				end
 			end
 			if st.func then
-				st.func(combo)
+				st.func(combo, val, data)
 			end
 		end
 
 		combo.Button.OnCursorEntered = function()
+			CoDHUDMenu.PlaySFX("hover")
 			if descPanel then
 				descPanel.Desc = st.desc or ""
 				if st.convar then
@@ -1325,6 +1341,7 @@ function CoDHUD.BuildSetting(parent, st, descPanel, promptBar)
 			end
 		end
 		btn.OnCursorEntered = function()
+			CoDHUDMenu.PlaySFX("hover")
 			if descPanel then
 				descPanel.Desc = st.desc or ""
 				if st.convar then
@@ -1404,9 +1421,22 @@ function CoDHUD.BuildSetting(parent, st, descPanel, promptBar)
 				btn:SetImage(faction.scoreIcon)
 			end
 
-			btn:SetToolTip(language.GetPhrase(faction.name) or id:upper())
-
 			local current = LocalPlayer():GetNW2String("CoDHUD_Faction", "rangers")
+
+			btn.OnCursorEntered = function()
+				CoDHUDMenu.PlaySFX("hover")
+				if descPanel then
+					descPanel.Desc = language.GetPhrase(faction.name) or id:upper()
+				end
+				if promptBar then promptBar.Prompts = st.prompts or nil end
+			end
+			btn.OnCursorExited = function()
+				if descPanel then
+					descPanel.Desc = ""
+				end
+				if promptBar then promptBar.Prompts = nil end
+			end
+
 
 			btn.DoClick = function()
 				local cur = LocalPlayer():GetNW2String("CoDHUD_Faction", "rangers")
@@ -1421,8 +1451,9 @@ function CoDHUD.BuildSetting(parent, st, descPanel, promptBar)
 				end
 
 				if CoDHUDMenu.ConfirmFactionChange then
+					CoDHUDMenu.PlaySFX("confirm")
 					CoDHUDMenu.CloseCurrentMenu(true)
-					timer.Simple(tonumber(GetConVar("CoDHUDMenu_close_speed"):GetString()) or 0.2, function()
+					timer.Simple(tonumber(GetConVar("codhud_menu_closespeed"):GetString()) or 0.2, function()
 						CoDHUDMenu.OpenMenu(CoDHUDMenu.ConfirmFactionChange(id), true)
 						CoDHUDMenu.PlaySFX("menuopen")
 					end)
@@ -1543,10 +1574,10 @@ end
 
 -- Plays Sound SFX for the menu
 function CoDHUDMenu.PlaySFX(name, overrideSet)
-    if not GetConVar("CoDHUDMenu_sound_enabled"):GetBool() then return end
+    if not GetConVar("codhud_menu_sounds"):GetBool() then return end
     name = tostring(name or "")
-    local setName = "MW2"
-    local setTbl = CoDHUDMenu.Sounds[setName] or CoDHUDMenu.Sounds["MW2"]
+    local setName = CoDHUD_GetHUDType() or "mw2"
+    local setTbl = CoDHUDMenu.Sounds[setName] or CoDHUDMenu.Sounds["mw2"]
     if not setTbl then return end
     local snd = setTbl[name]
     if not snd or snd == "" then return end
@@ -1612,7 +1643,7 @@ function CoDHUDMenu.OpenMenu(menuFunc, dontsave)
         -- Close current menu first
         CoDHUDMenu.CloseCurrentMenu(true)
         -- Delay opening new menu to allow closing animation to start
-        timer.Simple(tonumber(GetConVar("CoDHUDMenu_close_speed"):GetString()) or 0.2, function()
+        timer.Simple(tonumber(GetConVar("codhud_menu_closespeed"):GetString()) or 0.2, function()
             if menuFunc then
                 menuFunc()
                 -- Update CurrentMenu to the newly created frame
@@ -1636,12 +1667,12 @@ function CoDHUDMenu.CloseCurrentMenu(noCloseSound)
     if not IsValid(frame) or frame._closing then return end
 
     -- Play close sound unless explicitly disabled OR convars disallow
-    if not noCloseSound and GetConVar("CoDHUDMenu_sound_enabled"):GetBool() then CoDHUDMenu.PlaySFX("menuclose") end
+    if not noCloseSound and GetConVar("codhud_menu_sounds"):GetBool() then CoDHUDMenu.PlaySFX("menuclose") end
 
     frame._closing = true
     frame._closeStart = CurTime()
 
-    local closeSpeed = tonumber(GetConVar("CoDHUDMenu_close_speed"):GetString()) or 0.2
+    local closeSpeed = tonumber(GetConVar("codhud_menu_closespeed"):GetString()) or 0.2
     frame._closeFadeDur = closeSpeed * 0.5
     frame._closeShrinkDur = closeSpeed
     frame._closeShrinkStart = frame._closeStart + frame._closeFadeDur * 0.5
@@ -1678,13 +1709,13 @@ function CoDHUDMenu:Open(menu)
 
 	local Height = CurrentMenu.Height or math.min( CoDHUD_S(BaseMenuH), ScrH() * 0.92 )
 
-    local ShowDesc = CurrentMenu.Description == true and not GetConVar("CoDHUDMenu_hide_description"):GetBool()
+    local ShowDesc = CurrentMenu.Description == true and not GetConVar("codhud_menu_hide_desc"):GetBool()
     local Tabs = CurrentMenu.Tabs or {}
     local UnfocusClose = CurrentMenu.UnfocusClose == true
 	local HideCloseButton = CurrentMenu.HideCloseButton == true
-	local HidePrompts = GetConVar("CoDHUDMenu_hide_prompts"):GetBool()
+	local HidePrompts = GetConVar("codhud_menu_hide_prompts"):GetBool()
 	
-	if CurrentMenu.Description == true and GetConVar("CoDHUDMenu_hide_description"):GetBool() then
+	if CurrentMenu.Description == true and GetConVar("codhud_menu_hide_desc"):GetBool() then
 		Width = math.max(
 			CoDHUD_SX(1000),
 			Width * 0.75
@@ -1717,7 +1748,7 @@ function CoDHUDMenu:Open(menu)
     frame.TargetHeight = fh
 
     local animStart = CurTime()
-    local animDur = tonumber(GetConVar("CoDHUDMenu_open_speed"):GetString()) or 0.2
+    local animDur = tonumber(GetConVar("codhud_menu_openspeed"):GetString()) or 0.2
     local primaryFadeStart = animStart + animDur * 0.5
     local primaryFadeDur = animDur * 1.25
     local secondaryFadeStart = animStart + animDur * 0.5
@@ -2242,6 +2273,7 @@ function CoDHUDMenu:Open(menu)
             end
 
 			btn.OnCursorEntered = function()
+				CoDHUDMenu.PlaySFX("hover")
 				if tab.Desc and descPanel then descPanel.Desc = tab.Desc or "" end
 				if promptBar then promptBar.Prompts = tab.Prompts or { "uv.prompt.tab" } end
 			end
