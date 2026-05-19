@@ -1360,11 +1360,11 @@ function CoDHUD.BuildSetting(parent, st, descPanel, promptBar)
 
 				if CoDHUDMenu.ConfirmFactionChange then
 					CoDHUDMenu.PlaySFX("confirm")
-					CoDHUDMenu.CloseCurrentMenu(true)
-					timer.Simple(tonumber(GetConVar("codhud_menu_closespeed"):GetString()) or 0.2, function()
+					-- CoDHUDMenu.CloseCurrentMenu(true)
+					-- timer.Simple(tonumber(GetConVar("codhud_menu_closespeed"):GetString()) or 0.2, function()
 						CoDHUDMenu.OpenMenu(CoDHUDMenu.ConfirmFactionChange(id), true)
-						CoDHUDMenu.PlaySFX("menuopen")
-					end)
+						-- CoDHUDMenu.PlaySFX("menuopen")
+					-- end)
 				end
 			end
 
@@ -1547,20 +1547,17 @@ function CoDHUDMenu.OpenMenu(menuFunc, dontsave)
         CoDHUDMenu.LastMenu = menuFunc
     end
 
-    if CoDHUDMenu.CurrentMenu and IsValid(CoDHUDMenu.CurrentMenu) then
-        -- Close current menu first
-        CoDHUDMenu.CloseCurrentMenu(true)
-        -- Delay opening new menu to allow closing animation to start
-        timer.Simple(tonumber(GetConVar("codhud_menu_closespeed"):GetString()) or 0.2, function()
-            if menuFunc then
-                menuFunc()
-                -- Update CurrentMenu to the newly created frame
-                CoDHUDMenu.CurrentMenu = CoDHUD.SettingsFrame
-				CoDHUDMenu.PlaySFX("menuopen")
-            end
-        end)
-        return
-    end
+    -- if CoDHUDMenu.CurrentMenu and IsValid(CoDHUDMenu.CurrentMenu) then
+        -- CoDHUDMenu.CloseCurrentMenu(true)
+        -- timer.Simple(tonumber(GetConVar("codhud_menu_closespeed"):GetString()) or 0.2, function()
+            -- if menuFunc then
+                -- menuFunc()
+                -- CoDHUDMenu.CurrentMenu = CoDHUD.SettingsFrame
+				-- CoDHUDMenu.PlaySFX("menuopen")
+            -- end
+        -- end)
+        -- return
+    -- end
 
     -- Open menu immediately if nothing is open
     if menuFunc then

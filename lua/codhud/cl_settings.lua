@@ -34,8 +34,8 @@ CreateClientConVar("codhud_menu_sounds", "1", true, false, "Enable or disable so
 CreateClientConVar("codhud_menu_hide_desc", 0, true, false)
 CreateClientConVar("codhud_menu_hide_prompts", 0, true, false)
 
-CreateClientConVar("codhud_menu_openspeed", 0.25, true, false)
-CreateClientConVar("codhud_menu_closespeed", 0.25, true, false)
+CreateClientConVar("codhud_menu_openspeed", 0.15, true, false)
+CreateClientConVar("codhud_menu_closespeed", 0.15, true, false)
 
 -- [[ MENU POPULATION ]] -- Only done to present button to open proper menu
 hook.Add("PopulateToolMenu", "CoDHUD_SETTINGSMenu", function()
@@ -576,30 +576,39 @@ CoDHUDMenu.Main = function()
 				{ type = "bool", text = "CoDHUD.Audio.Music.Ambient", desc = "CoDHUD.Audio.Music.Ambient.desc", convar = "codhud_enable_suspense" },
 
 				{ type = "label", text = "CoDHUD.Menu" },
-				{ type = "bool", text = "CoDHUD.Menu.Fullscreen", desc = "CoDHUD.Menu.Fullscreen.desc", convar = "codhud_menu_fullscreen" },
+				{ type = "bool", text = "CoDHUD.Menu.Fullscreen", desc = "CoDHUD.Menu.Fullscreen.desc", convar = "codhud_menu_fullscreen", func = function()
+					CoDHUDMenu.OpenMenu(CoDHUDMenu.Main)
+				end },
 				{ type = "bool", text = "CoDHUD.Menu.SFX", desc = "CoDHUD.Menu.SFX.desc", convar = "codhud_menu_sounds" },
 				-- { type = "bool", text = "CoDHUD.Menu.Music", desc = "CoDHUD.Menu.Music.desc", convar = "codhud_menu_music" },
 				{ type = "bool", text = "CoDHUD.Menu.HideDesc", desc = "CoDHUD.Menu.HideDesc.desc", convar = "codhud_menu_hide_desc" },
 				{ type = "bool", text = "CoDHUD.Menu.HidePrompts", desc = "CoDHUD.Menu.HidePrompts.desc", convar = "codhud_menu_hide_prompts" },
-				{ type = "slider", text = "CoDHUD.Menu.OpenSpeed", desc = "CoDHUD.Menu.OpenSpeed.desc", convar = "codhud_menu_openspeed", min = 0.15, max = 1, decimals = 2 },
-				{ type = "slider", text = "CoDHUD.Menu.CloseSpeed", desc = "CoDHUD.Menu.CloseSpeed.desc", convar = "codhud_menu_closespeed", min = 0.15, max = 1, decimals = 2 },
+				{ type = "slider", text = "CoDHUD.Menu.OpenSpeed", desc = "CoDHUD.Menu.OpenSpeed.desc", convar = "codhud_menu_openspeed", min = 0, max = 1, decimals = 2 },
+				{ type = "slider", text = "CoDHUD.Menu.CloseSpeed", desc = "CoDHUD.Menu.CloseSpeed.desc", convar = "codhud_menu_closespeed", min = 0, max = 1, decimals = 2 },
 				
-				{ type = "label", text = "CoDHUD.HUD" },
-				{ type = "bool", text = "CoDHUD.HUD.Scoreboard.Enable", desc = "CoDHUD.HUD.Scoreboard.Enable.desc", convar = "codhud_enable_scoreboard" },
-				{ type = "bool", text = "CoDHUD.HUD.Scorecounter.Enable", desc = "CoDHUD.HUD.Scorecounter.Enable.desc", convar = "codhud_enable_scorebar", requireconvaroff = "codhud_quickdisable_hud" },
-				{ type = "bool", text = "CoDHUD.HUD.Medals.Enable", desc = "CoDHUD.HUD.Medals.Enable.desc", convar = "codhud_enable_medals", requireconvaroff = "codhud_quickdisable_hud" },
-				{ type = "bool", text = "CoDHUD.HUD.Medals.Speedup", desc = "CoDHUD.HUD.Medals.Speedup.desc", convar = "codhud_enable_medal_faster", requireparentconvar = "codhud_enable_medals", requireconvaroff = "codhud_quickdisable_hud" },
+				{ type = "label", text = "CoDHUD.HUD", requireparentconvar = "codhud_quickdisable_hud", parentinvert = true, noprefix = true },
+				{ type = "bool", text = "CoDHUD.HUD.Scoreboard.Enable", desc = "CoDHUD.HUD.Scoreboard.Enable.desc", convar = "codhud_enable_scoreboard", requireparentconvar = "codhud_quickdisable_hud", parentinvert = true, noprefix = true },
+				{ type = "bool", text = "CoDHUD.HUD.Scorecounter.Enable", desc = "CoDHUD.HUD.Scorecounter.Enable.desc", convar = "codhud_enable_scorebar", requireparentconvar = "codhud_quickdisable_hud", parentinvert = true, noprefix = true },
+				{ type = "bool", text = "CoDHUD.HUD.Medals.Enable", desc = "CoDHUD.HUD.Medals.Enable.desc", convar = "codhud_enable_medals", requireparentconvar = "codhud_quickdisable_hud", parentinvert = true, noprefix = true },
+				{ type = "bool", text = "CoDHUD.HUD.Medals.Speedup", desc = "CoDHUD.HUD.Medals.Speedup.desc", convar = "codhud_enable_medal_faster", requireparentconvar = "codhud_quickdisable_hud", parentinvert = true },
 
-				{ type = "bool", text = "CoDHUD.HUD.Killfeed.Enable", desc = "CoDHUD.HUD.Killfeed.Enable.desc", convar = "codhud_enable_killfeed", requireconvaroff = "codhud_quickdisable_hud" },
-				{ type = "bool", text = "CoDHUD.HUD.Minimap.Enable", desc = "CoDHUD.HUD.Minimap.Enable.desc", convar = "codhud_enable_minimap", requireconvaroff = "codhud_quickdisable_hud" },
-				{ type = "bool", text = "CoDHUD.HUD.Hitmarker.Enable", desc = "CoDHUD.HUD.Hitmarker.Enable.desc", convar = "codhud_enable_hitmarker", requireconvaroff = "codhud_quickdisable_hud" },
-				{ type = "bool", text = "CoDHUD.HUD.WeaponInfo.Enable", desc = "CoDHUD.HUD.WeaponInfo.Enable.desc", convar = "codhud_enable_weaponinfo", requireconvaroff = "codhud_quickdisable_hud" },
-				{ type = "bool", text = "CoDHUD.HUD.WeaponPrompts.Enable", desc = "CoDHUD.HUD.WeaponPrompts.Enable.desc", convar = "codhud_enable_prompts", requireconvaroff = "codhud_quickdisable_hud" },
-				{ type = "bool", text = "CoDHUD.HUD.XP.Enable", desc = "CoDHUD.HUD.XP.Enable.desc", convar = "codhud_enable_xp", requireconvaroff = "codhud_quickdisable_hud" },
-				{ type = "bool", text = "CoDHUD.HUD.IFF.Enable", desc = "CoDHUD.HUD.IFF.Enable.desc", convar = "codhud_enable_iff", requireconvaroff = "codhud_quickdisable_hud" },
-				{ type = "bool", text = "CoDHUD.HUD.DeathIcon.Enable", desc = "CoDHUD.HUD.DeathIcon.Enable.desc", convar = "codhud_enable_deathicon", requireconvaroff = "codhud_quickdisable_hud" },
-				{ type = "bool", text = "CoDHUD.HUD.Chat.Enable", desc = "CoDHUD.HUD.Chat.Enable.desc", convar = "codhud_enable_chat", requireconvaroff = "codhud_quickdisable_hud" },
-				{ type = "bool", text = "CoDHUD.HUD.Challenges.Enable", desc = "CoDHUD.HUD.Challenges.Enable.desc", convar = "codhud_enable_challenges", requireconvaroff = "codhud_quickdisable_hud" },
+				{ type = "bool", text = "CoDHUD.HUD.Killfeed.Enable", desc = "CoDHUD.HUD.Killfeed.Enable.desc", convar = "codhud_enable_killfeed", requireparentconvar = "codhud_quickdisable_hud", parentinvert = true, noprefix = true },
+				{ type = "bool", text = "CoDHUD.HUD.Minimap.Enable", desc = "CoDHUD.HUD.Minimap.Enable.desc", convar = "codhud_enable_minimap", requireparentconvar = "codhud_quickdisable_hud", parentinvert = true, noprefix = true },
+				{ type = "bool", text = "CoDHUD.HUD.Hitmarker.Enable", desc = "CoDHUD.HUD.Hitmarker.Enable.desc", convar = "codhud_enable_hitmarker", requireparentconvar = "codhud_quickdisable_hud", parentinvert = true, noprefix = true },
+				{ type = "bool", text = "CoDHUD.HUD.WeaponInfo.Enable", desc = "CoDHUD.HUD.WeaponInfo.Enable.desc", convar = "codhud_enable_weaponinfo", requireparentconvar = "codhud_quickdisable_hud", parentinvert = true, noprefix = true },
+				{ type = "bool", text = "CoDHUD.HUD.WeaponPrompts.Enable", desc = "CoDHUD.HUD.WeaponPrompts.Enable.desc", convar = "codhud_enable_prompts", requireparentconvar = "codhud_quickdisable_hud", parentinvert = true, noprefix = true },
+				{ type = "bool", text = "CoDHUD.HUD.XP.Enable", desc = "CoDHUD.HUD.XP.Enable.desc", convar = "codhud_enable_xp", requireparentconvar = "codhud_quickdisable_hud", parentinvert = true, noprefix = true },
+				{ type = "bool", text = "CoDHUD.HUD.IFF.Enable", desc = "CoDHUD.HUD.IFF.Enable.desc", convar = "codhud_enable_iff", requireparentconvar = "codhud_quickdisable_hud", parentinvert = true, noprefix = true },
+				{ type = "bool", text = "CoDHUD.HUD.DeathIcon.Enable", desc = "CoDHUD.HUD.DeathIcon.Enable.desc", convar = "codhud_enable_deathicon", requireparentconvar = "codhud_quickdisable_hud", parentinvert = true, noprefix = true },
+				{ type = "bool", text = "CoDHUD.HUD.Chat.Enable", desc = "CoDHUD.HUD.Chat.Enable.desc", convar = "codhud_enable_chat", requireparentconvar = "codhud_quickdisable_hud", parentinvert = true, noprefix = true },
+				{ type = "bool", text = "CoDHUD.HUD.Challenges.Enable", desc = "CoDHUD.HUD.Challenges.Enable.desc", convar = "codhud_enable_challenges", requireparentconvar = "codhud_quickdisable_hud", parentinvert = true, noprefix = true },
+
+
+				{ type = "label", text = "CoDHUD.Reset" },
+				{ type = "button", text = "CoDHUD.Rank.Reset", desc = "CoDHUD.Rank.Reset.desc", playsfx = "clickopen", prompts = {"CoDHUD.Glyph.OpenMenu"}, func = function() CoDHUDMenu.OpenMenu(CoDHUDMenu.ConfirmRankReset, true) end },
+				{ type = "button", text = "CoDHUD.Challenges.Reset", desc = "CoDHUD.Challenges.Reset.desc", playsfx = "clickopen", prompts = {"CoDHUD.Glyph.OpenMenu"}, func = function()
+					RunConsoleCommand("codhud_challenge_clear")
+				end },
 
 			},
 			
@@ -635,8 +644,7 @@ CoDHUDMenu.Main = function()
 				{ type = "button", text = "CoDHUD.RoundStart.Start", desc = "CoDHUD.RoundStart.Start.desc", playsfx = "clickopen", prompts = {"CoDHUD.Glyph.OpenMenu"}, func = function() CoDHUDMenu.OpenMenu(CoDHUDMenu.ConfirmRoundStart, true) end, sv = true },
 				
 				{ type = "button", text = "CoDHUD.ForceEndRound", desc = "CoDHUD.ForceEndRound.desc", playsfx = "clickopen", prompts = {"CoDHUD.Glyph.OpenMenu"}, func = function() CoDHUDMenu.OpenMenu(CoDHUDMenu.ConfirmRoundStop, true) end, cond = function() return _G.CoDHUD_RoundActiveCL end, sv = true },
-				
-				
+
 				{ type = "label", text = "CoDHUD.Admin.RestrictType" },
 				{ type = "combo", text = "CoDHUD.Admin.RestrictType.Choose", desc = "CoDHUD.Admin.RestrictType.desc", convar = "codhud_game", sv = true, content = CoDHUD.GetHUDList(), func = function(_, _, data)
 					local current = GetConVar("codhud_game"):GetString()
@@ -674,7 +682,7 @@ function CoDHUDMenu.ConfirmFactionChange(factionID)
 		Description = false,
 		UnfocusClose = false,
 		Tabs = {
-					
+
 			{ TabName = "CoDHUD.RoundStart", NoTitle = true, -- Welcome Page
 				{ type = "infosimple", text = factionData.name },
 				{ type = "image", image = factionData.scoreIcon, mode = "icon", fixedSize = 128 },
@@ -745,6 +753,32 @@ CoDHUDMenu.ConfirmRoundStop = function()
 					CoDHUDMenu.CloseCurrentMenu()
 				end, sv = true },
 				{ type = "button", text = "CoDHUD.ForceEndRound.No", playsfx = "clickback", prompts = {"CoDHUD.Glyph.Return"}, func = function() CoDHUDMenu.OpenMenu(CoDHUDMenu.Main, true) end, sv = true },
+			},
+		}
+	})
+end
+
+CoDHUDMenu.ConfirmRankReset = function()
+	local fs = GetConVar("codhud_menu_fullscreen"):GetBool()
+	local menusize = fs and 1 or 0.5
+
+	CoDHUDMenu.CurrentMenu = CoDHUDMenu:Open({
+		Name = CoDHUDString("CoDHUD.Title") .. " - " .. CoDHUDString("CoDHUD.Rank.Reset"),
+		Width  = ScrW() * menusize,
+		Height = ScrH() * menusize,
+		Description = false,
+		UnfocusClose = false,
+		Tabs = {
+					
+			{ TabName = "CoDHUD.Rank.Reset", NoTitle = true, -- Welcome Page
+				{ type = "infosimple", text = "CoDHUD.Rank.Reset.Warning" },
+				{ type = "button", text = "dialog.ok", prompts = {"CoDHUD.Glyph.Confirm"}, func = function()
+					RunConsoleCommand("codhud_rank_clear")
+					CoDHUDMenu.OpenMenu(CoDHUDMenu.Main, true)
+				end, sv = true },
+				{ type = "button", text = "dialog.cancel", playsfx = "clickback", prompts = {"CoDHUD.Glyph.Return"}, func = function()
+					CoDHUDMenu.OpenMenu(CoDHUDMenu.Main, true)
+				end, sv = true },
 			},
 		}
 	})
