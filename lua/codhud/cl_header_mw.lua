@@ -331,6 +331,15 @@ local function GetSafeColor(col)
     return Color(col.r or 255, col.g or 255, col.b or 255, col.a or 255)
 end
 
+local function CoDHUD_ShouldHideHUD()
+    if gui.IsGameUIVisible() then return true end
+    if gui.IsConsoleVisible() then return true end
+    if vgui.CursorVisible() then return true end
+    if IsValid(ScoreBoard) then return true end -- fallback safety
+    if CoDHUD_ScoreboardOpened then return true end -- fallback safety
+    return false
+end
+
 -- Update
 function CoDHUD_Header_MW:Update()
     local now = CurTime()
@@ -1141,38 +1150,41 @@ end
 
 function CoDHUD_HeaderQueue.Think()
 
-    -- spawn next queued header if allowed
+	-- spawn next queued header if allowed
 	if #CoDHUD_HeaderQueue.Queue > 0 then
-		local cfg = CoDHUD_HeaderQueue.Queue[1]
+		if not CoDHUD_ShouldHideHUD() then
 
-		local canSpawn = cfg.multiple or #CoDHUD_HeaderQueue.Active == 0
+			local cfg = CoDHUD_HeaderQueue.Queue[1]
 
-		if canSpawn then
-			if not CoDHUD_HeaderQueue.HasPresentationLock then
+			local canSpawn = cfg.multiple or #CoDHUD_HeaderQueue.Active == 0
 
-				local hud = CoDHUD[CoDHUD_GetHUDType()]
-				local block = true
+			if canSpawn then
+				if not CoDHUD_HeaderQueue.HasPresentationLock then
 
-				if hud and hud.MedalsBlockChallenges == false then
-					block = false
-				end
+					local hud = CoDHUD[CoDHUD_GetHUDType()]
+					local block = true
 
-				if block then
-					if not PRESENT:Acquire("header") then
-						return
+					if hud and hud.MedalsBlockChallenges == false then
+						block = false
 					end
+
+					if block then
+						if not PRESENT:Acquire("header") then
+							return
+						end
+					end
+
+					CoDHUD_HeaderQueue.HasPresentationLock = true
 				end
 
-				CoDHUD_HeaderQueue.HasPresentationLock = true
+				table.remove(CoDHUD_HeaderQueue.Queue, 1)
+
+				local new = CoDHUD_Header_MW:New(cfg)
+				table.insert(CoDHUD_HeaderQueue.Active, new)
 			end
-
-			table.remove(CoDHUD_HeaderQueue.Queue, 1)
-
-			local new = CoDHUD_Header_MW:New(cfg)
-			table.insert(CoDHUD_HeaderQueue.Active, new)
 		end
 	end
-
+	
     -- update all active headers
     for i = #CoDHUD_HeaderQueue.Active, 1, -1 do
         local h = CoDHUD_HeaderQueue.Active[i]
@@ -1212,15 +1224,6 @@ end
 hook.Add("Think", "CoDHUD_HeaderQueueThink", function()
     CoDHUD_HeaderQueue.Think()
 end)
-
-local function CoDHUD_ShouldHideHUD()
-    if gui.IsGameUIVisible() then return true end
-    if gui.IsConsoleVisible() then return true end
-    if vgui.CursorVisible() then return true end
-    if IsValid(ScoreBoard) then return true end -- fallback safety
-    if CoDHUD_ScoreboardOpened then return true end -- fallback safety
-    return false
-end
 
 hook.Add("DrawOverlay", "CoDHUD_Header_MW_Draw", function()
     if not GetConVar("cl_drawhud"):GetBool() then return end

@@ -62,3 +62,16 @@
 - Added underbarrel HUD support for CW 2.0 weapons and ak47toh's TFA CoD packs
 - Fixed significant performance issues when using GMinimap
 - Fixed that CW2 weapons had incorrect names on challenge prompts
+
+[ Update 9 ]
+[ Added ]
+- Added a custom menu system, borrowed from the Unit Vehicles addon
+  ∟ This menu replaces the old derma-based menu system
+  ∟ The structure is almost identical to the old one
+  ∟ Also added themed SFX when navigating the menu*
+  
+*Black Ops will use Modern Warfare 2 SFX due to me not being able to find the darn things
+  
+[ Changes ]
+- Fixed server-sided score counting when playing Free-for-All
+- Headers no longer begin appearing when they are hidden (paused, menu opened, etc.)

@@ -1325,12 +1325,63 @@ function CoDHUD.BuildSetting(parent, st, descPanel, promptBar)
 			local btn = vgui.Create("DImageButton")
 			btn:SetSize(CoDHUD_S(128), CoDHUD_S(128))
 
-			if faction.scoreIcon then
-				btn:SetImage(faction.scoreIcon)
+			local current = LocalPlayer():GetNW2String("CoDHUD_Faction", "rangers")
+			local mat = faction.scoreIcon and Material(faction.scoreIcon)
+
+			btn.HoverLerp = 0
+
+			btn.Think = function(self)
+				local target = self:IsHovered() and 1 or 0
+				self.HoverLerp = Lerp(FrameTime() * 10, self.HoverLerp, target)
 			end
 
-			local current = LocalPlayer():GetNW2String("CoDHUD_Faction", "rangers")
+			btn.Paint = function(self, w, h)
+				if not mat then return end
 
+				local current = LocalPlayer():GetNW2String("CoDHUD_Faction", "rangers")
+				local mode = CoDHUD.RestrictFactions
+
+				local blocked = false
+
+				if id ~= current then
+					if mode == 0 then
+						blocked = true
+					elseif mode == 2 then
+						local pool = CoDHUD.Factions.ActivePool or {}
+						if not table.HasValue(pool, id) then
+							blocked = true
+						end
+					end
+				end
+
+				local brightness = 140
+
+				if not blocked then
+					brightness = Lerp(self.HoverLerp, 140, 255)
+				else
+					brightness = 0
+				end
+				
+				if id == current then brightness = 255 end
+
+				surface.SetMaterial(mat)
+				surface.SetDrawColor(0,0,0,255)
+				surface.DrawTexturedRect(0, 0, w, h)
+				
+				surface.SetDrawColor(brightness, brightness, brightness, 255)
+				surface.DrawTexturedRect(0, 0, w, h)
+
+				if count > 0 then
+					local txt = tostring(count)
+					surface.SetFont("CoDHUD_Settings_Tri")
+					local tw, th = surface.GetTextSize(txt)
+
+					draw.RoundedBox(4, CoDHUD_S(4), CoDHUD_S(4), tw + 4, th, Color(0,0,0,200))
+					draw.SimpleText(txt, "CoDHUD_Settings_Tri", CoDHUD_S(6), th * 0.15, color_white, TEXT_ALIGN_LEFT)
+				end
+
+			end
+			
 			btn.OnCursorEntered = function()
 				CoDHUDMenu.PlaySFX("hover")
 				if descPanel then
@@ -1360,53 +1411,7 @@ function CoDHUD.BuildSetting(parent, st, descPanel, promptBar)
 
 				if CoDHUDMenu.ConfirmFactionChange then
 					CoDHUDMenu.PlaySFX("confirm")
-					-- CoDHUDMenu.CloseCurrentMenu(true)
-					-- timer.Simple(tonumber(GetConVar("codhud_menu_closespeed"):GetString()) or 0.2, function()
-						CoDHUDMenu.OpenMenu(CoDHUDMenu.ConfirmFactionChange(id), true)
-						-- CoDHUDMenu.PlaySFX("menuopen")
-					-- end)
-				end
-			end
-
-			btn.PaintOver = function(self, w, h)
-				local current = LocalPlayer():GetNW2String("CoDHUD_Faction", "rangers")
-				local mode = CoDHUD.RestrictFactions
-
-				local blocked = false
-
-				if id ~= current then
-					if mode == 0 then
-						blocked = true
-					elseif mode == 2 then
-						local pool = CoDHUD.Factions.ActivePool or {}
-						if not table.HasValue(pool, id) then
-							blocked = true
-						end
-					end
-				end
-
-				-- Darken blocked factions
-				if blocked then
-					surface.SetDrawColor(0, 0, 0, 180)
-					surface.DrawRect(0, 0, w, h)
-				end
-
-				-- Existing selection highlight
-				if current == id then
-					surface.SetDrawColor(255, 255, 255, 60)
-					surface.DrawOutlinedRect(0, 0, w, h, 4)
-
-					surface.SetDrawColor(255, 255, 255, 255)
-					surface.DrawOutlinedRect(2, 2, w - 4, h - 4, 2)
-				end
-
-				if count > 0 then
-					local txt = tostring(count)
-					surface.SetFont("DermaDefaultBold")
-					local tw, th = surface.GetTextSize(txt)
-
-					draw.RoundedBox(4, w - tw - 16, 4, tw + 10, th + 6, Color(0,0,0,200))
-					draw.SimpleText(txt, "DermaDefaultBold", w - 11, 7, color_white, TEXT_ALIGN_CENTER)
+					CoDHUDMenu.OpenMenu(CoDHUDMenu.ConfirmFactionChange(id), true)
 				end
 			end
 

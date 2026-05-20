@@ -260,9 +260,6 @@ function CoDHUD.Factions.RebuildPool()
 	local factionTable = CoDHUD.Factions.validfactions[game] or CoDHUD.Factions.validfactions["mw2"]
     
     CoDHUD.Factions.ActivePool = CoDHUD.Factions.BuildFactionPool(factionTable)
-
-    print("[CoDHUD] Active faction pool:")
-    PrintTable(CoDHUD.Factions.ActivePool)
 end
 
 hook.Add("Initialize", "CoDHUD_InitPool", function()
