@@ -182,6 +182,7 @@ CoDHUDMenu.Main = function()
 					{"#MW2_MPUI_WAR", "war"},
 					{"#MW2_MPUI_DEATHMATCH", "dm"},
 				}},
+				{ type = "bool", text = "CoDHUD.Admin.FriendlyFire", desc = "CoDHUD.Admin.FriendlyFire.desc", convar = "codhud_friendly_fire", sv = true, requireparentconvarvariable = "codhud_selected_gamemode", requireparentconvarvalue = "war" },
 				{ type = "slider", text = "CoDHUD.Scorelimit", desc = "CoDHUD.Scorelimit.desc", convar = "codhud_score_limit", sv = true, min = 1, max = 150, decimals = 0 },
 				{ type = "slider", text = "CoDHUD.Timelimit", desc = "CoDHUD.Timelimit.desc", convar = "codhud_time_limit", sv = true, min = 0, max = 30, decimals = 0 },
 				{ type = "slider", text = "CoDHUD.RoundStart.Timer", desc = "CoDHUD.RoundStart.Timer.desc", convar = "codhud_matchstart_timer", sv = true, min = 0, max = 15, decimals = 0 },
@@ -192,7 +193,6 @@ CoDHUDMenu.Main = function()
 				{ type = "label", text = "CoDHUD.General" },
 				{ type = "bool", text = "CoDHUD.Admin.EndScreen", desc = "CoDHUD.Admin.EndScreen.desc", convar = "codhud_enable_roundend", sv = true },
 				{ type = "bool", text = "CoDHUD.Admin.EndScreen.StartNext", desc = "CoDHUD.Admin.EndScreen.StartNext.desc", convar = "codhud_enable_roundend_startnext", sv = true },
-				{ type = "bool", text = "CoDHUD.Admin.FriendlyFire", desc = "CoDHUD.Admin.FriendlyFire.desc", convar = "codhud_friendly_fire", sv = true },
 				{ type = "bool", text = "CoDHUD.RoundStart.Autobalance", desc = "CoDHUD.RoundStart.Autobalance.desc", convar = "codhud_autobalance_on_roundstart", sv = true },
 				
 				{ type = "combo", text = "CoDHUD.Autobalance.Amount", desc = "CoDHUD.Autobalance.Amount.desc", convar = "codhud_autofaction_limit", sv = true, content = {
