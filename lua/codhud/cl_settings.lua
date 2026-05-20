@@ -30,6 +30,7 @@ CreateClientConVar("codhud_enable_outlinedtext", "0", true, false, "Enable or di
 
 CreateClientConVar("codhud_menu_fullscreen", "0", true, false, "If enabled, the CoD HUD Menu will open in full screen.")
 CreateClientConVar("codhud_menu_sounds", "1", true, false, "Enable or disable sounds in the CoD HUD Menu.")
+CreateClientConVar("codhud_menu_music", "1", true, false, "Enable or disable music in the CoD HUD Menu.")
 
 CreateClientConVar("codhud_menu_hide_desc", 0, true, false)
 CreateClientConVar("codhud_menu_hide_prompts", 0, true, false)
@@ -150,7 +151,7 @@ CoDHUDMenu.Main = function()
 					CoDHUDMenu.OpenMenu(CoDHUDMenu.Main)
 				end },
 				{ type = "bool", text = "CoDHUD.Menu.SFX", desc = "CoDHUD.Menu.SFX.desc", convar = "codhud_menu_sounds" },
-				-- { type = "bool", text = "CoDHUD.Menu.Music", desc = "CoDHUD.Menu.Music.desc", convar = "codhud_menu_music" },
+				{ type = "bool", text = "CoDHUD.Menu.Music", desc = "CoDHUD.Menu.Music.desc", convar = "codhud_menu_music" },
 				{ type = "bool", text = "CoDHUD.Menu.HideDesc", desc = "CoDHUD.Menu.HideDesc.desc", convar = "codhud_menu_hide_desc" },
 				{ type = "bool", text = "CoDHUD.Menu.HidePrompts", desc = "CoDHUD.Menu.HidePrompts.desc", convar = "codhud_menu_hide_prompts" },
 				{ type = "slider", text = "CoDHUD.Menu.OpenSpeed", desc = "CoDHUD.Menu.OpenSpeed.desc", convar = "codhud_menu_openspeed", min = 0, max = 1, decimals = 2 },

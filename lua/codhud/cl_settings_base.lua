@@ -1330,6 +1330,24 @@ function CoDHUD.BuildSetting(parent, st, descPanel, promptBar)
 
 			btn.HoverLerp = 0
 
+			local function IsBlocked()
+				local current = LocalPlayer():GetNW2String("CoDHUD_Faction", "rangers")
+				local mode = CoDHUD.RestrictFactions
+
+				if id ~= current then
+					if mode == 0 then
+						return true
+					elseif mode == 2 then
+						local pool = CoDHUD.Factions.ActivePool or {}
+						if not table.HasValue(pool, id) then
+							return true
+						end
+					end
+				end
+
+				return false
+			end
+
 			btn.Think = function(self)
 				local target = self:IsHovered() and 1 or 0
 				self.HoverLerp = Lerp(FrameTime() * 10, self.HoverLerp, target)
@@ -1341,18 +1359,7 @@ function CoDHUD.BuildSetting(parent, st, descPanel, promptBar)
 				local current = LocalPlayer():GetNW2String("CoDHUD_Faction", "rangers")
 				local mode = CoDHUD.RestrictFactions
 
-				local blocked = false
-
-				if id ~= current then
-					if mode == 0 then
-						blocked = true
-					elseif mode == 2 then
-						local pool = CoDHUD.Factions.ActivePool or {}
-						if not table.HasValue(pool, id) then
-							blocked = true
-						end
-					end
-				end
+				local blocked = IsBlocked()
 
 				local brightness = 140
 
@@ -1383,19 +1390,15 @@ function CoDHUD.BuildSetting(parent, st, descPanel, promptBar)
 			end
 			
 			btn.OnCursorEntered = function()
-				CoDHUDMenu.PlaySFX("hover")
-				if descPanel then
-					descPanel.Desc = language.GetPhrase(faction.name) or id:upper()
-				end
+				if not IsBlocked() then CoDHUDMenu.PlaySFX("hover") end
+				if descPanel then descPanel.Desc = language.GetPhrase(faction.name) or id:upper() end
 				if promptBar then promptBar.Prompts = st.prompts or nil end
 			end
+
 			btn.OnCursorExited = function()
-				if descPanel then
-					descPanel.Desc = ""
-				end
+				if descPanel then descPanel.Desc = "" end
 				if promptBar then promptBar.Prompts = nil end
 			end
-
 
 			btn.DoClick = function()
 				local cur = LocalPlayer():GetNW2String("CoDHUD_Faction", "rangers")
@@ -1498,6 +1501,106 @@ function CoDHUDMenu.PlaySFX(name, overrideSet)
     surface.PlaySound(snd)
 end
 
+-- Plays Music in the menu
+CoDHUDMenu.OpenMenuFrames = CoDHUDMenu.OpenMenuFrames or {}
+CoDHUDMenu.MusicChannel = nil
+CoDHUDMenu.MusicPath = nil
+CoDHUDMenu.MusicVolume = 0
+CoDHUDMenu.MusicTargetVolume = 0
+CoDHUDMenu.MusicFadeSpeed = 4
+CoDHUDMenu.MusicThinkHook = "CoDHUD_MenuMusicThink"
+
+local function StopMusicChannel()
+	if IsValid(CoDHUDMenu.MusicChannel) then
+		CoDHUDMenu.MusicChannel:Stop()
+	end
+
+	CoDHUDMenu.MusicChannel = nil
+	CoDHUDMenu.MusicPath = nil
+	CoDHUDMenu.MusicVolume = 0
+	CoDHUDMenu.MusicTargetVolume = 0
+end
+
+function CoDHUDMenu.StartMusic()
+	if not GetConVar("codhud_menu_music"):GetBool() then return end
+
+	local hud = CoDHUD_GetHUDType() or "mw2"
+	local path = CoDHUDMenu.Music[hud]
+
+	if not path or path == "" then return end
+
+	-- cancel pending fadeout
+	timer.Remove("CoDHUD_MenuMusicCloseDelay")
+
+	-- already playing correct music
+	if IsValid(CoDHUDMenu.MusicChannel) and CoDHUDMenu.MusicPath == path then
+		CoDHUDMenu.MusicTargetVolume = GetConVar("snd_musicvolume"):GetFloat() or 1
+		return
+	end
+
+	-- different music already playing
+	if IsValid(CoDHUDMenu.MusicChannel) then
+		StopMusicChannel()
+	end
+
+	sound.PlayFile("sound/" .. path, "noplay noblock", function(chan, errid, errname)
+		if not IsValid(chan) then return end
+
+		CoDHUDMenu.MusicChannel = chan
+		CoDHUDMenu.MusicPath = path
+		CoDHUDMenu.MusicVolume = 0
+		CoDHUDMenu.MusicTargetVolume = GetConVar("snd_musicvolume"):GetFloat() or 1
+
+		chan:SetVolume(0)
+		chan:EnableLooping(true)
+		chan:Play()
+	end)
+
+	if not hook.GetTable().Think[CoDHUDMenu.MusicThinkHook] then
+		hook.Add("Think", CoDHUDMenu.MusicThinkHook, function()
+			local chan = CoDHUDMenu.MusicChannel
+
+			if not IsValid(chan) then return end
+
+			local ft = FrameTime()
+			local speed = CoDHUDMenu.MusicFadeSpeed
+
+			CoDHUDMenu.MusicVolume = Lerp( ft * speed, CoDHUDMenu.MusicVolume, CoDHUDMenu.MusicTargetVolume )
+
+			chan:SetVolume(CoDHUDMenu.MusicVolume)
+
+			-- fully faded out
+			if CoDHUDMenu.MusicTargetVolume <= 0.1
+			and CoDHUDMenu.MusicVolume <= 0.2 then
+				StopMusicChannel()
+			end
+		end)
+	end
+end
+
+function CoDHUDMenu.StopMusic()
+	timer.Remove("CoDHUD_MenuMusicCloseDelay")
+
+	timer.Create("CoDHUD_MenuMusicCloseDelay", 0.5, 1, function()
+
+		-- clean invalid panels
+		for k, pnl in ipairs(CoDHUDMenu.OpenMenuFrames) do
+			if not IsValid(pnl) then
+				CoDHUDMenu.OpenMenuFrames[k] = nil
+			end
+		end
+
+		-- any menus still open?
+		for _, pnl in pairs(CoDHUDMenu.OpenMenuFrames) do
+			if IsValid(pnl) then
+				return
+			end
+		end
+
+		CoDHUDMenu.MusicTargetVolume = 0
+	end)
+end
+
 function CoDHUDMenu.EstimateTabHeight(tab, availableWidth)
 	local h = 0
 
@@ -1568,6 +1671,11 @@ function CoDHUDMenu.OpenMenu(menuFunc, dontsave)
     if menuFunc then
         menuFunc()
         CoDHUDMenu.CurrentMenu = CoDHUD.SettingsFrame
+		timer.Simple(0, function()
+			if IsValid(CoDHUD.SettingsFrame) then
+				CoDHUDMenu.StartMusic()
+			end
+		end)
     end
 end
 
@@ -1643,6 +1751,7 @@ function CoDHUDMenu:Open(menu)
 
     local frame = vgui.Create("DFrame")
     CoDHUD.SettingsFrame = frame
+	table.insert(CoDHUDMenu.OpenMenuFrames, frame)
 	frame:SetSize(fw, fh)
 	frame:SetPos(fx, fy)
 	frame:Center()
@@ -2131,8 +2240,15 @@ function CoDHUDMenu:Open(menu)
         BuildTab(1)
     end
 
-    frame.OnRemove = function()
-        gui.EnableScreenClicker(false)
-        if CoDHUD.SettingsFrame == frame then CoDHUD.SettingsFrame = nil end
-    end
+	frame.OnRemove = function()
+		gui.EnableScreenClicker(false)
+
+		table.RemoveByValue(CoDHUDMenu.OpenMenuFrames, frame)
+
+		CoDHUDMenu.StopMusic()
+
+		if CoDHUD.SettingsFrame == frame then
+			CoDHUD.SettingsFrame = nil
+		end
+	end
 end
