@@ -400,7 +400,7 @@ local function levelup( ... )
         x = ScrW() * 0.5,
         y = CoDHUD_SY(125),
         color = Color(0,220,80),
-		sfx = "hud/mp_levelup_final_2.mp3",
+		sfx = "codhud/hud/mp_levelup_final_2.mp3",
         fonts = {
             pri = "MW2_ChalHeader_Pri",
             sec = "MW2_ChalHeader_Sec",
@@ -459,7 +459,7 @@ local function challengecomplete( ... )
         x = ScrW() * 0.5,
         y = CoDHUD_SY(205),
         color = Color(0,220,80),
-		sfx = "hud/mp_challengecomplete_metal_2.mp3",
+		sfx = "codhud/hud/mp_challengecomplete_metal_2.mp3",
         fonts = {
             pri = "MW2_ChalHeader_Pri",
             sec = "MW2_ChalHeader_Sec",
@@ -1054,7 +1054,7 @@ local function medals( ... )
 
 end
 CoDHUD[hudtype].Medals = medals
-CoDHUD[hudtype].MedalsSound = "hud/hud_medal.mp3"
+CoDHUD[hudtype].MedalsSound = "codhud/hud/hud_medal.mp3"
 CoDHUD[hudtype].MedalsTable = {
 	["headshot"] = { "MW2_SPLASHES_HEADSHOT" },
 	["doublekill"] = { "MW2_SPLASHES_DOUBLEKILL" },

@@ -413,7 +413,7 @@ local function levelup( ... )
         x = ScrW() * 0.99,
         y = CoDHUD_SY(125),
         color = Color(0,220,80),
-		sfx = "hud/mp_levelup_final_2.mp3",
+		sfx = "codhud/hud/mp_levelup_final_2.mp3",
         fonts = {
             pri = "MW2_ChalHeader_Pri",
             sec = "MW2_ChalHeader_Sec",
@@ -475,7 +475,7 @@ local function challengecomplete( ... )
         x = ScrW() * 0.99,
         y = CoDHUD_SY(120),
         color = Color(0,220,80),
-		sfx = "hud/mp_challengecomplete_metal_2.mp3",
+		sfx = "codhud/hud/mp_challengecomplete_metal_2.mp3",
         fonts = {
             pri = "MW2_ChalHeader_Pri",
             sec = "MW2_ChalHeader_Sec",

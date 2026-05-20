@@ -377,7 +377,7 @@ local function levelup( ... )
         x = ScrW() * 0.5,
         y = CoDHUD_SY(200),
         color = Color(0,0,0),
-		sfx = "hud/bo2/mus_rank_02.SN65.pc.snd.mp3",
+		sfx = "codhud/hud/bo2/mus_rank_02.SN65.pc.snd.mp3",
 		holdTime = 2.5,
 		nobg = true,
         fonts = {
@@ -431,7 +431,7 @@ local function challengecomplete( ... )
         subtext = (sub and sub ~= "") and ResolvePrefix("MW2_CHALLENGE_", sub) or nil,
         x = ScrW() * 0.5,
         y = CoDHUD_SY(125),
-		sfx = "hud/bo2/award.SN65.pc.snd.mp3",
+		sfx = "codhud/hud/bo2/award.SN65.pc.snd.mp3",
 		holdTime = 1.5,
 
         color = Color(0,0,0),
@@ -1090,7 +1090,7 @@ local function medals( ... )
 	draw.SimpleTextOutlined( CoDHUD_UpperText(language.GetPhrase(activeMedal.text)), "BO2_MedalPrimary", cx, cy + CoDHUD_SY(128), colWhite, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, outlined and 1.5 or 0, colBlack )
 end
 CoDHUD[hudtype].Medals = medals
-CoDHUD[hudtype].MedalsSound = "hud/bo2/metal_3.SN65.pc.snd.mp3"
+CoDHUD[hudtype].MedalsSound = "codhud/hud/bo2/metal_3.SN65.pc.snd.mp3"
 CoDHUD[hudtype].MedalsTable = {
 	["headshot"] = { "BO2_MEDAL_HEADSHOT", nil, "bo2/medals/hud_medals_headshot.png" },
 	["doublekill"] = { "BO2_MEDAL_MULTIKILL_2", nil, "bo2/medals/hud_medals_doublekill.png" },

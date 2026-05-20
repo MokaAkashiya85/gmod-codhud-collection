@@ -104,7 +104,7 @@ function CoDHUD_Header_MW:New(cfg)
 	o.align = cfg.align or "center"
 
 	o.writeSounds = cfg.writeSounds or {
-		"hud/cod_write.mp3"
+		"codhud/hud/cod_write.mp3"
 	}
 
 	if cfg.endTime then
@@ -689,7 +689,7 @@ function CoDHUD_Header_MW:Update()
 			BlankStep(self.eraseBlanks, string.rep(" ", self.longest), 2)
 
 			if not self.eraseSoundPlayed then
-				surface.PlaySound("hud/cod_dissapear.mp3")
+				surface.PlaySound("codhud/hud/cod_dissapear.mp3")
 				self.eraseSoundPlayed = true
 			end
 		end

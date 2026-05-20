@@ -372,7 +372,7 @@ local function levelup( ... )
         x = ScrW() * 0.5,
         y = CoDHUD_SY(100),
         color = Color(0,0,0),
-		sfx = "music/bo1/stings/mp_level_up.mp3",
+		sfx = "codhud/music/bo1/stings/mp_level_up.mp3",
         fonts = {
 			pri = "BO1_RS_H_Pri",
 			sec = "BO1_RS_H_Sec",
@@ -424,7 +424,7 @@ local function challengecomplete( ... )
         subtext = (sub and sub ~= "") and ResolvePrefix("MW2_CHALLENGE_", sub) or nil,
         x = ScrW() * 0.5,
         y = CoDHUD_SY(125),
-		sfx = "music/bo1/stings/mp_milestone_sting.mp3",
+		sfx = "codhud/music/bo1/stings/mp_milestone_sting.mp3",
 		holdTime = 2.5,
 
         color = Color(0,0,0),
@@ -963,7 +963,7 @@ local function medals( ... )
 
 end
 CoDHUD[hudtype].Medals = medals
-CoDHUD[hudtype].MedalsSound = "hud/bo1/repeatable.mp3"
+CoDHUD[hudtype].MedalsSound = "codhud/hud/bo1/repeatable.mp3"
 CoDHUD[hudtype].MedalsTable = {
 	["headshot"] = { "BO1_MEDAL_HEAD_SHOT", "BO1_MEDAL_HEAD_SHOT_DESC" },
 	["doublekill"] = { "BO1_MEDAL_DOUBLE_KILL", "BO1_MEDAL_DOUBLE_KILL_DESC" },

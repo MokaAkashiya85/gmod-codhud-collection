@@ -370,7 +370,7 @@ local function levelup( ... )
         x = ScrW() * 0.5,
         y = CoDHUD_SY(125),
         color = Color(0,0,0),
-		sfx = "music/waw/achievement/mp_level_up.mp3",
+		sfx = "codhud/music/waw/achievement/mp_level_up.mp3",
         fonts = {
             pri = "WaW_RS_O_Pri",
             sec = "WaW_RS_O_Sec",
@@ -428,7 +428,7 @@ local function challengecomplete( ... )
         text = language.GetPhrase("CoD4_MP_CHALLENGE_COMPLETED") .. "\n" .. CoDHUD_ChallengeTitle(header, level),
         x = ScrW() * 0.5,
         y = CoDHUD_SY(205),
-		sfx = "music/waw/achievement/mp_achievement.mp3",
+		sfx = "codhud/music/waw/achievement/mp_achievement.mp3",
         color = Color(0,0,0),
 		holdTime = 4,
         fonts = {

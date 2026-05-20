@@ -1701,7 +1701,7 @@ end
 -- Opens a CoDHUDMenu menu
 function CoDHUDMenu:Open(menu)
     local CurrentMenu = menu or {}
-    local Name = CurrentMenu.Name or CoDHUDString("uv.unitvehicles")
+    local Name = CurrentMenu.Name or CoDHUDString("CoDHUD.Title")
 	
 	local BaseMenuW = 1400
 	local BaseMenuH = 900
@@ -1795,10 +1795,10 @@ function CoDHUDMenu:Open(menu)
 				draw.SimpleText(self.SelectedConVar, "CoDHUD_Settings_Tri", w * 0.5, h * 0.98 - 40, Color(175, 175, 175, a), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
 			end
 			if self.SelectedDefault and self.SelectedDefault ~= "" then
-				draw.SimpleText( string.format( CoDHUDString("uv.settings.default"), self.SelectedDefault ), "CoDHUD_Settings_Tri", 10, h * 0.98 - 20, Color(175, 175, 175, a), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+				draw.SimpleText( string.format( CoDHUDString("CoDHUD.Default"), self.SelectedDefault ), "CoDHUD_Settings_Tri", 10, h * 0.98 - 20, Color(175, 175, 175, a), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 			end
 			if self.SelectedCurrent and self.SelectedCurrent ~= "" then
-				draw.SimpleText(string.format( CoDHUDString("uv.settings.current"), self.SelectedCurrent ), "CoDHUD_Settings_Tri", 10, h * 0.98, Color(175, 175, 175, a), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+				draw.SimpleText(string.format( CoDHUDString("CoDHUD.Current"), self.SelectedCurrent ), "CoDHUD_Settings_Tri", 10, h * 0.98, Color(175, 175, 175, a), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 			end
 			
             if self.Text and a > 5 then
@@ -1880,7 +1880,7 @@ function CoDHUDMenu:Open(menu)
 			if a <= 5 then return end
 			if not self.Prompts or #self.Prompts == 0 then return end
 
-			local xPadding, yPadding = CoDHUD_SX(10), CoDHUD_S(5)
+			local xPadding, yPadding = CoDHUD_SX(15), CoDHUD_S(0)
 			local wrapWidth = w - xPadding * 2
 
 			local resolved = {}
@@ -1894,11 +1894,7 @@ function CoDHUDMenu:Open(menu)
 
 			text = CoDHUDReplaceKeybinds(text)
 
-			local markupText =
-				"<font=CoDHUD_Settings_Sec>" ..
-				"<color=255,255,255," .. a .. ">" ..
-				text ..
-				"</color></font>"
+			local markupText = "<font=CoDHUD_Settings_Sec>" .. "<color=255,255,255," .. a .. ">" .. text .. "</color></font>"
 
 			local mk = markup.Parse(markupText, wrapWidth)
 			
@@ -2217,7 +2213,7 @@ function CoDHUDMenu:Open(menu)
 			btn.OnCursorEntered = function()
 				CoDHUDMenu.PlaySFX("hover")
 				if tab.Desc and descPanel then descPanel.Desc = tab.Desc or "" end
-				if promptBar then promptBar.Prompts = tab.Prompts or { "uv.prompt.tab" } end
+				if promptBar then promptBar.Prompts = tab.Prompts or { "CoDHUD.Glyph.Tab" } end
 			end
 			
 			btn.OnCursorExited = function()
