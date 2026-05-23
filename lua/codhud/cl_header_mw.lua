@@ -218,6 +218,8 @@ end
 function CoDHUD_HeaderQueue.Push(cfg)
 	cfg.groupId = cfg.groupId or (CurTime() .. "_" .. math.random(9999))
 
+    if (not GetConVar("codhud_enable_headers"):GetBool()) or GetConVar("codhud_quickdisable_hud"):GetBool() then return end
+
     table.insert(CoDHUD_HeaderQueue.Queue, cfg)
 end
 

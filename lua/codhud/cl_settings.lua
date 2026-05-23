@@ -20,7 +20,7 @@ CreateClientConVar("codhud_enable_killfeed", "1", true, false, "Enable or disabl
 CreateClientConVar("codhud_enable_weaponinfo", "1", true, false, "Enable or disable the Weapon Info and Compass.")
 CreateClientConVar("codhud_enable_prompts", "1", true, false, "Enable or disable Weapon Prompts.")
 CreateClientConVar("codhud_enable_chat", "1", true, false, "Enable or disable the Chat.")
-CreateClientConVar("codhud_enable_challenges", "1", true, false, "Enable or disable the Challenge prompts.")
+CreateClientConVar("codhud_enable_headers", "1", true, false, "Enable or disable Header notifications.")
 CreateClientConVar("codhud_enable_scoreboard", "1", true, false, "Enable or disable the Scoreboard.")
 
 CreateClientConVar("codhud_enable_iff", "1", true, false, "Enable/Disable target identification labels")
@@ -172,7 +172,7 @@ CoDHUDMenu.Main = function()
 				{ type = "bool", text = "CoDHUD.HUD.IFF.Enable", desc = "CoDHUD.HUD.IFF.Enable.desc", convar = "codhud_enable_iff", requireparentconvar = "codhud_quickdisable_hud", parentinvert = true, noprefix = true },
 				{ type = "bool", text = "CoDHUD.HUD.DeathIcon.Enable", desc = "CoDHUD.HUD.DeathIcon.Enable.desc", convar = "codhud_enable_deathicon", requireparentconvar = "codhud_quickdisable_hud", parentinvert = true, noprefix = true },
 				{ type = "bool", text = "CoDHUD.HUD.Chat.Enable", desc = "CoDHUD.HUD.Chat.Enable.desc", convar = "codhud_enable_chat", requireparentconvar = "codhud_quickdisable_hud", parentinvert = true, noprefix = true },
-				{ type = "bool", text = "CoDHUD.HUD.Challenges.Enable", desc = "CoDHUD.HUD.Challenges.Enable.desc", convar = "codhud_enable_challenges", requireparentconvar = "codhud_quickdisable_hud", parentinvert = true, noprefix = true },
+				{ type = "bool", text = "CoDHUD.HUD.Headers.Enable", desc = "CoDHUD.HUD.Headers.Enable.desc", convar = "codhud_enable_headers", requireparentconvar = "codhud_quickdisable_hud", parentinvert = true, noprefix = true },
 			},
 			
 			{ TabName = "CoDHUD.Server", sv = true, NoTitle = true, playsfx = "confirm", -- Welcome Page

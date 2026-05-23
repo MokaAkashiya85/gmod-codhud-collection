@@ -86,7 +86,7 @@ local function QueueNotification(id, header, level, sub, subval, pts, align)
         -- CoDHUD_SaveStats()
     end
 
-    if (not GetConVar("codhud_enable_challenges"):GetBool()) or GetConVar("codhud_quickdisable_hud"):GetBool() then return end
+    if (not GetConVar("codhud_enable_headers"):GetBool()) or GetConVar("codhud_quickdisable_hud"):GetBool() then return end
 
 	table.insert(notificationQueue, {
 		id = id,

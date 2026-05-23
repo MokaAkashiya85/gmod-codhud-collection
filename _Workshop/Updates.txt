@@ -75,3 +75,7 @@
 [ Changes ]
 - Fixed server-sided score counting when playing Free-for-All
 - Headers no longer begin appearing when they are hidden (paused, menu opened, etc.)
+
+[ Update 10 ]
+- Replaced "Enable Challenges" with "Enable Headers"
+  ∟ Now also affects level-up notifications
