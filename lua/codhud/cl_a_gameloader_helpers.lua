@@ -3,7 +3,6 @@ CoDHUD = CoDHUD or {}
 CoDHUD.Factions = CoDHUD.Factions or {}
 CoDHUD.Gamemodes = CoDHUD.Gamemodes or {}
 
-
 -- Fuck GMod sometimes.
 function CoDHUDString(key)
     if not isstring(key) then return "" end
@@ -13,11 +12,14 @@ function CoDHUDString(key)
     return string.Trim(language.GetPhrase(key))
 end
 
-
 -- [[ RESOLUTION SCALING ]]
 local BASE_W, BASE_H = 1920, 1080
 
-function CoDHUD_GetUIScaleMultiplier() return GetConVar("codhud_scale"):GetFloat() or 1 end -- EXPERIMENTAL
+function CoDHUD_GetUIScaleMultiplier()
+	local cv = GetConVar("codhud_scale")
+	if cv and cv:GetFloat() then return cv:GetFloat()
+	else return 1 end
+end
 
 function CoDHUD_GetUIScale()
     local scaleX = ScrW() / BASE_W * CoDHUD_GetUIScaleMultiplier()
@@ -375,11 +377,9 @@ function CoDHUD_InitiateFonts()
     surface.CreateFont( "BO2_Ammo_Alt",				{ font = "AgencyFB", size = CoDHUD_S(26), weight = 400, antialias = true, shadow = true, italic = true, extended = true })
 end
 
-CoDHUD_InitiateFonts()
-
-hook.Add("OnScreenSizeChanged", "CoDHUD_ReinitChallengeFonts", function()
-    CoDHUD_InitiateFonts()
-end)
+hook.Add("InitPostEntity", "CoDHUD_InitFonts", function() timer.Simple(0, function() CoDHUD_InitiateFonts() end) end) -- Delay initial font creation until convars are loaded
+hook.Add("OnScreenSizeChanged", "CoDHUD_ReinitFonts", function() CoDHUD_InitiateFonts() end) -- Rebuild when resolution changes
+cvars.AddChangeCallback("codhud_scale", function() CoDHUD_InitiateFonts() end, "CoDHUD_ScaleChanged") -- Rebuild when the scale cvar changes
 
 function CoDHUD_GetFactionColor(ent)
     if not IsValid(ent) then return Color(255,255,255) end
