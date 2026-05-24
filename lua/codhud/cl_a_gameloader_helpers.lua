@@ -1047,5 +1047,5 @@ CoDHUD_MapNameTable = {
 }
 
 function CoDHUD_MapName(name)
-	return CoDHUD_MapNameTable[name] or name
+	return CoDHUD_MapNameTable[name] or string.NiceName(name)
 end
