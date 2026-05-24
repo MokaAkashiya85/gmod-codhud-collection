@@ -442,16 +442,10 @@ function CoDHUD_Header_MW:Update()
 
 		local age = CurTime() - self.startTime
 
-		-- =========================
 		-- ICON INTRO
-		-- =========================
 		if age <= self.iconIntroEnd then
 
-			local p = math.Clamp(
-				age / self.iconIntroTime,
-				0,
-				1
-			)
+			local p = math.Clamp( age / self.iconIntroTime, 0, 1 )
 
 			self.iconBgAlpha = Lerp(p, 255, 150)
 			self.iconBgColorLerp = p
@@ -463,9 +457,7 @@ function CoDHUD_Header_MW:Update()
 			return
 		end
 
-		-- =========================
 		-- TEXT INTRO
-		-- =========================
 		if age <= self.textIntroEnd then
 
 			-- icon locked finished
@@ -473,11 +465,7 @@ function CoDHUD_Header_MW:Update()
 			self.iconBgColorLerp = 1
 			self.iconAlpha = 255
 
-			local p = math.Clamp(
-				(age - self.textIntroStart) / self.textIntroTime,
-				0,
-				1
-			)
+			local p = math.Clamp( (age - self.textIntroStart) / self.textIntroTime, 0, 1 )
 
 			self.textBgAlpha = Lerp(p, 255, 0)
 			self.textBgColorLerp = p
@@ -486,9 +474,7 @@ function CoDHUD_Header_MW:Update()
 			return
 		end
 
-		-- =========================
 		-- HOLD
-		-- =========================
 		if age <= self.holdEnd then
 
 			self.iconBgAlpha = 150
@@ -502,9 +488,7 @@ function CoDHUD_Header_MW:Update()
 			return
 		end
 
-		-- =========================
 		-- TEXT EXIT
-		-- =========================
 		if age <= self.textExitEnd then
 
 			-- icon stays alive
@@ -518,20 +502,14 @@ function CoDHUD_Header_MW:Update()
 			-- bg instantly white
 			self.textBgColorLerp = 0
 
-			local p = math.Clamp(
-				(age - self.holdEnd) / self.textExitTime,
-				0,
-				1
-			)
+			local p = math.Clamp( (age - self.holdEnd) / self.textExitTime, 0, 1 )
 
 			self.textBgAlpha = Lerp(p, 255, 0)
 
 			return
 		end
 
-		-- =========================
 		-- ICON EXIT
-		-- =========================
 		if age <= self.iconExitEnd then
 
 			-- text fully dead
@@ -544,20 +522,14 @@ function CoDHUD_Header_MW:Update()
 			-- bg instantly white
 			self.iconBgColorLerp = 0
 
-			local p = math.Clamp(
-				(age - self.iconExitStart) / self.iconExitTime,
-				0,
-				1
-			)
+			local p = math.Clamp( (age - self.iconExitStart) / self.iconExitTime, 0, 1 )
 
 			self.iconBgAlpha = Lerp(p, 255, 0)
 
 			return
 		end
 
-		-- =========================
 		-- LIMBO DELAY
-		-- =========================
 		if age <= self.finalEnd then
 			return
 		end
@@ -885,7 +857,7 @@ function CoDHUD_Header_MW:Draw()
 		-- ICON
 		if self.icon then
 
-			local size = 96
+			local size = CoDHUD_S(96)
 
 			local bgCol = Color(
 				Lerp(self.iconBgColorLerp, 255, flash.r),

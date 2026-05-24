@@ -34,7 +34,7 @@ hook.Add("ScoreboardShow", "MW2_Scoreboard_Open",  function()
 	return true
 end)
 
-hook.Add("ScoreboardHide", "MW2_Scoreboard_Close", function() 
+hook.Add("ScoreboardHide", "MW2_Scoreboard_Close", function()
 	if (not GetConVar("codhud_enable_scoreboard"):GetBool()) or GetConVar("codhud_quickdisable_hud"):GetBool() then return end
 	CoDHUD_ScoreboardOpened = false
 end)

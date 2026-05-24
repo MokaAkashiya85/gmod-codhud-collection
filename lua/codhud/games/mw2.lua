@@ -1840,11 +1840,10 @@ local function scoreboard( ... )
 		local level, levelData = CalculateLevelFromXP( ply:GetNW2Float( "CoDHUD_XP", 0 ) )
 
 		-- Text
-		local maxNameWidth = (barRight - CoDHUD_S(1000))
+		local maxNameWidth = CoDHUD_SX(550)
 		local playerName = TruncateText( ply:Nick(), "MW2_Scoreboard_Text", maxNameWidth )
 		draw.SimpleTextOutlined( playerName, "MW2_Scoreboard_Text", x + CoDHUD_S(110), y + (h / 2), tCol, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0) )		
 
-		-- draw.SimpleTextOutlined(ply:Nick(), "MW2_Scoreboard_Text", x + CoDHUD_S(110), y + (h / 2), tCol, TEXT_ALIGN_LEFT,  TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0))
 		draw.SimpleTextOutlined(ply:Deaths(), "MW2_Scoreboard_Text", barRight - CoDHUD_S(CFG.OFF_DEATHS),  y + (h / 2), tCol, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0))
 		draw.SimpleTextOutlined(ply:GetNWInt("Assists", 0), "MW2_Scoreboard_Text", barRight - CoDHUD_S(CFG.OFF_ASSISTS), y + (h / 2), tCol, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0))
 		draw.SimpleTextOutlined(ply:Frags(), "MW2_Scoreboard_Text", barRight - CoDHUD_S(CFG.OFF_KILLS),   y + (h / 2), tCol, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0))
@@ -2012,7 +2011,7 @@ local function scoreboard( ... )
     surface.DrawTexturedRect(0, CoDHUD_S(CFG.HEADER_Y_POS), scrW, CoDHUD_S(CFG.HEADER_H))
 
     -- Map name
-    local mapName = CoDHUD_UpperText(game.GetMap())
+    local mapName = CoDHUD_UpperText(CoDHUD_MapName(game.GetMap()))
 	draw.SimpleTextOutlined( mapName, "MW2_Scoreboard_Timer", scrW/2, CoDHUD_S(CFG.MAP_Y_OFF), Color(255, 255, 255), 1, 0, outlined and 1.5 or 0, Color(0,0,0) )
 
     -- Timer

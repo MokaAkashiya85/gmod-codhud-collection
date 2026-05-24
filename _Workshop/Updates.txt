@@ -79,3 +79,17 @@
 [ Update 10 ]
 - Replaced "Enable Challenges" with "Enable Headers"
   ∟ Now also affects level-up notifications
+  
+[ Update 11 ]
+[ New ]
+- Added a "UI Scale Multiplier" variable, allowing the user to set their UI scale from 50% to 150%
+- Added strings for all base GMod, CS:S, DOD:S, TF2 and Insurgency (Standalone) maps wherever the map name is displayed
+  ∟ CoD4, WaW, MW2, MW3: Displayed at the top of the scoreboard
+  ∟ BO2: Displayed above the first faction in the scoreboard
+
+[ Changes ]
+- All HUDs: Fixed the max name width on the scoreboards
+- BO1 HUD: Fixed score bar arrows not scaling properly
+- BO2 HUD: Fixed scoreboard timer and mode/map name not being aligned properly, and fixed Voice Chat font using the wrong one
+- CoD4 & WaW: Fixed Alt. Weapon counter not being aligned properly when scaled
+- Settings Menu: Changed the font to the BO1 Font due to some characters not working right (ex. "-")

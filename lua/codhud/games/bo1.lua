@@ -1449,8 +1449,8 @@ local function scorebar(data)
 
     surface.SetMaterial(ARROW_CFG.material)
     surface.SetDrawColor(ARROW_CFG.color)
-    surface.DrawTexturedRectRotated(hudX + client_w, top_y, ARROW_CFG.size, ARROW_CFG.size, -90)
-    surface.DrawTexturedRectRotated(hudX + enemy_w, hudY + hudHLower, ARROW_CFG.size, ARROW_CFG.size, 90)
+    surface.DrawTexturedRectRotated(hudX + client_w, top_y, CoDHUD_S(ARROW_CFG.size), CoDHUD_S(ARROW_CFG.size), -90)
+    surface.DrawTexturedRectRotated(hudX + enemy_w, hudY + hudHLower, CoDHUD_S(ARROW_CFG.size), CoDHUD_S(ARROW_CFG.size), 90)
 
 	draw.SimpleTextOutlined( clientKills * 100, "BO1_Font", CoDHUD_SX(S_CFG.X) - CoDHUD_SX(2.5), ScrH() - CoDHUD_SY(S_CFG.Y), white, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP, outlined and 1 or 0, Color(0,0,0) )
 	draw.SimpleTextOutlined( topEnemyKills * 100, "BO1_Font2", CoDHUD_SX(S_CFG.X), ScrH() - CoDHUD_SY(S_CFG.Y) + CoDHUD_S(S_CFG.GAP_OFFSET), white, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP, outlined and 1 or 0, Color(0,0,0) )
@@ -1592,7 +1592,7 @@ local function scoreboard( ... )
 		local level, levelData = CalculateLevelFromXP( ply:GetNW2Float( "CoDHUD_XP", 0 ) )
 
 		-- Text
-		local maxNameWidth = (barRight - CoDHUD_S(1200))
+		local maxNameWidth = CoDHUD_SX(300)
 		local playerName = TruncateText( ply:Nick(), "BO1_Scoreboard_Text", maxNameWidth )
 		draw.SimpleTextOutlined( playerName, "BO1_Scoreboard_Text", x + CoDHUD_S(110), y + (h / 2), tCol, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0) )
 

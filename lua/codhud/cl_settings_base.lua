@@ -844,7 +844,7 @@ function CoDHUD.BuildSetting(parent, st, descPanel, promptBar)
 
 		local slider = vgui.Create("DNumSlider", wrap)
 		slider:Dock(RIGHT)
-		slider:SetWide(CoDHUD_SX(250))
+		slider:SetWide(250)
 		slider:DockMargin(26, 0, 6, 0)
 		slider:SetContentAlignment(5)
 		slider:SetMin(st.min or 0)
@@ -862,7 +862,7 @@ function CoDHUD.BuildSetting(parent, st, descPanel, promptBar)
 		valPanel.Paint = function() end
 
 		local valBox = vgui.Create("DTextEntry", valPanel)
-		valBox:SetWide(CoDHUD_SX(80))
+		valBox:SetWide(80)
 		valBox:SetFont("CoDHUD_Settings_Tri")
 		valBox:SetTextColor(color_white)
 		valBox:SetHighlightColor(Color(58,193,0))
@@ -1787,7 +1787,7 @@ function CoDHUDMenu:Open(menu)
         descPanel:SetWide(fw * 0.25)
         descPanel.Paint = function(self, w, h)
             local a = self:GetAlpha()
-			local col = Color( 28, 28, 28, math.floor(150 * (a / 255)) )
+			local col = Color( 28, 28, 28, math.floor(200 * (a / 255)) )
             surface.SetDrawColor(col)
 
 			if self.SelectedConVar then
@@ -1811,7 +1811,9 @@ function CoDHUDMenu:Open(menu)
 
 				local mk = markup.Parse(markupText, wrapWidth)
 				
-				surface.DrawRect(0, 0, w, mk:GetHeight() + (xPadding * 2))
+				if desc ~= "" then
+					surface.DrawRect(0, 0, w, mk:GetHeight() + (xPadding * 2))
+				end
 
 				mk:Draw(xPadding, yPadding, TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
             end
@@ -2152,7 +2154,7 @@ function CoDHUDMenu:Open(menu)
 			draw.RoundedBox(0, 0, 0, w, h, bg)
 		end
 
-		draw.SimpleTextOutlined(Name, "CoDHUD_Settings_Main", w * 0.01, 0, titleColor, TEXT_ALIGN_LEFT, TEXT_ALIGN_LEFT, 1.5, color_black)
+		draw.SimpleTextOutlined(Name, "CoDHUD_Settings_Main", w * 0.0075, 0, titleColor, TEXT_ALIGN_LEFT, TEXT_ALIGN_LEFT, 1.5, color_black)
     end
 
     -- Build tabs if more than 1

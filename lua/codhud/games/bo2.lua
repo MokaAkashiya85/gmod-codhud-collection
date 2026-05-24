@@ -1629,18 +1629,15 @@ local function scoreboard( ... )
 		HEADER_ICON_X = 140,
 		HEADER_ENEMY_ICON_X = 340,
 
-		-- Map Display
-		MAP_Y_OFF = 98,
-
 		-- Timer / Header Score
-		TIMER_X_POS = 325,
+		TIMER_X_POS = 10,
 		TIMER_Y_OFF = 150,
 		SQUEEZE = 0,
 		SQUEEZE_ONE = -0,
 		SQUEEZE_ONE_BEFORE = -0,
 
 		-- GM and Map Name
-		MAPNAME_X_POS = 425,
+		MAPNAME_X_POS = 125,
 		MAPNAME_Y_OFF = 150,
 		
 		-- Stat Offsets (from barRight, going left)
@@ -1735,7 +1732,7 @@ local function scoreboard( ... )
 		surface.DrawRect(barRight - CoDHUD_SX(CFG.OFF_SCORE) - CoDHUD_SX(50), y, CoDHUD_S(100), h)
 
 		-- Text
-		local maxNameWidth = (barRight - CoDHUD_S(1250))
+		local maxNameWidth = CoDHUD_SX(375)
 		local playerName = TruncateText( ply:Nick(), "BO2_Scoreboard_Text", maxNameWidth )
 		draw.SimpleTextOutlined( playerName, "BO2_Scoreboard_Text", x + CoDHUD_S(80), y + (h / 2), tCol, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0) )
 
@@ -1835,12 +1832,12 @@ local function scoreboard( ... )
 	local totalSecs = math.floor(CurTime())
 	local mins, secs = math.floor(totalSecs / 60), totalSecs % 60
 	local timeStr = string.format("%d:%02d", mins, secs)
-	draw.SimpleTextOutlined( timeStr, "BO2_Scoreboard_Timer", CoDHUD_S(CFG.TIMER_X_POS), headerY, Color(255,255,255), TEXT_ALIGN_LEFT, 0, outlined and 1 or 0, Color(0,0,0) )
+	draw.SimpleTextOutlined( timeStr, "BO2_Scoreboard_Timer", headerX + CoDHUD_S(CFG.TIMER_X_POS), headerY, Color(255,255,255), TEXT_ALIGN_LEFT, 0, outlined and 1 or 0, Color(0,0,0) )
 	
 	local gm = CoDHUD_ActiveGamemodeCL
 	local gmname = language.GetPhrase(CoDHUD.Gamemodes[hudtype].Names[gm] or gm)
 	
-	draw.SimpleTextOutlined( gmname .. " : " .. game:GetMap(), "BO2_Scoreboard_Timer", CoDHUD_S(CFG.MAPNAME_X_POS), headerY, Color(255,255,255), TEXT_ALIGN_LEFT, 0, outlined and 1 or 0, Color(0,0,0) )
+	draw.SimpleTextOutlined( gmname .. " - " .. CoDHUD_MapName(game.GetMap()), "BO2_Scoreboard_Text2", headerX + CoDHUD_SX(CFG.MAPNAME_X_POS), headerY, Color(255,255,255), TEXT_ALIGN_LEFT, 0, outlined and 1 or 0, Color(0,0,0) )
 	
 	-- Stats column headers
 	draw.SimpleTextOutlined( language.GetPhrase("BO1_CGAME_SB_PING"), "BO2_Scoreboard_Text", barRight - CoDHUD_SX(CFG.OFF_PING) + CoDHUD_SX(4), headerY, Color(255,255,255), TEXT_ALIGN_RIGHT, 0, outlined and 1 or 0, Color(0,0,0) )
@@ -2016,7 +2013,7 @@ local function voice( ... )
 	local VOICE_Y_START = ScrH() * 0.30 
 	local SPACING = 28 
 	local ICON_SIZE = 36
-	local TEXT_X_OFFSET = 2 
+	local TEXT_X_OFFSET = 2
 
 	local drawY = VOICE_Y_START + yOffset
 	
@@ -2030,14 +2027,14 @@ local function voice( ... )
 	surface.DrawTexturedRect(VOICE_X, drawY, ICON_SIZE, ICON_SIZE)
 
 	-- Draw Name
-	draw.SimpleText(ply:Nick(), "BO1_VoiceFont", VOICE_X + ICON_SIZE + TEXT_X_OFFSET, drawY, Color(255, 255, 255), 0, 0)
+	draw.SimpleText(ply:Nick(), "BO2_VoiceFont", VOICE_X + ICON_SIZE + TEXT_X_OFFSET, drawY, Color(255, 255, 255), 0, 0)
 
 	yOffset = yOffset + SPACING
 end
 CoDHUD[hudtype].VoiceChat = voice
 
 -- local debugpic = true
-local debugpicture = Material("debugref/bo2_2.png", "smooth")
+local debugpicture = Material("debugref/bo2_3.png", "smooth")
 
 local function weaponinfo(...)
 

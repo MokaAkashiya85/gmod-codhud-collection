@@ -1631,9 +1631,8 @@ local function scoreboard( ... )
 		local level, levelData = CalculateLevelFromXP( ply:GetNW2Float( "CoDHUD_XP", 0 ) )
 
 		-- Text
-		local maxNameWidth = (barRight - CoDHUD_S(1000))
+		local maxNameWidth = CoDHUD_SX(550)
 		local playerName = TruncateText( ply:Nick(), "WaW_Scoreboard_Text", maxNameWidth )
-		
 		draw.SimpleTextOutlined( playerName, "WaW_Scoreboard_Text", x + CoDHUD_S(110), y + (h / 2), tCol, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0) )
 
 		draw.SimpleTextOutlined(ply:Deaths(), "WaW_Scoreboard_Text", barRight - CoDHUD_S(CFG.OFF_DEATHS),  y + (h / 2), tCol, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0, 0, 0))
@@ -1815,7 +1814,7 @@ local function scoreboard( ... )
     surface.DrawTexturedRect(0, CoDHUD_S(CFG.HEADER_Y_POS) + CoDHUD_S(CFG.HEADER_H) + CoDHUD_S(2), scrW, CoDHUD_S(CFG.HEADER_H * 0.1))
 
     -- Map name
-    local mapName = CoDHUD_UpperText(game.GetMap())
+    local mapName = CoDHUD_UpperText(CoDHUD_MapName(game.GetMap()))
 	draw.SimpleTextOutlined( mapName, "WaW_Scoreboard_Text", scrW/2, CoDHUD_S(CFG.MAP_Y_OFF), Color(255, 255, 255), 1, 0, outlined and 1.5 or 0, Color(0,0,0) )
 
     -- Timer
@@ -2024,10 +2023,10 @@ local function weaponinfo(...)
 
 		-- Alt Ammo (Underbarrel / Secondary)
 		ALT_ICON_SIZE  = 64,
-		ALT_ICON_X     = 762,
-		ALT_ICON_Y     = 960,
-		ALT_TEXT_X     = 808,
-		ALT_TEXT_Y     = 993.5,
+		ALT_ICON_X     = 200,
+		ALT_ICON_Y     = 60,
+		ALT_TEXT_X     = 154,
+		ALT_TEXT_Y     = 60 + 33.5,
 		ALT_FONT_SIZE  = 36,
 		ALT_TEXT_SQ    = -2.5,
 		ALT_TEXT_SQ1   = -2.5,
@@ -2202,10 +2201,10 @@ local function weaponinfo(...)
 
 			surface.SetMaterial(MAT_ALT[alticon])
 			surface.SetDrawColor(255, 255, 255, 255)
-			surface.DrawTexturedRect(CoDHUD_SX(CFG.ALT_ICON_X), CoDHUD_SY(CFG.ALT_ICON_Y), CoDHUD_S(CFG.ALT_ICON_SIZE), CoDHUD_S(CFG.ALT_ICON_SIZE))
+			surface.DrawTexturedRect( (ScrW() * 0.5) - CoDHUD_SX(CFG.ALT_ICON_X), barY + CoDHUD_SY(CFG.ALT_ICON_Y), CoDHUD_S(CFG.ALT_ICON_SIZE), CoDHUD_S(CFG.ALT_ICON_SIZE) )
 
 			local altCol = (altCount > 0) and Color(255, 255, 255, 255) or Color(255, 120, 120, 255)
-			DrawSqueezedText(altAdd, "WaW_Ammo_Alt", CoDHUD_SX(CFG.ALT_TEXT_X), CoDHUD_SY(CFG.ALT_TEXT_Y), altCol, CFG.ALT_TEXT_SQ, CFG.ALT_TEXT_SQ1, 2)
+			DrawSqueezedText(altAdd, "WaW_Ammo_Alt", (ScrW() * 0.5) - CoDHUD_SX(CFG.ALT_TEXT_X), barY + CoDHUD_SY(CFG.ALT_TEXT_Y), altCol, CFG.ALT_TEXT_SQ, CFG.ALT_TEXT_SQ1, 2)
 		elseif clip2 >= 0 and maxClip2 > 0 then
 			local perc      = clip2 / maxClip2
 			local isLowClip = (perc <= CFG.STAT_LOW_PERC)

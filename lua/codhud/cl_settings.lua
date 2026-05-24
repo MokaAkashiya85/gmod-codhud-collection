@@ -28,6 +28,8 @@ CreateClientConVar("codhud_enable_deathicon", "1", true, false, "Show death icon
 
 CreateClientConVar("codhud_enable_outlinedtext", "0", true, false, "Enable or disable outlines on certain HUD texts.")
 
+CreateClientConVar("codhud_scale", 1, true, false, "What scale all of the CoD HUD elements should be in.")
+
 CreateClientConVar("codhud_menu_fullscreen", "0", true, false, "If enabled, the CoD HUD Menu will open in full screen.")
 CreateClientConVar("codhud_menu_sounds", "1", true, false, "Enable or disable sounds in the CoD HUD Menu.")
 CreateClientConVar("codhud_menu_music", "1", true, false, "Enable or disable music in the CoD HUD Menu.")
@@ -138,6 +140,12 @@ CoDHUDMenu.Main = function()
 				{ type = "label", text = "CoDHUD.Quick.title" },
 				{ type = "bool", text = "CoDHUD.Quick.DisableHUD", desc = "CoDHUD.Quick.DisableHUD.desc", convar = "codhud_quickdisable_hud" },
 				{ type = "bool", text = "CoDHUD.HUD.Outline", desc = "CoDHUD.HUD.Outline.desc", convar = "codhud_enable_outlinedtext" },
+				
+				{ type = "slider", text = "CoDHUD.HUD.Scale.Enable", desc = "CoDHUD.HUD.Scale.Enable.desc", convar = "codhud_scale", requireparentconvar = "codhud_quickdisable_hud", parentinvert = true, noprefix = true, min = 0.5, max = 1.5, decimals = 2, func = function()
+					CoDHUD_InitiateFonts()
+					CoDHUDMenu.OpenMenu(CoDHUDMenu.Main, true)
+				end },
+				
 
 				{ type = "label", text = "CoDHUD.Audio" },
 				{ type = "bool", text = "CoDHUD.Audio.Announcer.Enable", desc = "CoDHUD.Audio.Announcer.Enable.desc", convar = "codhud_enable_announcer" },
