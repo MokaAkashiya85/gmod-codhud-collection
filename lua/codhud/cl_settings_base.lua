@@ -2173,7 +2173,7 @@ function CoDHUDMenu:Open(menu)
             local btn = vgui.Create("DButton", tabsPanel)
             btn:Dock(TOP)
             btn:DockMargin(0, 0, 0, TAB_BUTTON_PADDING)
-            btn:SetTall(tab.Icon and CoDHUD_S(64) or CoDHUD_S(48))
+            btn:SetTall(CoDHUD_S(96))
             btn:SetText("")
 
             btn.Paint = function(self, w, h)
