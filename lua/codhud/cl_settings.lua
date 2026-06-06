@@ -23,6 +23,10 @@ CreateClientConVar("codhud_enable_chat", "1", true, false, "Enable or disable th
 CreateClientConVar("codhud_enable_headers", "1", true, false, "Enable or disable Header notifications.")
 CreateClientConVar("codhud_enable_scoreboard", "1", true, false, "Enable or disable the Scoreboard.")
 
+CreateClientConVar("codhud_enable_subtitles", "0", true, false, "Enable or disable Subtitles.")
+CreateClientConVar("codhud_enable_subtitles_callsign", "1", true, false, "Enable or disable the callsign for the subtitles.")
+CreateClientConVar("codhud_enable_subtitles_callsign_alignment", "0", true, false, "0 = Callsign is to the left of the text. 1 = Above.")
+
 CreateClientConVar("codhud_enable_iff", "1", true, false, "Enable/Disable target identification labels")
 CreateClientConVar("codhud_enable_deathicon", "1", true, false, "Show death icon when a friendly dies")
 
@@ -154,6 +158,14 @@ CoDHUDMenu.Main = function()
 				{ type = "bool", text = "CoDHUD.Audio.Music.Enable", desc = "CoDHUD.Audio.Music.Enable.desc", convar = "codhud_enable_music" },
 				{ type = "bool", text = "CoDHUD.Audio.Music.Ambient", desc = "CoDHUD.Audio.Music.Ambient.desc", convar = "codhud_enable_suspense" },
 
+				{ type = "bool", text = "CoDHUD.HUD.Subtitles.Enable", desc = "CoDHUD.HUD.Subtitles.Enable.desc", convar = "codhud_enable_subtitles" },
+				{ type = "bool", text = "CoDHUD.HUD.Subtitles.Callsign", desc = "CoDHUD.HUD.Subtitles.Callsign.desc", convar = "codhud_enable_subtitles_callsign", requireparentconvar = "codhud_enable_subtitles" },
+				{ type = "combo", text = "CoDHUD.HUD.Subtitles.NameAlign", desc = "CoDHUD.HUD.Subtitles.NameAlign.desc", convar = "codhud_enable_subtitles_callsign_alignment",  requireparentconvar = "codhud_enable_subtitles", content = {
+					{" #CoDHUD.HUD.Subtitles.NameAlign.Left", 0 },
+					{" #CoDHUD.HUD.Subtitles.NameAlign.Top", 1 },
+				}},
+				
+				
 				{ type = "label", text = "CoDHUD.Menu" },
 				{ type = "bool", text = "CoDHUD.Menu.Fullscreen", desc = "CoDHUD.Menu.Fullscreen.desc", convar = "codhud_menu_fullscreen", func = function()
 					CoDHUDMenu.OpenMenu(CoDHUDMenu.Main)

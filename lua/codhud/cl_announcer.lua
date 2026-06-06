@@ -15,6 +15,51 @@ CoDHUD_MusicVolumeScale = CoDHUD_MusicVolumeScale or 1
 
 local ANNOUNCER_COOLDOWN = 1 -- small gap between lines
 
+local Subtitles = {}
+
+function CoDHUD_AddSubtitle(speaker, text, duration)
+    table.insert(Subtitles, {
+        speaker = speaker,
+        text = text,
+        spawnTime = CurTime(),
+        dieTime = CurTime() + duration + 1
+    })
+end
+
+function CoDHUD_AddSubtitleFromSound(path, duration)
+    local hud = CoDHUD_GetHUDType()
+
+    local ply = LocalPlayer()
+    if not IsValid(ply) then return end
+
+    local faction = ply:GetNW2String("CoDHUD_Faction", "")
+
+    if faction == "" then
+        faction = cookie.GetString("CoDHUD_SelectedFaction", "rangers")
+    end
+
+    -- filename without extension
+    local key = string.GetFileFromFilename(path)
+    key = string.StripExtension(key)
+
+    -- folder before filename
+    local folder = string.GetPathFromFilename(path)
+    folder = string.TrimRight(folder, "/")
+
+    local group = string.GetFileFromFilename(folder)
+
+    local subtitleKey = string.format( "CoDHUD.Sub.%s.%s.%s", hud, group, string.lower(key) )
+    local speakerKey = string.format( "CoDHUD.SubName.%s.%s", hud, faction )
+    local subtitle = language.GetPhrase(subtitleKey)
+
+    -- if subtitle == subtitleKey then return end
+
+    local speaker = language.GetPhrase(speakerKey)
+
+    CoDHUD_AddSubtitle(speaker, subtitle, duration or 2)
+	-- print(speaker, subtitle, duration)
+end
+
 local function CoDHUD_FinishAnnouncer()
 	if IsValid(CoDHUD_ActiveAnnouncerChannel) then
 		CoDHUD_ActiveAnnouncerChannel:Stop()
@@ -31,6 +76,7 @@ local function CoDHUD_ProcessAnnouncerQueue()
 	if CurTime() < CoDHUD_AnnouncerNextTime then return end
 
 	local entry = table.remove(CoDHUD_AnnouncerQueue, 1)
+
 	if not entry then return end
 
 	CoDHUD_AnnouncerPlaying = true
@@ -52,6 +98,8 @@ local function CoDHUD_ProcessAnnouncerQueue()
 		if not duration or duration <= 0 then
 			duration = 2
 		end
+		
+		CoDHUD_AddSubtitleFromSound(entry.path, duration)
 
 		-- failsafe timeout
 		timer.Simple(duration + 0.1, function()
@@ -205,3 +253,23 @@ function CoDHUD_GetAnnouncerSound(keys)
 
 	return tryLang(lang) or tryLang("en")
 end
+
+local function CoDHUD_ShouldHideHUD()
+    if gui.IsGameUIVisible() then return true end
+    if gui.IsConsoleVisible() then return true end
+    if vgui.CursorVisible() then return true end
+    if IsValid(ScoreBoard) then return true end -- fallback safety
+    if CoDHUD_ScoreboardOpened then return true end -- fallback safety
+    return false
+end
+
+-- [[ RENDERING ]]
+hook.Add("DrawOverlay", "CoDHUD_Subtitles_Draw", function()
+    if (not GetConVar("codhud_enable_subtitles"):GetBool()) or GetConVar("codhud_quickdisable_hud"):GetBool() then return end
+
+    if CoDHUD_ShouldHideHUD() then return end
+
+	if CoDHUD[CoDHUD_GetHUDType()] and CoDHUD[CoDHUD_GetHUDType()].Subtitles then
+		CoDHUD[CoDHUD_GetHUDType()].Subtitles(Subtitles)
+	end
+end)

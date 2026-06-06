@@ -2455,3 +2455,62 @@ local function weaponinfo(...)
     end
 end
 CoDHUD[hudtype].WeaponInfo = weaponinfo
+
+local function subtitles(...)
+    local SubtitleQueue = select(1, ...)
+
+    local ct = CurTime()
+	
+	local outlined = GetConVar("codhud_enable_outlinedtext"):GetBool()
+	local lang = language.GetPhrase
+
+    for i = #SubtitleQueue, 1, -1 do
+        local data = SubtitleQueue[i]
+
+        local timeLeft = data.dieTime - ct
+		local age = ct - data.spawnTime
+
+		local ANIM_TIME = 0.25
+		local ANIM_RISE = CoDHUD_S(15)
+
+		local animProgress = math.Clamp(age / ANIM_TIME, 0, 1)
+		local yOffset = (1 - animProgress) * ANIM_RISE
+
+		local y = (ScrH() * 0.82) + yOffset
+		local centerX = ScrW() * 0.5
+		
+        if timeLeft <= 0 then
+            table.remove(SubtitleQueue, i)
+            continue
+        end
+
+        -- Calculate Animation and Fading
+        local fadeFactor = 1
+
+        if age < ANIM_TIME then
+            fadeFactor = animProgress
+        elseif timeLeft < 0.5 then
+            fadeFactor = math.Clamp(timeLeft, 0, 1)
+        end
+
+        local alpha = 255 * fadeFactor
+        local msg = string.format( "%s: %s", lang(data.speaker), lang(data.text) )
+
+		local speaker = data.speaker
+		local text = data.text
+		
+		surface.SetFont("MW2_KillfeedFont")
+		local textW, textH = surface.GetTextSize(text)
+
+        if GetConVar("codhud_enable_subtitles_callsign"):GetBool() then
+			if GetConVar("codhud_enable_subtitles_callsign_alignment"):GetBool() then
+				draw.SimpleTextOutlined( speaker, "MW2_KillfeedFont", centerX, y - textH, Color(180,220,180,alpha), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1.5, Color(0,220,80,alpha * 0.1) )
+			else
+				draw.SimpleTextOutlined( speaker .. ": ", "MW2_KillfeedFont", centerX - (textW * 0.5), y, Color(180,220,180,alpha), TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER, 1.5, Color(0,220,80,alpha * 0.1) )
+			end
+		end
+		
+        draw.SimpleTextOutlined( text, "MW2_KillfeedFont", centerX, y, Color(255,255,255,alpha), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, outlined and 1 or 0, Color(0,0,0,alpha) )
+    end
+end
+CoDHUD[hudtype].Subtitles = subtitles

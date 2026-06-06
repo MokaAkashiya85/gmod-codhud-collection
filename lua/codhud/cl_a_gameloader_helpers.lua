@@ -103,6 +103,9 @@ function CoDHUD_InitiateFonts()
 	surface.CreateFont( "WaW_Score_Main",			{ font = "Optima Std Roman", size = CoDHUD_S(36), weight = 400, antialias = true, shadow = true })
 	surface.CreateFont( "WaW_Score_Plus",			{ font = "Optima Std Roman", size = CoDHUD_S(32), weight = 800, antialias = true, shadow = true })
 	
+	-- Killfeed
+    surface.CreateFont( "WaW_KillfeedFont",			{ font = "Optima Std Roman", size = CoDHUD_S(34), weight = 400, antialias = true, shadow = true, outline = false, })
+	
 	-- Round End
 	surface.CreateFont( "WaW_RE_Sc_Pri",			{ font = "Optima Std Roman", size = CoDHUD_S(54),  weight = 400, blursize = 0, antialias = true,  outline = false })
     surface.CreateFont( "WaW_RE_Sc_Sec",			{ font = "Optima Std Roman", size = CoDHUD_S(54),  weight = 400, blursize = 5, antialias = true,  outline = false })
