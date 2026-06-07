@@ -79,7 +79,7 @@
 [ Update 10 ]
 - Replaced "Enable Challenges" with "Enable Headers"
   ∟ Now also affects level-up notifications
-  
+
 [ Update 11 ]
 [ New ]
 - Added a "UI Scale Multiplier" variable, allowing the user to set their UI scale from 50% to 150%
@@ -93,3 +93,16 @@
 - BO2 HUD: Fixed scoreboard timer and mode/map name not being aligned properly, and fixed Voice Chat font using the wrong one
 - CoD4 & WaW: Fixed Alt. Weapon counter not being aligned properly when scaled
 - Settings Menu: Changed the font to the BO1 Font due to some characters not working right (ex. "-")
+
+
+[ Update 12 ]
+[ New ]
+- Added a new "Subtitles" function
+  ∟ Disabled by default
+  ∟ Appears in the bottom-centre of the screen when the voiceline plays
+  ∟ Has the option to display the callsign of the announcer
+  ∟ Additionally, you can move the callsign to the top or left-side of the subtitle
+  ∟ All voicelines from all games support this
+
+[ Changes ]
+- Removed many unused voicelines, reducing file size
