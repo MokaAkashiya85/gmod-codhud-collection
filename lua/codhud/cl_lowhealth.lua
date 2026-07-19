@@ -71,19 +71,19 @@ local breathing_gender = CreateConVar("lowhealtheffect_gender", "male", {FCVAR_A
 local enable_heartbeat = CreateConVar("lowhealtheffect_heartbeat", "1", {FCVAR_ARCHIVE, FCVAR_USERINFO}, "enable heartbeat sound")
 
 local breath_male = {
-    "lowhealth/male_hurt1.mp3",
-    "lowhealth/male_hurt2.mp3",
-    "lowhealth/male_hurt3.mp3",
-    "lowhealth/male_hurt4.mp3",
-    "lowhealth/male_hurt5.mp3",
-    "lowhealth/male_hurt6.mp3",
-    "lowhealth/male_hurt7.mp3"
+    "codhud/lowhealth/male_hurt1.mp3",
+    "codhud/lowhealth/male_hurt2.mp3",
+    "codhud/lowhealth/male_hurt3.mp3",
+    "codhud/lowhealth/male_hurt4.mp3",
+    "codhud/lowhealth/male_hurt5.mp3",
+    "codhud/lowhealth/male_hurt6.mp3",
+    "codhud/lowhealth/male_hurt7.mp3"
 }
 
 local recover_male = {
-    "lowhealth/male_recover1.mp3",
-    "lowhealth/male_recover2.mp3",
-    "lowhealth/male_recover3.mp3"
+    "codhud/lowhealth/male_recover1.mp3",
+    "codhud/lowhealth/male_recover2.mp3",
+    "codhud/lowhealth/male_recover3.mp3"
 }
 
 local heartbeat_sound = "codhud/lowhealth/heartbeat.mp3"
