@@ -66,6 +66,7 @@ Full HUD functionality, including, but not limited to:
 			Polish
 			Swedish*
 			Turkish*
+			Chinese (Simplified)*
 			[/td]
 		[/tr]
 	[/table]
@@ -80,4 +81,5 @@ Full HUD functionality, including, but not limited to:
 [*][b]chenyakumo[/b] - Coding assistance
 [*][b]landocalrissian[/b] - Original addon author & Turkish translations
 [*][b]cosmicpuppy[/b] - Original addon contributor
+[*][b]WhatUziname7[/b] - Simplified Chinese translations
 [/list]

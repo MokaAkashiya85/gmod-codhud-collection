@@ -106,3 +106,11 @@
 
 [ Changes ]
 - Removed many unused voicelines, reducing file size
+
+
+[ Update 13 ]
+[ New ]
+- Added Simplified Chinese translations thanks to WhatUziname7
+
+[ Changes ]
+- Fixed that low health SFX not playing properly
